@@ -1,0 +1,206 @@
+{
+  "fmsTableName": "FMS-Table",
+  "basic": {
+    "WAF": [
+      {
+        "policyName": "FMS-WAF-01",
+        "policyScope": "Global",
+        "resourceType": "AWS::CloudFront::Distribution",
+        "remediationEnabled": true,
+        "excludeResourceTags": false,
+        "policyDetails": {
+          "type": "WAFV2",
+          "preProcessRuleGroups": [
+            {
+              "ruleGroupArn": null,
+              "overrideAction": { "type": "NONE" },
+              "managedRuleGroupIdentifier": {
+                "version": null,
+                "vendorName": "AWS",
+                "managedRuleGroupName": "AWSManagedRulesCommonRuleSet"
+              },
+              "ruleGroupType": "ManagedRuleGroup",
+              "excludeRules": []
+            },
+            {
+              "ruleGroupArn": null,
+              "overrideAction": { "type": "NONE" },
+              "managedRuleGroupIdentifier": {
+                "version": null,
+                "vendorName": "AWS",
+                "managedRuleGroupName": "AWSManagedRulesAdminProtectionRuleSet"
+              },
+              "ruleGroupType": "ManagedRuleGroup",
+              "excludeRules": []
+            },
+            {
+              "ruleGroupArn": null,
+              "overrideAction": { "type": "NONE" },
+              "managedRuleGroupIdentifier": {
+                "version": null,
+                "vendorName": "AWS",
+                "managedRuleGroupName": "AWSManagedRulesKnownBadInputsRuleSet"
+              },
+              "ruleGroupType": "ManagedRuleGroup",
+              "excludeRules": []
+            },
+            {
+              "ruleGroupArn": null,
+              "overrideAction": { "type": "NONE" },
+              "managedRuleGroupIdentifier": {
+                "version": null,
+                "vendorName": "AWS",
+                "managedRuleGroupName": "AWSManagedRulesSQLiRuleSet"
+              },
+              "ruleGroupType": "ManagedRuleGroup",
+              "excludeRules": []
+            }
+          ],
+          "postProcessRuleGroups": [],
+          "defaultAction": { "type": "ALLOW" },
+          "overrideCustomerWebACLAssociation": false,
+          "loggingConfiguration": null
+        }
+      },
+      {
+        "policyName": "FMS-WAF-02",
+        "policyScope": "Regional",
+        "policyDetails": {
+          "type": "WAFV2",
+          "preProcessRuleGroups": [
+            {
+              "ruleGroupArn": null,
+              "overrideAction": { "type": "NONE" },
+              "managedRuleGroupIdentifier": {
+                "version": null,
+                "vendorName": "AWS",
+                "managedRuleGroupName": "AWSManagedRulesCommonRuleSet"
+              },
+              "ruleGroupType": "ManagedRuleGroup",
+              "excludeRules": []
+            },
+            {
+              "ruleGroupArn": null,
+              "overrideAction": { "type": "NONE" },
+              "managedRuleGroupIdentifier": {
+                "version": null,
+                "vendorName": "AWS",
+                "managedRuleGroupName": "AWSManagedRulesAdminProtectionRuleSet"
+              },
+              "ruleGroupType": "ManagedRuleGroup",
+              "excludeRules": []
+            },
+            {
+              "ruleGroupArn": null,
+              "overrideAction": { "type": "NONE" },
+              "managedRuleGroupIdentifier": {
+                "version": null,
+                "vendorName": "AWS",
+                "managedRuleGroupName": "AWSManagedRulesKnownBadInputsRuleSet"
+              },
+              "ruleGroupType": "ManagedRuleGroup",
+              "excludeRules": []
+            },
+            {
+              "ruleGroupArn": null,
+              "overrideAction": { "type": "NONE" },
+              "managedRuleGroupIdentifier": {
+                "version": null,
+                "vendorName": "AWS",
+                "managedRuleGroupName": "AWSManagedRulesSQLiRuleSet"
+              },
+              "ruleGroupType": "ManagedRuleGroup",
+              "excludeRules": []
+            }
+          ],
+          "postProcessRuleGroups": [],
+          "defaultAction": { "type": "ALLOW" },
+          "overrideCustomerWebACLAssociation": false,
+          "loggingConfiguration": null
+        },
+        "resourceType": "ResourceTypeList",
+        "resourceTypeList": [
+          "AWS::ApiGateway::Stage",
+          "AWS::ElasticLoadBalancingV2::LoadBalancer"
+        ],
+        "remediationEnabled": true,
+        "excludeResourceTags": false
+      }
+    ],
+    "SecurityGroup": [
+      {
+        "policyName": "FMS-SecGroup-01",
+        "policyDetails": {
+          "type": "SECURITY_GROUPS_USAGE_AUDIT",
+          "deleteUnusedSecurityGroups": true,
+          "coalesceRedundantSecurityGroups": true,
+          "optionalDelayForUnusedInMinutes": 0
+        },
+        "remediationEnabled": false,
+        "resourceType": "AWS::EC2::SecurityGroup",
+        "excludeResourceTags": false
+      },
+      {
+        "policyName": "FMS-SecGroup-02",
+        "policyDetails": {
+          "type": "SECURITY_GROUPS_CONTENT_AUDIT",
+          "preManagedOptions": [
+            {
+              "denyProtocolAllValue": true
+            },
+            {
+              "allowedPortCountPerSgRule": 1
+            },
+            {
+              "minIpv4CidrPrefixLenPerSgRule": 16
+            },
+            {
+              "minIpv6CidrPrefixLenPerSgRule": 48
+            },
+            {
+              "auditSgDirection": {
+                "type": "ALL"
+              }
+            }
+          ]
+        },
+        "remediationEnabled": false,
+        "resourceType": "ResourceTypeList",
+        "resourceTypeList": [
+          "AWS::EC2::Instance",
+          "AWS::EC2::NetworkInterface",
+          "AWS::EC2::SecurityGroup"
+        ],
+        "excludeResourceTags": false
+      }
+    ]
+  },
+  "advanced": {
+    "Shield": [
+      {
+        "policyName": "FMS-Shield-01",
+        "policyScope": "Global",
+        "remediationEnabled": true,
+        "resourceType": "AWS::CloudFront::Distribution",
+        "excludeResourceTags": false,
+        "policyDetails": {
+          "type": "SHIELD_ADVANCED"
+        }
+      },
+      {
+        "policyName": "FMS-Shield-02",
+        "policyScope": "Regional",
+        "remediationEnabled": true,
+        "resourceType": "ResourceTypeList",
+        "resourceTypeList": [
+          "AWS::ElasticLoadBalancingV2::LoadBalancer",
+          "AWS::ElasticLoadBalancing::LoadBalancer",
+          "AWS::EC2::EIP"
+        ],
+        "policyDetails": {
+          "type": "SHIELD_ADVANCED"
+        }
+      }
+    ]
+  }
+}

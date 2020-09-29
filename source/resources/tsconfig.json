@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "strictNullChecks": true,
+    "alwaysStrict": true,
+    "outDir": "./dist",
+    "types": ["jest", "node"]
+  },
+  "exclude": ["cdk.out", "node_modules"]
+}

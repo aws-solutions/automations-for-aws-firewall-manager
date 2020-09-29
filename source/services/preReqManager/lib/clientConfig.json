@@ -1,0 +1,10 @@
+{
+  "cfn": "2010-05-15",
+  "fms": "2018-01-01",
+  "organization": "2016-11-28",
+  "sns": "2010-03-31",
+  "ec2": "2016-11-15",
+  "dataPlane": "us-east-1",
+  "globalStackSetName": "FMS-Global-EnableConfig",
+  "regionalStackSetName": "FMS-Regional-EnableConfig"
+}
