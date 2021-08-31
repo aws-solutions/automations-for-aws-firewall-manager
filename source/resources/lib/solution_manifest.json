@@ -1,0 +1,19 @@
+{
+  "solution": {
+    "primarySolutionId": "SO0134",
+    "secondarySolutionId": "SO0134N",
+    "demoSolutionId": "SO0134D",
+    "solutionVersion": "%%VERSION%%",
+    "metricsEndpoint": "https://metrics.awssolutionsbuilder.com/generic",
+    "name": "%%SOLUTION_NAME%%",
+    "policyBucket": "%%TEMPLATE_BUCKET%%",
+    "templateVersion": "2010-09-09",
+    "sendMetric": "Yes"
+  },
+  "prereqStack": {
+    "globalStackSetName": "FMS-EnableConfig-Global",
+    "regionalStackSetName": "FMS-EnableConfig-Regional",
+    "prereqPolicy": "FMS-PreReqManager-Policy"
+  },
+  "commonResourceStack": { "helperPolicy": "FMS-Helper-Policy" }
+}

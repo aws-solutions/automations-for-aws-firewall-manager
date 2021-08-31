@@ -109,7 +109,48 @@
     }
   },
   "Resources": {
-    "ConfigBucket": { "DeletionPolicy": "Retain", "Type": "AWS::S3::Bucket" },
+    "ConfigBucket": {
+      "DeletionPolicy": "Retain",
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "ExpirationInDays": 730,
+              "Status": "Enabled",
+              "Transitions": [
+                {
+                  "StorageClass": "STANDARD_IA",
+                  "TransitionInDays": 30
+                },
+                {
+                  "StorageClass": "GLACIER",
+                  "TransitionInDays": 90
+                }
+              ]
+            }
+          ]
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        }
+      }
+    },
     "ConfigBucketPolicy": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {
@@ -144,7 +185,27 @@
       "Type": "AWS::SNS::Topic",
       "Properties": {
         "TopicName": { "Fn::Sub": "config-topic-${AWS::AccountId}" },
-        "DisplayName": "AWS Config Notification Topic"
+        "DisplayName": "AWS Config Notification Topic",
+        "KmsMasterKeyId": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":kms:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":alias/aws/sns"
+            ]
+          ]
+        }
       }
     },
     "ConfigTopicPolicy": {

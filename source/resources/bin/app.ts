@@ -13,15 +13,14 @@
 import * as cdk from "@aws-cdk/core";
 import { PreReqStack } from "../lib/prereq";
 import { DemoStack } from "../lib/demo";
-import { FMSStack } from "../lib/fms";
+import { CommonResourceStack } from "../lib/common";
 const app = new cdk.App();
 
-// Prerequisite Stack with nested FMS Stack
+// Prerequisite stack
 new PreReqStack(app, "PreReqStack");
 
-// FMS Stack
-const stack = new cdk.Stack(app, "FMSStack");
-new FMSStack(stack, "NestedFMSStack");
+// Common resource stack with nested default policy stack
+new CommonResourceStack(app, "CommonResourceStack");
 
 // Demo Stack
 new DemoStack(app, "DemoStack");

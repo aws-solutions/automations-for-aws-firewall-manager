@@ -50,32 +50,10 @@ mkdir -p $staging_dist_dir
 echo "------------------------------------------------------------------------------"
 echo "[Build] Build typescript microservices"
 echo "------------------------------------------------------------------------------"
-echo "cd $source_dir"
-cd $source_dir
+echo "cd $template_dir/../"
+cd $template_dir/../
+npm run build
 
-# build helper function
-echo "cd $source_dir/helper"
-cd $source_dir/helper
-echo "npm run build:all"
-npm run build:all
-
-# build pre-req-manager function
-echo "cd $source_dir/helper"
-cd $source_dir/preReqManager
-echo "npm run build:all"
-npm run build:all
-
-# build policy-manager function
-echo "cd $source_dir/policyManager"
-cd $source_dir/policyManager
-echo "npm run build:all"
-npm run build:all
-
-# build metrics-manager function
-echo "cd $source_dir/metricsManager"
-cd $source_dir/metricsManager
-echo "npm run build:all"
-npm run build:all
 
 echo "------------------------------------------------------------------------------"
 echo "[Init] Install dependencies for the cdk-solution-helper"
@@ -95,8 +73,8 @@ echo "npm i"
 npm i 
 
 # Run 'cdk synth' to generate raw solution outputs
-echo "cdk synth PreReqStack DemoStack--output=$staging_dist_dir"
-./node_modules/aws-cdk/bin/cdk synth PreReqStack DemoStack --output=$staging_dist_dir
+echo "./node_modules/aws-cdk/bin/cdk synth --output=$staging_dist_dir"
+./node_modules/aws-cdk/bin/cdk synth --output=$staging_dist_dir
 
 # Remove unnecessary output files
 echo "cd $staging_dist_dir"
@@ -113,14 +91,23 @@ echo "cp $staging_dist_dir/*.template.json $template_dist_dir/"
 cp $staging_dist_dir/*.template.json $template_dist_dir/
 rm *.template.json
 
+# Move policy_manifest to template_dist_dir
+cp $resource_dir/lib/policy_manifest.json $template_dist_dir/
+
 # Rename all *.template.json files to *.template
 echo "Rename all *.template.json to *.template"
 echo "copy templates and rename"
 for f in $template_dist_dir/*.template.json; 
 do 
-  if [[ $f == *"FMSStack"* ]]
+  if [[ $f == *"CommonResourceStack.template.json"* ]]
   then 
-    mv "$f" "$template_dist_dir/aws-centralized-waf-and-vpc-security-group-management.template"
+    mv "$f" "$template_dist_dir/aws-fms-automations.template"
+  elif [[ $f == *"ComplianceGeneratorStack"* ]]
+  then
+    mv "$f" "$template_dist_dir/aws-fms-compliance.template"
+  elif [[ $f == *"CommonResourceStackPolicy"* ]]
+  then
+    mv "$f" "$template_dist_dir/aws-fms-policy.template"
   elif [[ $f == *"PreReqStack"* ]]
   then
     mv "$f" "$template_dist_dir/aws-fms-prereq.template"
@@ -192,8 +179,8 @@ for i in `find . -mindepth 1 -maxdepth 1 -type f \( -iname "*.zip" \) -or -type 
     if [[ $fname != *".zip" ]]
     then
         # Zip the artifact
-        echo "zip -r $fname.zip $fname/*"
-        zip -r $fname.zip $fname
+        echo "zip -rj $fname.zip $fname/*"
+        zip -rj $fname.zip $fname
     fi
 
 # ... repeat until all source code artifacts are zipped      

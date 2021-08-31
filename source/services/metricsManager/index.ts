@@ -1,5 +1,5 @@
 /**
- *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *  Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance
  *  with the License. A copy of the License is located at
@@ -10,15 +10,15 @@
  *  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions
  *  and limitations under the License.
  */
+
 /**
  * @description
- * AWS Centralized WAF & Security Group Management
+ * AWS Firewall Manager Automations for AWS Organizations
  * Microservice to publish metrics to aws-solutions
  * @author aws-solutions
  */
 
 import got from "got";
-import moment from "moment";
 import { logger } from "./logger";
 interface IEvent {
   Records: [
@@ -26,8 +26,8 @@ interface IEvent {
       messageId: string;
       receiptHandle: string;
       body: string;
-      attributes: any;
-      messageAttributes: any;
+      attributes: { [key: string]: string };
+      messageAttributes: { [key: string]: string };
       md5OfBody: string;
       eventSource: "aws:sqs";
       eventSourceARN: string;
@@ -44,7 +44,10 @@ exports.handler = async (event: IEvent) => {
   const message = event.Records;
   const _message = JSON.parse(message[0].body);
   await delay(1000); // sleep for 1s
-  _message.TimeStamp = moment.utc().format("YYYY-MM-DD HH:mm:ss.S");
+  _message.TimeStamp = new Date()
+    .toISOString()
+    .replace("T", " ")
+    .replace("Z", ""); // Date and time instant in a java.sql.Timestamp compatible format
   try {
     await got(endpoint, {
       port: 443,

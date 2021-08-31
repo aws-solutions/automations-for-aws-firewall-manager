@@ -1,27 +1,25 @@
 {
-  "name": "metricsmanager",
-  "version": "1.0.0",
+  "name": "metrics-manager",
+  "version": "2.0.0",
   "description": "microservice to read sqs and publish metrics to aws-solutions",
   "main": "index.js",
   "scripts": {
-    "pretest": "npm i",
+    "pretest": "npm ci",
     "test": "echo \"no test\"",
-    "build:clean": "rm -rf ./node_modules && rm -rf ./dist && rm -f ./package-lock.json",
+    "build:clean": "rm -rf ./node_modules && rm -rf ./dist",
     "build:copy": "cp -r ./node_modules ./dist/node_modules",
     "build:ts": "./node_modules/typescript/bin/tsc --project ./tsconfig.json",
-    "build:install": "npm i",
+    "build:install": "npm ci",
     "watch": "tsc -w",
     "build:zip": "cd ./dist && zip -rq metricsManager.zip .",
     "build:deployment": "npm run build:ts && npm run build:zip",
     "build:all": "npm run build:clean && npm run build:install && npm run build:ts && npm prune --production && npm run build:copy && npm run build:zip"
   },
   "dependencies": {
-    "got": "^11.5.2",
-    "moment": "^2.27.0",
-    "winston": "^3.3.3"
+    "got": "~11.5.2",
+    "winston": "~3.3.3"
   },
   "devDependencies": {
-    "@types/moment": "^2.13.0",
     "@types/node": "^14.0.12",
     "ts-node": "^8.10.2",
     "typescript": "^4.0.2"

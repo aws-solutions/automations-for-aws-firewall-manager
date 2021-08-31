@@ -1,8 +1,9 @@
 # Test and Compiler files
 **test.json
+!policy_manifest.test.json
 **test.js
 
-# distribution folders
+# Distribution folders
 global-s3-assets
 regional-s3-assets
 open-source
@@ -16,10 +17,11 @@ npm-debug.log
 .scannerwork
 *.xml
 reports
+.DS_Store
 
 # Node dependencies
 node_modules
-package-lock.json
+
 
 # CDK asset staging directory
 .cdk.staging

@@ -41,6 +41,8 @@ module.exports = {
   // Indicates whether each individual test should be reported during the run
   verbose: true,
 
+  coverageReporters: ["text", "lcov"],
+
   // This option allows the use of a custom results processor.
   testResultsProcessor: "jest-sonar-reporter",
 };

@@ -13,6 +13,24 @@ resource_dir="$template_dir/../source/resources"
 source_dir="$template_dir/../source/services"
 
 echo "------------------------------------------------------------------------------"
+echo "[Pre-Test] build binaries"
+echo "------------------------------------------------------------------------------"
+cd $source_dir/preReqManager
+npm run build:all
+
+cd $source_dir/policyManager
+npm run build:all
+
+cd $source_dir/complianceGenerator
+npm run build:all
+
+cd $source_dir/helper
+npm run build:all
+
+cd $source_dir/metricsManager
+npm run build:all
+
+echo "------------------------------------------------------------------------------"
 echo "[Test] Resources"
 echo "------------------------------------------------------------------------------"
 cd $resource_dir
@@ -28,11 +46,4 @@ echo "--------------------------------------------------------------------------
 echo "[Test] policy-manager"
 echo "------------------------------------------------------------------------------"
 cd $source_dir/policyManager
-npm run test
-
-
-echo "------------------------------------------------------------------------------"
-echo "[Test] helper"
-echo "------------------------------------------------------------------------------"
-cd $source_dir/helper/
 npm run test

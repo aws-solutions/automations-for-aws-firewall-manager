@@ -52,7 +52,4 @@ module.exports = {
 
   // A list of paths to modules that run some code to configure or set up the testing environment
   setupFiles: ["./jest.setup.js"],
-
-  // This option allows the use of a custom results processor.
-  testResultsProcessor: "jest-sonar-reporter",
 };

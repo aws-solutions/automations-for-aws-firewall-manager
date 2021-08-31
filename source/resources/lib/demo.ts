@@ -1,5 +1,5 @@
 /**
- *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *  Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance
  *  with the License. A copy of the License is located at
@@ -11,19 +11,19 @@
  *  and limitations under the License.
  */
 
+import { App, CfnResource, Stack } from "@aws-cdk/core";
+import { Vpc, SecurityGroup, Peer, Port } from "@aws-cdk/aws-ec2";
+import manifest from "./solution_manifest.json";
+const {
+  CloudFrontToS3,
+} = require("@aws-solutions-constructs/aws-cloudfront-s3");
+
 /**
  * @description
  * This is Firewall Manager Demo construct
  * minimal resources for demo purpose ONLY
- * @author @aws-solutions
+ * @author aws-solutions
  */
-
-import { App, CfnResource, Stack } from "@aws-cdk/core";
-import { Vpc, SecurityGroup, Peer, Port } from "@aws-cdk/aws-ec2";
-import manifest from "./manifest.json";
-const {
-  CloudFrontToS3,
-} = require("@aws-solutions-constructs/aws-cloudfront-s3");
 
 export class DemoStack extends Stack {
   constructor(scope: App, id: string) {
@@ -32,8 +32,9 @@ export class DemoStack extends Stack {
     //=============================================================================================
     // Metadata
     //=============================================================================================
-    this.templateOptions.description = `(${manifest.demoSolutionId}) - The AWS CloudFormation template for deployment of the ${manifest.solutionName} demo resources. Version ${manifest.solutionVersion}`;
-    this.templateOptions.templateFormatVersion = manifest.templateVersion;
+    this.templateOptions.description = `(${manifest.solution.demoSolutionId}) - The AWS CloudFormation template for deployment of the ${manifest.solution.name} demo resources. Version ${manifest.solution.solutionVersion}`;
+    this.templateOptions.templateFormatVersion =
+      manifest.solution.templateVersion;
 
     //=============================================================================================
     // Resources

@@ -1,45 +1,47 @@
 {
   "name": "resources",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "cdk resources to provision needed infrastructure",
   "bin": {
     "app": "bin/app.js"
   },
   "scripts": {
-    "pretest": "npm i",
+    "pretest": "npm ci",
     "test": "./node_modules/jest/bin/jest.js --coverage ./__tests__"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^1.56.0",
+    "@aws-cdk/assert": "~1.98.0",
     "@types/jest": "^25.2.3",
     "@types/node": "10.17.5",
-    "aws-cdk": "^1.49.1",
+    "aws-cdk": "~1.98.0",
+    "jest": "^26.6.3",
     "jest-sonar-reporter": "^2.0.0",
-    "jest": "^25.5.0",
-    "ts-jest": "^25.3.1",
-    "ts-node": "^8.1.0",
+    "ts-jest": "^26.5.5",
+    "ts-node": "^9.1.1",
     "typescript": "^4.0.2"
   },
   "dependencies": {
-    "@aws-cdk/aws-dynamodb": "^1.49.1",
-    "@aws-cdk/aws-events": "^1.49.1",
-    "@aws-cdk/aws-events-targets": "^1.49.1",
-    "@aws-cdk/aws-iam": "^1.49.1",
-    "@aws-cdk/aws-logs": "^1.49.1",
-    "@aws-cdk/aws-sns": "^1.49.1",
-    "@aws-cdk/aws-sns-subscriptions": "^1.49.1",
-    "@aws-cdk/aws-sqs": "^1.49.1",
-    "@aws-cdk/aws-ssm": "^1.49.1",
-    "@aws-cdk/core": "^1.49.1",
-    "@aws-cdk/aws-ec2": "^1.49.1",
-    "@aws-solutions-constructs/aws-events-rule-lambda": "^1.56.0",
-    "@aws-solutions-constructs/aws-lambda-dynamodb": "^1.56.0",
-    "@aws-solutions-constructs/aws-lambda-sns": "^1.56.0",
-    "@aws-solutions-constructs/aws-cloudfront-s3": "^1.56.0"
+    "@aws-cdk/aws-dynamodb": "~1.98.0",
+    "@aws-cdk/aws-ec2": "~1.98.0",
+    "@aws-cdk/aws-events": "~1.98.0",
+    "@aws-cdk/aws-events-targets": "~1.98.0",
+    "@aws-cdk/aws-iam": "~1.98.0",
+    "@aws-cdk/aws-kms": "~1.98.0",
+    "@aws-cdk/aws-lambda-event-sources": "~1.98.0",
+    "@aws-cdk/aws-logs": "~1.98.0",
+    "@aws-cdk/aws-s3": "~1.98.0",
+    "@aws-cdk/aws-s3-deployment": "~1.98.0",
+    "@aws-cdk/aws-sns": "~1.98.0",
+    "@aws-cdk/aws-sqs": "~1.98.0",
+    "@aws-cdk/aws-ssm": "~1.98.0",
+    "@aws-cdk/core": "~1.98.0",
+    "@aws-cdk/custom-resources": "~1.98.0",
+    "@aws-solutions-constructs/aws-cloudfront-s3": "~1.98.0",
+    "@aws-solutions-constructs/aws-events-rule-lambda": "~1.98.0"
   },
   "jestSonar": {
-    "reportPath": "../reports",
-    "reportFile": "resources-reporter.xml",
+    "reportPath": "coverage",
+    "reportFile": "cdk-resources-test-report.xml",
     "indent": 4
   }
 }

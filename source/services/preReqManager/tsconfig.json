@@ -2,8 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "declaration": false,
-    "noImplicitAny": true,
     "noEmit": false
-  }
+  },
+  "exclude": ["__tests__/**/*"]
 }

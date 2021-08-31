@@ -1,5 +1,5 @@
 /**
- *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *  Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance
  *  with the License. A copy of the License is located at
@@ -10,18 +10,18 @@
  *  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions
  *  and limitations under the License.
  */
+
 /**
  * @description
- * AWS Centralized WAF & Security Group Automation
+ * AWS Firewall Manager Automations for AWS Organizations
  * Microservice to validate and install pre-requisites for the solution
- * This must be deployed in Organization Master account
+ * This must be deployed in Organization Management account
  * @author aws-solutions
  */
 
 import { PreReqManager } from "./lib/preReqManager";
 import { logger } from "./lib/common/logger";
 import { Metrics } from "./lib/common/metrics";
-import moment from "moment";
 
 interface IEvent {
   RequestType: string;
@@ -30,30 +30,24 @@ interface IEvent {
   RequestId: string;
   ResourceType: string;
   LogicalResourceId: string;
-  ResourceProperties: any;
+  ResourceProperties: { [key: string]: string };
   PhysicalResourceId?: string;
 }
 /**
  * @description Lambda event handler for pre-requisite manager
  * @param {IEvent} event - invoking event
  */
-exports.handler = async (event: IEvent, context: any) => {
+exports.handler = async (event: IEvent, context: { [key: string]: string }) => {
   logger.debug({
     label: "PreRegManager",
     message: `event: ${JSON.stringify(event)}`,
   });
 
-  let responseData: any = {
+  let responseData: { [key: string]: string } = {
     Data: "NOV",
   };
   let status = "SUCCESS";
   const properties = event.ResourceProperties;
-  const metric = {
-    Solution: properties.SolutionId,
-    UUID: properties.SolutionUuid,
-    TimeStamp: "",
-    Data: {},
-  };
 
   // pre-req checker custom resource CREATE event
   if (event.ResourceType === "Custom::PreReqChecker") {
@@ -67,7 +61,7 @@ exports.handler = async (event: IEvent, context: any) => {
     if (event.RequestType === "Create" || event.RequestType === "Update") {
       try {
         await _pm.orgFeatureCheck(); // check for all features enabled
-        await _pm.orgMasterCheck(); // check for deployment in master
+        await _pm.orgMgmtCheck(); // check for deployment in org management account
         await _pm.fmsAdminCheck(); // configure fms admin
         await _pm.enableTrustedAccess(); // enable trusted access
 
@@ -80,29 +74,7 @@ exports.handler = async (event: IEvent, context: any) => {
             message: `skipping AWS Config check`,
           });
         } else if (properties.EnableConfig === "Yes") {
-          let retry = true;
-          let retryCount = 0;
-          while (retry && retryCount < 10) {
-            await delay(1000 * Math.random());
-            await _pm
-              .enableConfig()
-              .then((_) => {
-                retry = false;
-              })
-              .catch((_) => {
-                retryCount++;
-              }); // enable config in organization
-          }
-          if (retryCount === 10)
-            logger.warn({
-              label: "PreReqManager",
-              message: "stack set instance creation failed",
-            });
-          else
-            logger.debug({
-              label: "PreReqManager",
-              message: "stack set instance creation success",
-            });
+          await _pm.enableConfig(); // enable config in organization
         } else if (
           properties.EnableConfig === "No" &&
           event.RequestType === "Update"
@@ -123,11 +95,18 @@ exports.handler = async (event: IEvent, context: any) => {
 
         // send Metrics
         if (process.env.SEND_METRIC === "Yes") {
-          metric.TimeStamp = moment.utc().format("YYYY-MM-DD HH:mm:ss.S");
-          metric.Data = {
-            Event: "PreReqsInstalled",
-            Stack: "PreReqStack",
-            Version: properties.SolutionVersion,
+          const metric = {
+            Solution: properties.SolutionId,
+            UUID: properties.SolutionUuid,
+            TimeStamp: new Date()
+              .toISOString()
+              .replace("T", " ")
+              .replace("Z", ""),
+            Data: {
+              Event: "PreReqsInstalled",
+              Stack: "PreReqStack",
+              Version: properties.SolutionVersion,
+            },
           };
           await Metrics.sendAnonymousMetric(
             <string>process.env.METRICS_ENDPOINT,
@@ -135,16 +114,27 @@ exports.handler = async (event: IEvent, context: any) => {
           );
         }
         responseData = {
-          PreReqCheck: true,
+          PreReqCheck: "true",
         };
       } catch (e) {
+        logger.error({
+          label: "PreReqManager",
+          message: e.message,
+        });
         // send Metrics
         if (process.env.SEND_METRIC === "Yes") {
-          metric.TimeStamp = moment.utc().format("YYYY-MM-DD HH:mm:ss.S");
-          metric.Data = {
-            Event: "PreReqsInstallFailed",
-            Stack: "PreReqStack",
-            Version: properties.SolutionVersion,
+          const metric = {
+            Solution: properties.SolutionId,
+            UUID: properties.SolutionUuid,
+            TimeStamp: new Date()
+              .toISOString()
+              .replace("T", " ")
+              .replace("Z", ""),
+            Data: {
+              Event: "PreReqsInstallFailed",
+              Stack: "PreReqStack",
+              Version: properties.SolutionVersion,
+            },
           };
           await Metrics.sendAnonymousMetric(
             <string>process.env.METRICS_ENDPOINT,
@@ -189,7 +179,7 @@ const sendResponse = async (
   event: IEvent,
   logStreamName: string,
   responseStatus: string,
-  responseData: any
+  responseData: { [key: string]: string }
 ) => {
   const responseBody = {
     Status: responseStatus,
@@ -215,11 +205,3 @@ const sendResponse = async (
     throw new Error(responseBody.Data.Error);
   } else return responseBody;
 };
-
-/**
- * @description sleep function
- * @param {number} ms - delay in milliseconds
- */
-async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}

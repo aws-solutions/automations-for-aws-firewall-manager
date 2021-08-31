@@ -11,10 +11,10 @@ module.exports = {
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
     global: {
-      branches: 50,
-      functions: 50,
-      lines: 50,
-      statements: 50,
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
     },
   },
 
@@ -52,6 +52,8 @@ module.exports = {
 
   // A list of paths to modules that run some code to configure or set up the testing environment
   setupFiles: ["./jest.setup.js"],
+
+  coverageReporters: ["text", "lcov"],
 
   // This option allows the use of a custom results processor.
   testResultsProcessor: "jest-sonar-reporter",

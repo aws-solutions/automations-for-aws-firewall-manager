@@ -1,5 +1,5 @@
 /**
- *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *  Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance
  *  with the License. A copy of the License is located at
@@ -9,12 +9,6 @@
  *  or in the 'license' file accompanying this file. This file is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES
  *  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions
  *  and limitations under the License.
- */
-/**
- * @description
- * This is Master Stack for AWS Centralized WAF & Security Group Automations
- * The stack should be deployed in Organization master account
- * @author @aws-solutions
  */
 
 import {
@@ -26,24 +20,20 @@ import {
   CfnMapping,
   CfnOutput,
   Duration,
-  CfnCondition,
-  Fn,
-  NestedStack,
-  CfnResource,
 } from "@aws-cdk/core";
 import { Provider } from "@aws-cdk/custom-resources";
 import { Policy, Effect, PolicyStatement, CfnPolicy } from "@aws-cdk/aws-iam";
 import { Code, Runtime, Function, CfnFunction } from "@aws-cdk/aws-lambda";
-import { FMSStack } from "./fms";
-import manifest from "./manifest.json";
+import * as path from "path";
+import manifest from "./solution_manifest.json";
+import { LOG_LEVEL } from "./exports";
 
-enum LogLevel {
-  ERROR = "error",
-  WARN = "warn",
-  INFO = "info",
-  DEBUG = "debug",
-}
-
+/**
+ * @description
+ * This is Pre-Req Stack for AWS Firewall Manager Automations for AWS Organizations
+ * The stack should be deployed in Organization management account
+ * @author aws-solutions
+ */
 export class PreReqStack extends Stack {
   readonly account: string;
   readonly region: string;
@@ -98,8 +88,9 @@ export class PreReqStack extends Stack {
         },
       },
     };
-    this.templateOptions.description = `(${manifest.secondarySolutionId}) - The AWS CloudFormation template for deployment of the ${manifest.solutionName}. Version ${manifest.solutionVersion}`;
-    this.templateOptions.templateFormatVersion = manifest.templateVersion;
+    this.templateOptions.description = `(${manifest.solution.secondarySolutionId}) - The AWS CloudFormation template for deployment of the ${manifest.solution.name}. Version ${manifest.solution.solutionVersion}`;
+    this.templateOptions.templateFormatVersion =
+      manifest.solution.templateVersion;
 
     //=============================================================================================
     // Map
@@ -107,23 +98,16 @@ export class PreReqStack extends Stack {
     const map = new CfnMapping(this, "FMSMap", {
       mapping: {
         Metric: {
-          SendAnonymousMetric: manifest.sendMetric,
-          MetricsEndpoint: manifest.metricsEndpoint, // aws-solutions metrics endpoint
+          SendAnonymousMetric: manifest.solution.sendMetric,
+          MetricsEndpoint: manifest.solution.metricsEndpoint, // aws-solutions metrics endpoint
         },
         Solution: {
-          SolutionId: manifest.secondarySolutionId,
-          SolutionVersion: manifest.solutionVersion,
-          GlobalStackSetName: manifest.globalStackSetName,
-          RegionalStackSetName: manifest.regionalStackSetName,
+          SolutionId: manifest.solution.secondarySolutionId,
+          SolutionVersion: manifest.solution.solutionVersion,
+          GlobalStackSetName: manifest.prereqStack.globalStackSetName,
+          RegionalStackSetName: manifest.prereqStack.regionalStackSetName,
         },
       },
-    });
-
-    //=============================================================================================
-    // Condition
-    //=============================================================================================
-    const accountCheck = new CfnCondition(this, "accountCheck", {
-      expression: Fn.conditionEquals(fmsAdmin.valueAsString, this.account),
     });
 
     //=============================================================================================
@@ -135,16 +119,21 @@ export class PreReqStack extends Stack {
      */
     const helperFunction: Function = new Function(this, "FMSHelperFunction", {
       description: "DO NOT DELETE - FMS helper function",
-      runtime: Runtime.NODEJS_12_X,
+      runtime: Runtime.NODEJS_14_X,
       code: Code.fromAsset(
-        "../../source/services/helper/dist/helperFunction.zip"
+        `${path.dirname(__dirname)}/../services/helper/dist/helperFunction.zip`
       ),
       handler: "index.handler",
-      memorySize: 512,
+      memorySize: 128,
+      timeout: Duration.seconds(5),
       environment: {
         METRICS_ENDPOINT: map.findInMap("Metric", "MetricsEndpoint"),
         SEND_METRIC: map.findInMap("Metric", "SendAnonymousMetric"),
-        LOG_LEVEL: LogLevel.INFO, //change as needed
+        LOG_LEVEL: LOG_LEVEL.INFO, //change as needed
+        CUSTOM_SDK_USER_AGENT: `AwsSolution/${map.findInMap(
+          "Solution",
+          "SolutionId"
+        )}/${map.findInMap("Solution", "SolutionVersion")}`,
       },
     });
 
@@ -152,7 +141,7 @@ export class PreReqStack extends Stack {
      * @description custom resource for helper functions
      * @type {Provider}
      */
-    const helperProvider: Provider = new Provider(this, "helperProvider", {
+    const helperProvider: Provider = new Provider(this, "HelperProvider", {
       onEventHandler: helperFunction,
     });
 
@@ -182,31 +171,41 @@ export class PreReqStack extends Stack {
      * @description lambda backed custom resource to validate and install pre-reqs
      * @type {Function}
      */
-    const preReqManager: Function = new Function(this, "preReqManager", {
-      description:
-        "Function to validate and install pre-requisites for the FMS solution",
-      runtime: Runtime.NODEJS_12_X,
-      code: Code.fromAsset(
-        "../../source/services/preReqManager/dist/preReqManager.zip"
-      ),
-      handler: "index.handler",
-      memorySize: 512,
-      timeout: Duration.minutes(15),
-      environment: {
-        METRICS_ENDPOINT: map.findInMap("Metric", "MetricsEndpoint"),
-        SEND_METRIC: map.findInMap("Metric", "SendAnonymousMetric"),
-        LOG_LEVEL: LogLevel.INFO, //change as needed
-      },
-    });
+    const preReqManager: Function = new Function(
+      this,
+      "PreReqManagerFunction",
+      {
+        description:
+          "Function to validate and install pre-requisites for the FMS solution",
+        runtime: Runtime.NODEJS_14_X,
+        code: Code.fromAsset(
+          `${path.dirname(
+            __dirname
+          )}/../services/preReqManager/dist/preReqManager.zip`
+        ),
+        handler: "index.handler",
+        memorySize: 256,
+        timeout: Duration.seconds(15),
+        environment: {
+          METRICS_ENDPOINT: map.findInMap("Metric", "MetricsEndpoint"),
+          SEND_METRIC: map.findInMap("Metric", "SendAnonymousMetric"),
+          LOG_LEVEL: LOG_LEVEL.INFO, //change as needed
+          CUSTOM_SDK_USER_AGENT: `AwsSolution/${map.findInMap(
+            "Solution",
+            "SolutionId"
+          )}/${map.findInMap("Solution", "SolutionVersion")}`,
+        },
+      }
+    );
 
     if (!preReqManager.role) throw new Error("no pre req lambda role found");
-    const po: Policy = new Policy(this, "preReqManagerPolicy", {
-      policyName: manifest.prereqPolicy,
+    const po: Policy = new Policy(this, "PreReqManagerPolicy", {
+      policyName: manifest.prereqStack.prereqPolicy,
       roles: [preReqManager.role],
     });
     const po0: PolicyStatement = new PolicyStatement({
       effect: Effect.ALLOW,
-      sid: "VisualEditor0",
+      sid: "PreReqWrite01",
       actions: [
         "cloudformation:CreateStackInstances",
         "cloudformation:DeleteStackInstances",
@@ -232,16 +231,19 @@ export class PreReqStack extends Stack {
     });
     const po1: PolicyStatement = new PolicyStatement({
       effect: Effect.ALLOW,
-      sid: "VisualEditor1",
+      sid: "PreReqWrite02",
       actions: [
         "fms:AssociateAdminAccount",
         "organizations:ListRoots",
         "organizations:EnableAWSServiceAccess",
         "organizations:DescribeAccount",
         "organizations:DescribeOrganization",
+        "organizations:RegisterDelegatedAdministrator",
+        "iam:CreateServiceLinkedRole",
         "ec2:DescribeRegions",
         "fms:GetAdminAccount",
         "cloudformation:CreateStackSet",
+        "ram:EnableSharingWithAwsOrganization",
       ],
       resources: ["*"],
     });
@@ -256,7 +258,7 @@ export class PreReqStack extends Stack {
       onEventHandler: preReqManager,
     });
 
-    const prereqManager = new CustomResource(this, "PreReqManager", {
+    new CustomResource(this, "PreReqManagerCR", {
       serviceToken: preReqProvider.serviceToken,
       resourceType: "Custom::PreReqChecker",
       properties: {
@@ -272,19 +274,20 @@ export class PreReqStack extends Stack {
       },
     });
 
-    /**
-     * @description FMS stack
-     * @type {NestedStack}
-     */
-    const fms: NestedStack = new FMSStack(this, "FMSStack");
-    fms.nestedStackResource!.cfnOptions.condition = accountCheck;
-    fms.nestedStackResource!.addDependsOn(
-      prereqManager.node.defaultChild as CfnResource
-    );
-
     //=============================================================================================
     // cfn_nag suppress rules
     //=============================================================================================
+    const cfn_nag_w89_w92 = [
+      {
+        id: "W89",
+        reason:
+          "Not a valid use case for Lambda functions to be deployed inside a VPC",
+      },
+      {
+        id: "W92",
+        reason: "Lambda ReservedConcurrentExecutions not needed",
+      },
+    ];
     const prRole = po.node.findChild("Resource") as CfnPolicy;
     prRole.cfnOptions.metadata = {
       cfn_nag: {
@@ -307,6 +310,7 @@ export class PreReqStack extends Stack {
             reason:
               "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole",
           },
+          ...cfn_nag_w89_w92,
         ],
       },
     };
@@ -320,6 +324,7 @@ export class PreReqStack extends Stack {
             reason:
               "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole",
           },
+          ...cfn_nag_w89_w92,
         ],
       },
     };
@@ -335,6 +340,7 @@ export class PreReqStack extends Stack {
             reason:
               "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole",
           },
+          ...cfn_nag_w89_w92,
         ],
       },
     };
@@ -350,6 +356,7 @@ export class PreReqStack extends Stack {
             reason:
               "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole",
           },
+          ...cfn_nag_w89_w92,
         ],
       },
     };

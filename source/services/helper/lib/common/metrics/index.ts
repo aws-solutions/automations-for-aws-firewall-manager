@@ -1,5 +1,5 @@
 /**
- *  Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ *  Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance
  *  with the License. A copy of the License is located at
@@ -10,6 +10,7 @@
  *  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions
  *  and limitations under the License.
  */
+
 import got from "got";
 import { logger } from "../logger/index";
 /**
@@ -21,7 +22,15 @@ export class Metrics {
    * Sends anonymous metric
    * @param {object} metric - metric JSON data
    */
-  static async sendAnonymousMetric(endpoint: string, metric: any) {
+  static sendAnonymousMetric = async (
+    endpoint: string,
+    metric: {
+      Solution: string;
+      UUID: string;
+      TimeStamp: string;
+      Data: { [key: string]: string };
+    }
+  ): Promise<string> => {
     logger.debug({
       label: "metrics/sendAnonymousMetric",
       message: `metrics endpoint: ${endpoint}`,
@@ -54,5 +63,5 @@ export class Metrics {
       });
       return `Error occurred while sending metric`;
     }
-  }
+  };
 }
