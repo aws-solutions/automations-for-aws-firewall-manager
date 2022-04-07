@@ -28,5 +28,7 @@ node_modules
 cdk.out
 __snapshots__
 
+# IDE project files
+.idea
 
 

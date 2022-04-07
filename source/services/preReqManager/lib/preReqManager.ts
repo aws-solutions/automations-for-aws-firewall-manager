@@ -1,21 +1,6 @@
-/**
- *  Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance
- *  with the License. A copy of the License is located at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  or in the 'license' file accompanying this file. This file is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES
- *  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions
- *  and limitations under the License.
- */
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
-import {
-  AssociateAdminAccountCommand,
-  FMSClient,
-  GetAdminAccountCommand,
-} from "@aws-sdk/client-fms";
 import { DescribeRegionsCommand, EC2Client } from "@aws-sdk/client-ec2";
 import {
   DescribeOrganizationCommand,
@@ -37,11 +22,8 @@ import {
   EnableSharingWithAwsOrganizationCommand,
   RAMClient,
 } from "@aws-sdk/client-ram";
-interface IPreReq {
-  /**
-   * @description AccountId for FMS Admin
-   */
-  fmsAdmin: string;
+
+export interface IPreReq {
   /**
    * @description AccountId where the function is deployed
    */
@@ -66,22 +48,27 @@ interface IPreReq {
  */
 
 export class PreReqManager {
-  readonly fmsAdmin: string;
   readonly accountId: string;
   readonly region: string;
   readonly globalStackSetName: string;
   readonly regionalStackSetName: string;
+  readonly organizationsClient: OrganizationsClient;
 
   /**
    * @constructor
    * @param {IPreReq} props
    */
   constructor(props: IPreReq) {
-    this.fmsAdmin = props.fmsAdmin;
     this.accountId = props.accountId;
     this.region = props.region;
     this.globalStackSetName = props.globalStackSetName;
     this.regionalStackSetName = props.regionalStackSetName;
+
+    this.organizationsClient = new OrganizationsClient({
+      region: dataplane,
+      customUserAgent,
+      maxAttempts: 12,
+    });
   }
 
   /**
@@ -128,38 +115,38 @@ export class PreReqManager {
       label: "PreRegManager/enableTrustedAccess",
       message: `enabling trusted access for FMS, RAM and StackSets`,
     });
-    const organization = new OrganizationsClient({
-      region: dataplane,
-      customUserAgent,
-    });
     try {
       // enable trusted access for fms
-      await organization.send(
+      await this.organizationsClient.send(
         new EnableAWSServiceAccessCommand({
           ServicePrincipal: "fms.amazonaws.com",
         })
       );
 
       // enable trusted access for stack sets
-      await organization.send(
+      await this.organizationsClient.send(
         new EnableAWSServiceAccessCommand({
           ServicePrincipal: "member.org.stacksets.cloudformation.amazonaws.com",
         })
       );
 
       // enable trusted access for resource access manager
-      await organization.send(
+      await this.organizationsClient.send(
         new EnableAWSServiceAccessCommand({
           ServicePrincipal: "ram.amazonaws.com",
         })
       );
 
-      const ram = new RAMClient({ region: dataplane, customUserAgent });
+      const ram = new RAMClient({
+        region: dataplane,
+        customUserAgent,
+        maxAttempts: 3,
+      });
       await ram.send(new EnableSharingWithAwsOrganizationCommand({}));
 
       logger.info({
         label: "PreRegManager/enableTrustedAccess",
-        message: `trusted access enabled for Organization services (FMS, RAM & StackSets) needed by the solution`,
+        message: `trusted access was successfully enabled for Organization services that are needed by the solution (FMS, RAM & StackSets)`,
       });
     } catch (e) {
       logger.error({
@@ -171,142 +158,90 @@ export class PreReqManager {
   };
 
   /**
-   * @description validate the organization management account
+   * @description throw error if the current account is not the organization management account
    */
-  orgMgmtCheck = async (): Promise<void> => {
+  throwIfNotOrgManagementAccount = async (): Promise<void> => {
+    const loggerLabel = "PreRegManager/throwIfNotOrgManagementAccount";
     logger.debug({
-      label: "PreRegManager/orgMgmtCheck",
+      label: loggerLabel,
       message: `initiating organization management check`,
     });
-    const organization = new OrganizationsClient({
-      customUserAgent,
-      region: dataplane,
-    });
+
+    let response;
     try {
-      const resp = await organization.send(new DescribeOrganizationCommand({}));
+      response = await this.organizationsClient.send(
+        new DescribeOrganizationCommand({})
+      );
       logger.debug({
-        label: "PreRegManager/orgMgmtCheck",
-        message: `organization management check: ${resp}`,
+        label: loggerLabel,
+        message: `organization management check: ${response}`,
       });
-      if (
-        resp.Organization &&
-        resp.Organization.MasterAccountId !== this.accountId
-      ) {
-        const _m =
-          "The template must be deployed in Organization Management account";
-        logger.error({
-          label: "PreRegManager/orgMgmtCheck",
-          message: `organization management check error: ${_m}`,
-        });
-        throw new Error(_m);
-      }
     } catch (e) {
       logger.error({
-        label: "PreRegManager/orgMgmtCheck",
+        label: loggerLabel,
         message: `organization management check error: ${e.message}`,
       });
       throw new Error(e.message);
     }
+
+    if (
+      response.Organization &&
+      response.Organization.MasterAccountId !== this.accountId
+    ) {
+      const _m =
+        "The template must be deployed in Organization Management account";
+      logger.error({
+        label: loggerLabel,
+        message: `organization management check error: ${_m}`,
+      });
+      throw new Error(_m);
+    }
+
     logger.info({
-      label: "PreRegManager/orgMgmtCheck",
+      label: loggerLabel,
       message: `organization management check success`,
     });
   };
 
   /**
-   * @description validate the organization full features is enabled
+   * @description throw error unless the organization full features is enabled
    */
-  orgFeatureCheck = async (): Promise<void> => {
+  throwIfOrgLacksFullFeatures = async (): Promise<void> => {
+    const loggerLabel = "PreRegManager/throwIfOrgLacksFullFeatures";
     logger.debug({
-      label: "PreRegManager/orgFeatureCheck",
+      label: loggerLabel,
       message: `initiating organization feature check`,
     });
-    const organization = new OrganizationsClient({
-      customUserAgent,
-      region: dataplane,
-    });
 
+    let response;
     try {
-      const resp = await organization.send(new DescribeOrganizationCommand({}));
+      response = await this.organizationsClient.send(
+        new DescribeOrganizationCommand({})
+      );
       logger.debug({
-        label: "PreRegManager/orgFeatureCheck",
-        message: `organization feature check: ${JSON.stringify(resp)}`,
+        label: loggerLabel,
+        message: `organization feature check: ${JSON.stringify(response)}`,
       });
-      if (resp.Organization && resp.Organization.FeatureSet !== "ALL") {
-        const _m = "Organization must be set with full-features";
-        logger.error({
-          label: "PreRegManager/orgFeatureCheck",
-          message: `organization feature check error: ${_m}`,
-        });
-        throw new Error(_m);
-      }
     } catch (e) {
       logger.error({
-        label: "PreRegManager/orgFeatureCheck",
+        label: loggerLabel,
         message: `organization feature check error: ${e.message}`,
       });
       throw new Error(`${e.message}`);
     }
-    logger.info({
-      label: "PreRegManager/orgFeatureCheck",
-      message: `organization feature pre-req success`,
-    });
-  };
 
-  /**
-   * @description validate the fms admin account and set up if no fms admin exists.
-   * fms admin can only be set from organization management account
-   */
-  fmsAdminCheck = async (): Promise<void> => {
-    logger.debug({
-      label: "PreRegManager/fmsAdminCheck",
-      message: `initiating fms admin check`,
-    });
-    const fms = new FMSClient({
-      customUserAgent,
-      region: dataplane,
-    });
-    try {
-      const resp = await fms.send(new GetAdminAccountCommand({}));
-      logger.debug({
-        label: "PreRegManager/fmsAdminCheck",
-        message: `fms admin check: ${JSON.stringify(resp)}`,
+    if (response.Organization && response.Organization.FeatureSet !== "ALL") {
+      const _m = "Organization must be set with full-features";
+      logger.error({
+        label: loggerLabel,
+        message: `organization feature check error: ${_m}`,
       });
-
-      if (resp.AdminAccount && resp.AdminAccount === this.fmsAdmin) {
-        logger.debug({
-          label: "PreRegManager/fmsAdminCheck",
-          message: `fms admin already set up`,
-        });
-      } else if (resp.AdminAccount && resp.AdminAccount !== this.fmsAdmin) {
-        const _m =
-          "provided fms admin account does not match with existing fms admin";
-        logger.error({
-          label: "PreRegManager/fmsAdminCheck",
-          message: _m,
-        });
-        throw new Error(_m);
-      }
-    } catch (e) {
-      if (e.name === "ResourceNotFoundException") {
-        logger.debug({
-          label: "PreRegManager/fmsAdminCheck",
-          message: `associating ${this.fmsAdmin} as fms admin`,
-        });
-        await fms.send(
-          new AssociateAdminAccountCommand({ AdminAccount: this.fmsAdmin })
-        );
-      } else {
-        logger.error({
-          label: "PreRegManager/fmsAdminCheck",
-          message: `fms admin check error: ${e.message}`,
-        });
-        throw new Error(e.message);
-      }
+      throw new Error(_m);
     }
+
     logger.info({
-      label: "PreRegManager/fmsAdminCheck",
-      message: `organization fms admin pre-req success`,
+      label: loggerLabel,
+      message: `organization feature pre-req success`,
     });
   };
 
@@ -398,14 +333,14 @@ export class PreReqManager {
         .then(() => {
           logger.info({
             label: "PreReqManager/enableConfig",
-            message: `stack set created for ${params.StackSetName}`,
+            message: `regional stack set created for ${params.StackSetName}`,
           });
         })
         .catch((e: { name: string; message: string | undefined }) => {
           if (e.name === "NameAlreadyExistsException") {
             logger.warn({
               label: "PreReqManager/enableConfig",
-              message: `${params.StackSetName} stack set already exists`,
+              message: `${params.StackSetName} regional stack set already exists`,
             });
           } else throw new Error(e.message);
         });
@@ -463,11 +398,12 @@ export class PreReqManager {
   };
 
   /**
-   * @description enable Config in all accounts
+   * @description delete global and regional stack instances
    */
   deleteConfig = async (): Promise<void> => {
+    const loggerLabel = "PreReqManager/deleteConfig";
     logger.debug({
-      label: "PreRegManager/enableConfig",
+      label: loggerLabel,
       message: `initiating aws config delete`,
     });
     const cloudformation = new CloudFormationClient({
@@ -494,7 +430,7 @@ export class PreReqManager {
         )
         .then(() => {
           logger.info({
-            label: "PreReqManager/deleteConfig",
+            label: loggerLabel,
             message: `delete initiated on ${this.globalStackSetName} stack set instances`,
           });
         })
@@ -558,12 +494,7 @@ export class PreReqManager {
    */
   private async getOrgRoot() {
     try {
-      const organization = new OrganizationsClient({
-        region: dataplane,
-        customUserAgent,
-      });
-
-      const _ro: ListRootsCommandOutput = await organization.send(
+      const _ro: ListRootsCommandOutput = await this.organizationsClient.send(
         new ListRootsCommand({})
       );
       logger.debug({
