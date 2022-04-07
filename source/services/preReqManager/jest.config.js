@@ -8,6 +8,16 @@ module.exports = {
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: ["/node_modules/"],
 
+  // An object that configures minimum threshold enforcement for coverage results
+  coverageThreshold: {
+    global: {
+      branches: 50,
+      functions: 50,
+      lines: 50,
+      statements: 50,
+    },
+  },
+
   // An array of directory names to be searched recursively up from the requiring module's location
   moduleDirectories: ["node_modules"],
 
@@ -33,15 +43,13 @@ module.exports = {
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [
-    "**.ts",
-    "!./__tests__/*",
+    "./lib/*",
+    "!./lib/common/*",
+    "!**.js",
+    "!**/*.d.ts",
+    "!**/*.json",
   ],
 
   // A list of paths to modules that run some code to configure or set up the testing environment
   setupFiles: ["./jest.setup.js"],
-
-  coverageReporters: ["text", "lcov"],
-
-  // This option allows the use of a custom results processor.
-  testResultsProcessor: "jest-sonar-reporter",
 };

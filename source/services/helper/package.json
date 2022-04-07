@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "npm ci",
-    "test": "./node_modules/jest/bin/jest.js --coverage ./__tests__",
+    "test": "echo \"nothing to do\"",
     "build:clean": "rm -rf ./node_modules && rm -rf ./dist",
     "build:copy": "cp -r ./node_modules ./dist/node_modules",
     "build:ts": "./node_modules/typescript/bin/tsc --project ./tsconfig.json",
@@ -24,14 +24,6 @@
   },
   "devDependencies": {
     "@types/uuid": "^8.0.0",
-    "@types/jest": "~26.0.1",
-    "@types/node": "^14.0.23",
-    "jest": "^26.0.1",
-    "jest-sonar-reporter": "^2.0.0",
-    "ts-jest": "^26.1.0",
     "typescript": "^4.0.2"
-  },
-  "jestSonar": {
-    "reportPath": "coverage"
   }
 }

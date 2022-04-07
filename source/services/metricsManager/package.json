@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "npm ci",
-    "test": "LOG_LEVEL=none ./node_modules/jest/bin/jest.js --coverage ./__tests__",
+    "test": "echo \"no test\"",
     "build:clean": "rm -rf ./node_modules && rm -rf ./dist",
     "build:copy": "cp -r ./node_modules ./dist/node_modules",
     "build:ts": "./node_modules/typescript/bin/tsc --project ./tsconfig.json",
@@ -20,16 +20,10 @@
     "winston": "~3.3.3"
   },
   "devDependencies": {
-    "@types/jest": "~26.0.1",
-    "@types/node": "^14.0.23",
-    "jest": "^26.0.1",
-    "jest-sonar-reporter": "^2.0.0",
-    "ts-jest": "^26.1.0",
+    "@types/node": "^14.0.12",
+    "ts-node": "^8.10.2",
     "typescript": "^4.0.2"
   },
   "author": "aws-solutions",
-  "license": "Apache-2.0",
-  "jestSonar": {
-    "reportPath": "coverage"
-  }
+  "license": "Apache-2.0"
 }
