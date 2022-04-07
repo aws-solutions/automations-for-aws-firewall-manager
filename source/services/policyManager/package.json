@@ -40,6 +40,8 @@
     "typescript": "^4.0.2"
   },
   "jestSonar": {
-    "reportPath": "coverage"
+    "reportPath": "coverage",
+    "reportFile": "policyManager-test-report.xml",
+    "indent": 4
   }
 }

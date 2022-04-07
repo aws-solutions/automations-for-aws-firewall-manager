@@ -35,8 +35,5 @@
     "csv-writer": "~1.6.0",
     "winston": "~3.3.3",
     "got": "~11.5.2"
-  },
-  "jestSonar": {
-    "reportPath": "coverage"
   }
 }

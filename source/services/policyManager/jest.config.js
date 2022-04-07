@@ -43,8 +43,11 @@ module.exports = {
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [
-    "**.ts",
-    "!./__tests__/*",
+    "./lib/*",
+    "!./lib/common/*",
+    "!**.js",
+    "!**/*.d.ts",
+    "!**/*.json",
   ],
 
   // A list of paths to modules that run some code to configure or set up the testing environment
