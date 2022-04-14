@@ -1,0 +1,987 @@
+{
+  "Description": "(SO0134) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.1",
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Do you want to generate compliance reports for your FMS policies?"
+          },
+          "Parameters": [
+            "DeployComplianceGenerator"
+          ]
+        }
+      ],
+      "ParameterLabels": {
+        "DeployComplianceGenerator": {
+          "default": "Compliance Reporting"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "DeployComplianceGenerator": {
+      "Type": "String",
+      "Default": "Yes",
+      "AllowedValues": [
+        "Yes",
+        "No"
+      ]
+    }
+  },
+  "Mappings": {
+    "CommonResourceStackMap": {
+      "Metric": {
+        "SendAnonymousMetric": "Yes",
+        "MetricsEndpoint": "https://metrics.awssolutionsbuilder.com/generic"
+      },
+      "Solution": {
+        "SolutionId": "SO0134",
+        "SolutionVersion": "v2.0.1"
+      }
+    }
+  },
+  "Conditions": {
+    "reportingCheck": {
+      "Fn::Equals": [
+        {
+          "Ref": "DeployComplianceGenerator"
+        },
+        "Yes"
+      ]
+    },
+    "CDKMetadataAvailable": {
+      "Fn::Or": [
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "af-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ca-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-northwest-1"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-3"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "sa-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-2"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-west-2"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "HelperFunctionServiceRole6B43B152": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/HelperFunction/ServiceRole/Resource"
+      }
+    },
+    "HelperFunctionAD0CEB0C": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/asset7d121ff6b5b2240d66521bfba24c9137d4e487d4d88b503015120636a794733f.zip"
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "HelperFunctionServiceRole6B43B152",
+            "Arn"
+          ]
+        },
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::FindInMap": [
+                  "CommonResourceStackMap",
+                  "Solution",
+                  "SolutionId"
+                ]
+              },
+              " - Function to help with FMS solution installation (DO NOT DELETE)"
+            ]
+          ]
+        },
+        "Environment": {
+          "Variables": {
+            "METRICS_ENDPOINT": {
+              "Fn::FindInMap": [
+                "CommonResourceStackMap",
+                "Metric",
+                "MetricsEndpoint"
+              ]
+            },
+            "SEND_METRIC": {
+              "Fn::FindInMap": [
+                "CommonResourceStackMap",
+                "Metric",
+                "SendAnonymousMetric"
+              ]
+            },
+            "LOG_LEVEL": "info",
+            "CUSTOM_SDK_USER_AGENT": {
+              "Fn::Join": [
+                "",
+                [
+                  "AwsSolution/",
+                  {
+                    "Fn::FindInMap": [
+                      "CommonResourceStackMap",
+                      "Solution",
+                      "SolutionId"
+                    ]
+                  },
+                  "/",
+                  {
+                    "Fn::FindInMap": [
+                      "CommonResourceStackMap",
+                      "Solution",
+                      "SolutionVersion"
+                    ]
+                  }
+                ]
+              ]
+            }
+          }
+        },
+        "Handler": "index.handler",
+        "MemorySize": 512,
+        "Runtime": "nodejs14.x"
+      },
+      "DependsOn": [
+        "HelperFunctionServiceRole6B43B152"
+      ],
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W58",
+              "reason": "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole"
+            },
+            {
+              "id": "W89",
+              "reason": "Not a valid use case for Lambda functions to be deployed inside a VPC"
+            },
+            {
+              "id": "W92",
+              "reason": "Lambda ReservedConcurrentExecutions not needed"
+            }
+          ]
+        }
+      }
+    },
+    "HelperProviderframeworkonEventServiceRole1962DD43": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/HelperProvider/framework-onEvent/ServiceRole/Resource"
+      }
+    },
+    "HelperProviderframeworkonEventServiceRoleDefaultPolicy7C54367B": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "HelperFunctionAD0CEB0C",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "HelperProviderframeworkonEventServiceRoleDefaultPolicy7C54367B",
+        "Roles": [
+          {
+            "Ref": "HelperProviderframeworkonEventServiceRole1962DD43"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/HelperProvider/framework-onEvent/ServiceRole/DefaultPolicy/Resource"
+      }
+    },
+    "HelperProviderframeworkonEvent1079DE9D": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/asset543c7a94b144a6259669eaf884305607b7a9abe85c43e4bfe62f9190ace37916.zip"
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "HelperProviderframeworkonEventServiceRole1962DD43",
+            "Arn"
+          ]
+        },
+        "Description": "AWS CDK resource provider framework - onEvent (CommonResourceStack/HelperProvider)",
+        "Environment": {
+          "Variables": {
+            "USER_ON_EVENT_FUNCTION_ARN": {
+              "Fn::GetAtt": [
+                "HelperFunctionAD0CEB0C",
+                "Arn"
+              ]
+            }
+          }
+        },
+        "Handler": "framework.onEvent",
+        "Runtime": "nodejs12.x",
+        "Timeout": 900
+      },
+      "DependsOn": [
+        "HelperProviderframeworkonEventServiceRoleDefaultPolicy7C54367B",
+        "HelperProviderframeworkonEventServiceRole1962DD43"
+      ],
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W58",
+              "reason": "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole"
+            },
+            {
+              "id": "W89",
+              "reason": "Not a valid use case for Lambda functions to be deployed inside a VPC"
+            },
+            {
+              "id": "W92",
+              "reason": "Lambda ReservedConcurrentExecutions not needed"
+            }
+          ]
+        }
+      }
+    },
+    "CreateUUID": {
+      "Type": "Custom::CreateUUID",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "HelperProviderframeworkonEvent1079DE9D",
+            "Arn"
+          ]
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/CreateUUID/Default"
+      }
+    },
+    "FMSAdminCheck": {
+      "Type": "Custom::FMSAdminCheck",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "HelperProviderframeworkonEvent1079DE9D",
+            "Arn"
+          ]
+        },
+        "Stack": "FMSStack",
+        "Account": {
+          "Ref": "AWS::AccountId"
+        },
+        "Region": {
+          "Ref": "AWS::Region"
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/FMSAdminCheck/Default"
+      }
+    },
+    "LaunchData": {
+      "Type": "Custom::LaunchData",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "HelperProviderframeworkonEvent1079DE9D",
+            "Arn"
+          ]
+        },
+        "SolutionId": {
+          "Fn::FindInMap": [
+            "CommonResourceStackMap",
+            "Solution",
+            "SolutionId"
+          ]
+        },
+        "SolutionVersion": {
+          "Fn::FindInMap": [
+            "CommonResourceStackMap",
+            "Solution",
+            "SolutionVersion"
+          ]
+        },
+        "SolutionUuid": {
+          "Fn::GetAtt": [
+            "CreateUUID",
+            "UUID"
+          ]
+        },
+        "Stack": "FMSStack"
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/LaunchData/Default"
+      }
+    },
+    "FMSTable84B8646C": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "KeySchema": [
+          {
+            "AttributeName": "PolicyName",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "Region",
+            "KeyType": "RANGE"
+          }
+        ],
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "PolicyName",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "Region",
+            "AttributeType": "S"
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "SSESpecification": {
+          "SSEEnabled": true
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/FMSTable/Resource"
+      }
+    },
+    "MetricsDLQ478F6879": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "KmsMasterKeyId": "alias/aws/sqs"
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/MetricsDLQ/Resource"
+      }
+    },
+    "MetricsQueue0DAB96B7": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "KmsMasterKeyId": "alias/aws/sqs",
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::GetAtt": [
+              "MetricsDLQ478F6879",
+              "Arn"
+            ]
+          },
+          "maxReceiveCount": 5
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/MetricsQueue/Resource"
+      }
+    },
+    "QueuePolicyBEFD7452": {
+      "Type": "AWS::SQS::QueuePolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "MetricsDLQ478F6879",
+                  "Arn"
+                ]
+              },
+              "Sid": "AllowPublishThroughSSLOnly01"
+            },
+            {
+              "Action": "sqs:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "MetricsQueue0DAB96B7",
+                  "Arn"
+                ]
+              },
+              "Sid": "AllowPublishThroughSSLOnly02"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Queues": [
+          {
+            "Ref": "MetricsDLQ478F6879"
+          },
+          {
+            "Ref": "MetricsQueue0DAB96B7"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/QueuePolicy/Resource"
+      }
+    },
+    "MetricsManagerServiceRole00F759D1": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/MetricsManager/ServiceRole/Resource"
+      }
+    },
+    "MetricsManagerServiceRoleDefaultPolicyCC18AFFD": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "sqs:ReceiveMessage",
+                "sqs:ChangeMessageVisibility",
+                "sqs:GetQueueUrl",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "MetricsQueue0DAB96B7",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "MetricsManagerServiceRoleDefaultPolicyCC18AFFD",
+        "Roles": [
+          {
+            "Ref": "MetricsManagerServiceRole00F759D1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/MetricsManager/ServiceRole/DefaultPolicy/Resource"
+      }
+    },
+    "MetricsManager98639C73": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/assetcbc212180b21e031789014eb0d449ba42dc4902aeb261396a6c2a5fddda23eca.zip"
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "MetricsManagerServiceRole00F759D1",
+            "Arn"
+          ]
+        },
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::FindInMap": [
+                  "CommonResourceStackMap",
+                  "Solution",
+                  "SolutionId"
+                ]
+              },
+              " - Function to publish FMS solution metrics to aws-solutions"
+            ]
+          ]
+        },
+        "Environment": {
+          "Variables": {
+            "METRICS_ENDPOINT": {
+              "Fn::FindInMap": [
+                "CommonResourceStackMap",
+                "Metric",
+                "MetricsEndpoint"
+              ]
+            },
+            "LOG_LEVEL": "info"
+          }
+        },
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "ReservedConcurrentExecutions": 1,
+        "Runtime": "nodejs14.x",
+        "Timeout": 15
+      },
+      "DependsOn": [
+        "MetricsManagerServiceRoleDefaultPolicyCC18AFFD",
+        "MetricsManagerServiceRole00F759D1"
+      ],
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W58",
+              "reason": "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole"
+            },
+            {
+              "id": "W89",
+              "reason": "Not a valid use case for Lambda functions to be deployed inside a VPC"
+            }
+          ]
+        }
+      }
+    },
+    "MetricsManagerSqsEventSourceCommonResourceStackMetricsQueueBA3FDDBD01BF5955": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "MetricsManager98639C73"
+        },
+        "BatchSize": 1,
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "MetricsQueue0DAB96B7",
+            "Arn"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/MetricsManager/SqsEventSource:CommonResourceStackMetricsQueueBA3FDDBD/Resource"
+      }
+    },
+    "HelperPolicy0FF3AEE0": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "fms:GetAdminAccount",
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "FMSRead"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "FMS-Helper-Policy",
+        "Roles": [
+          {
+            "Ref": "HelperFunctionServiceRole6B43B152"
+          }
+        ]
+      },
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W12",
+              "reason": "Resource * is required for IAM actions that do not support resource level permissions"
+            }
+          ]
+        }
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WQwU7DMAyGn2X31KMwCY6wCm6I0vECaWKmrE1S4qRoivruNCkqlbjEnx3bv+0SysMD3Owe+TcVQnb7KKxDiCfPRceqT1NzxzV6dMl55cOgzDlhZY1UXlnDnojQz/nn/GMNeReEZ1Ugb3WDZIMTmEpW3gZXobfgh+AnlgaJPdet5BBfghFZZE5Y+XlE40+5w2ag/9GJKa4hNrZf5JOtba/ENS+WaWJ0V/C0AUFeZPbhGESH/sgJmbwarq1sIX7wdumTYa77IojvAUMOLpDfXJfpT2zjThMT+TSF+z0DQe3sqCS6iRkrES60H8sDlPdwu7uQUoULxiuN0Cz2B0YhWi61AQAA"
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/CDKMetadata/Default"
+      },
+      "Condition": "CDKMetadataAvailable"
+    },
+    "ComplianceStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.1/aws-fms-compliance.template",
+        "Parameters": {
+          "MetricsQueue": {
+            "Fn::GetAtt": [
+              "MetricsQueue0DAB96B7",
+              "QueueName"
+            ]
+          },
+          "UUID": {
+            "Fn::GetAtt": [
+              "CreateUUID",
+              "UUID"
+            ]
+          }
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack.NestedStack/ComplianceGeneratorStack.NestedStackResource",
+        "aws:asset:path": "CommonResourceStackComplianceGeneratorStack932DA860.nested.template.json",
+        "aws:asset:property": "TemplateURL"
+      },
+      "Condition": "reportingCheck"
+    },
+    "PolicyStack": {
+      "Type": "AWS::CloudFormation::Stack",
+      "Properties": {
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.1/aws-fms-policy.template",
+        "Parameters": {
+          "PolicyTable": {
+            "Ref": "FMSTable84B8646C"
+          },
+          "MetricsQueue": {
+            "Fn::GetAtt": [
+              "MetricsQueue0DAB96B7",
+              "QueueName"
+            ]
+          },
+          "UUID": {
+            "Fn::GetAtt": [
+              "CreateUUID",
+              "UUID"
+            ]
+          },
+          "PolicyIdentifier": "DefaultPolicy"
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy.NestedStack/PolicyStack-DefaultPolicy.NestedStackResource",
+        "aws:asset:path": "CommonResourceStackPolicyStackDefaultPolicyD16A0B88.nested.template.json",
+        "aws:asset:property": "TemplateURL"
+      }
+    }
+  },
+  "Outputs": {
+    "UUID": {
+      "Description": "UUID for deployment",
+      "Value": {
+        "Fn::GetAtt": [
+          "CreateUUID",
+          "UUID"
+        ]
+      }
+    },
+    "PolicyTable": {
+      "Description": "Table for FMS policies metadata",
+      "Value": {
+        "Ref": "FMSTable84B8646C"
+      }
+    },
+    "MetricsSQSQueue": {
+      "Description": "SQS queue for solution anonymous metric",
+      "Value": {
+        "Fn::GetAtt": [
+          "MetricsQueue0DAB96B7",
+          "QueueName"
+        ]
+      }
+    },
+    "ComplianceReporting": {
+      "Description": "Generate compliance reports on FMS policies",
+      "Value": {
+        "Ref": "DeployComplianceGenerator"
+      }
+    }
+  }
+}

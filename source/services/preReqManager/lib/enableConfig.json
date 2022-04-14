@@ -159,6 +159,19 @@
           "Version": "2012-10-17",
           "Statement": [
             {
+              "Action": "s3:*",
+              "Effect":"Deny",
+              "Principal": "*",
+              "Resource": [
+                "arn:aws:s3:::${ConfigBucket}/*",
+                "arn:aws:s3:::${ConfigBucket}"
+              ],
+              "Condition":{
+                "Bool":
+                { "aws:SecureTransport": false }
+              }
+            },
+            {
               "Sid": "AWSConfigBucketPermissionsCheck",
               "Effect": "Allow",
               "Principal": { "Service": ["config.amazonaws.com"] },
