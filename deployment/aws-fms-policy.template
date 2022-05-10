@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.1",
+  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.2",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -64,7 +64,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.1"
+        "SolutionVersion": "v2.0.2"
       }
     }
   },
@@ -297,7 +297,7 @@
               {
                 "Ref": "ManifestBucket46C412A5"
               },
-              "\",\"CopySource\":\"solutions-reference/aws-firewall-manager-automations-for-aws-organizations/v2.0.1/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1649957921854\"}}"
+              "\",\"CopySource\":\"solutions-reference/aws-firewall-manager-automations-for-aws-organizations/v2.0.2/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1652122161364\"}}"
             ]
           ]
         },
@@ -353,7 +353,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/asset70893b631249dc61260989e92e90d60ae94fbbec490a1e065680d77383084d8d.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset70893b631249dc61260989e92e90d60ae94fbbec490a1e065680d77383084d8d.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -499,7 +499,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/assete44617e41a42d04987a954188ec99b79d6bd0a40dba3e296c5e68ecf9bae774e.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset20a6ddee216fc547e092b7d7269e7d861280ad0a4e13e97cc0e7157ce3e4cfa2.zip"
         },
         "Role": {
           "Fn::GetAtt": [

@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134N) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.1",
+  "Description": "(SO0134N) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.2",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -48,7 +48,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134N",
-        "SolutionVersion": "v2.0.1",
+        "SolutionVersion": "v2.0.2",
         "GlobalStackSetName": "FMS-EnableConfig-Global",
         "RegionalStackSetName": "FMS-EnableConfig-Regional"
       }
@@ -96,7 +96,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/asset7d121ff6b5b2240d66521bfba24c9137d4e487d4d88b503015120636a794733f.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/assetb0fb6af9debb07eea6c649c1b1b91b817f8edecd385f04b04ef9f844e23bc0a6.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -244,7 +244,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/asset543c7a94b144a6259669eaf884305607b7a9abe85c43e4bfe62f9190ace37916.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset543c7a94b144a6259669eaf884305607b7a9abe85c43e4bfe62f9190ace37916.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -384,7 +384,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/asset24a001b98f37514aaeedadeb46bf816090c31d13c5904895b4a3eaa7139371a4.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset2ce0363386151b1ade9f4327e5fba71018394df8f106609a4a5fab0fd38ebf36.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -626,7 +626,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/asset543c7a94b144a6259669eaf884305607b7a9abe85c43e4bfe62f9190ace37916.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset543c7a94b144a6259669eaf884305607b7a9abe85c43e4bfe62f9190ace37916.zip"
         },
         "Role": {
           "Fn::GetAtt": [

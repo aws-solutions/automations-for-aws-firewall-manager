@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134D) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations demo resources. Version v2.0.1",
+  "Description": "(SO0134D) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations demo resources. Version v2.0.2",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Resources": {
     "testcloudfronts3S3LoggingBucket90D239DD": {
