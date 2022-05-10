@@ -163,8 +163,8 @@
               "Effect":"Deny",
               "Principal": "*",
               "Resource": [
-                "arn:aws:s3:::${ConfigBucket}/*",
-                "arn:aws:s3:::${ConfigBucket}"
+                { "Fn::Sub": "arn:aws:s3:::${ConfigBucket}/*" },
+                { "Fn::Sub": "arn:aws:s3:::${ConfigBucket}" }
               ],
               "Condition":{
                 "Bool":

@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.1",
+  "Description": "(SO0134) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.2",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -38,7 +38,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.1"
+        "SolutionVersion": "v2.0.2"
       }
     }
   },
@@ -286,7 +286,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/asset7d121ff6b5b2240d66521bfba24c9137d4e487d4d88b503015120636a794733f.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/assetb0fb6af9debb07eea6c649c1b1b91b817f8edecd385f04b04ef9f844e23bc0a6.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -447,7 +447,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/asset543c7a94b144a6259669eaf884305607b7a9abe85c43e4bfe62f9190ace37916.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset543c7a94b144a6259669eaf884305607b7a9abe85c43e4bfe62f9190ace37916.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -772,7 +772,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/assetcbc212180b21e031789014eb0d449ba42dc4902aeb261396a6c2a5fddda23eca.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset0179e7fbf546a23833885fe474c28e3679edfd838bb7427522423f00cef71682.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -895,7 +895,7 @@
     "ComplianceStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.1/aws-fms-compliance.template",
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.2/aws-fms-compliance.template",
         "Parameters": {
           "MetricsQueue": {
             "Fn::GetAtt": [
@@ -923,7 +923,7 @@
     "PolicyStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.1/aws-fms-policy.template",
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.2/aws-fms-policy.template",
         "Parameters": {
           "PolicyTable": {
             "Ref": "FMSTable84B8646C"

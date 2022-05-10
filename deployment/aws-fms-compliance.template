@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations compliance reporter resources. Version v2.0.1",
+  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations compliance reporter resources. Version v2.0.2",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -41,7 +41,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.1"
+        "SolutionVersion": "v2.0.2"
       }
     }
   },
@@ -320,7 +320,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.1/assetd47dad2be31cff0db7cf6349460680f6a94f0391344f22bbfc66d6d4ddaf123f.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset88636237c0e4a294ce83c7bf4f72b753d5d8c3cc8b14d7f8063ad3153278678e.zip"
         },
         "Role": {
           "Fn::GetAtt": [
