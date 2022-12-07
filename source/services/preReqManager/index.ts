@@ -3,7 +3,7 @@
 
 /**
  * @description
- * AWS Firewall Manager Automations for AWS Organizations
+ * Automations for AWS Firewall Manager
  * Microservice to validate and install pre-requisites for the solution
  * This must be deployed in Organization Management account
  * @author aws-solutions

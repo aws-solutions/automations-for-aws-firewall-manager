@@ -1,19 +1,9 @@
-/**
- *  Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance
- *  with the License. A copy of the License is located at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  or in the 'license' file accompanying this file. This file is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES
- *  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions
- *  and limitations under the License.
- */
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 /**
  * @description
- * This is Compliance Stack for AWS Firewall Manager Automations for AWS Organizations
+ * This is Compliance Stack for Automations for AWS Firewall Manager
  * The stack should be deployed in Firewall Manager admin account
  * This stack provisions resources needed to generate compliance reports on FMS policies
  * @author @aws-solutions
@@ -246,7 +236,7 @@ export class ComplianceGeneratorStack extends NestedStack {
       "ComplianceGenerator",
       {
         description: `${manifest.solution.primarySolutionId} - Function to generate compliance reports for FMS policies`,
-        runtime: Runtime.NODEJS_14_X,
+        runtime: Runtime.NODEJS_16_X,
         deadLetterQueue: dlq,
         code: Code.fromAsset(
           `${path.dirname(

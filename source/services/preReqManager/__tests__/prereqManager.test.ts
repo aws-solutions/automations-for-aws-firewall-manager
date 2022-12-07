@@ -16,10 +16,39 @@ import {
   CreateStackSetCommand,
   DeleteStackInstancesCommand,
 } from "@aws-sdk/client-cloudformation";
+import "jest";
+import { IPreReq, PreReqManager } from "../lib/preReqManager";
 
 const organizationsClientMock = mockClient(OrganizationsClient);
 const cloudFormationClientMock = mockClient(CloudFormationClient);
 const firewallManagerClientMock = mockClient(FMSClient);
+
+const iPreReq: IPreReq = {
+  accountId: "bar",
+  region: "baz",
+  globalStackSetName: "quz",
+  regionalStackSetName: "quz-baz",
+};
+
+describe("[enableConfig]", () => {
+  beforeEach(() => {
+    cloudFormationClientMock.reset();
+  });
+  afterEach(() => {
+    cloudFormationClientMock.reset();
+  });
+  test("[TDD] fails cfstack name already exists error", async () => {
+    const ee: Error = new Error("NameAlreadyExistsException");
+    ee.name = "NameAlreadyExistsException";
+    cloudFormationClientMock.on(CreateStackSetCommand).rejects(ee);
+    const _pm: PreReqManager = new PreReqManager(iPreReq);
+    try {
+      await _pm.enableConfig();
+    } catch (e) {
+      expect(e.message).toEqual("failed to create stack set instances");
+    }
+  });
+});
 
 describe("PreReqManager", function () {
   // PreReq check only succeeds when the current account is the Org's master account

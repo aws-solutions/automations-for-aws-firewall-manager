@@ -16,7 +16,7 @@
     "build:all": "npm run build:clean && npm run build:install && npm run build:ts && npm prune --production && npm run build:copy && npm run build:zip"
   },
   "dependencies": {
-    "got": "~11.5.2",
+    "got": "~11.8.5",
     "winston": "~3.3.3"
   },
   "devDependencies": {

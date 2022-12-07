@@ -1,19 +1,9 @@
-/**
- *  Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance
- *  with the License. A copy of the License is located at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  or in the 'license' file accompanying this file. This file is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES
- *  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions
- *  and limitations under the License.
- */
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 /**
  * @description
- * This is Firewall Manager Stack for AWS Firewall Manager Automations for AWS Organizations
+ * This is Firewall Manager Stack for Automations for AWS Firewall Manager
  * The stack should be deployed in Firewall Manager admin account
  * This stack creates shared resources
  * @author @aws-solutions
@@ -147,7 +137,7 @@ export class CommonResourceStack extends Stack {
         "Solution",
         "SolutionId"
       )} - Function to help with FMS solution installation (DO NOT DELETE)`,
-      runtime: Runtime.NODEJS_14_X,
+      runtime: Runtime.NODEJS_16_X,
       code: Code.fromAsset(
         `${path.dirname(__dirname)}/../services/helper/dist/helperFunction.zip`
       ),
@@ -285,7 +275,7 @@ export class CommonResourceStack extends Stack {
         "Solution",
         "SolutionId"
       )} - Function to publish FMS solution metrics to aws-solutions`,
-      runtime: Runtime.NODEJS_14_X,
+      runtime: Runtime.NODEJS_16_X,
       code: Code.fromAsset(
         `${path.dirname(
           __dirname
