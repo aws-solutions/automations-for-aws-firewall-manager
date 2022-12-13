@@ -27,7 +27,7 @@ describe("helper", function () {
         RegionalStackSetName: "quz-baz",
       } as { [key: string]: string },
     } as IEvent;
-    
+
     const CREATE_UUID_EVENT = {
       ResourceType: "Custom::CreateUUID",
       RequestType: "Create",
@@ -78,17 +78,17 @@ describe("helper", function () {
       firewallManagerClientMock.on(GetAdminAccountCommand).resolves({
         AdminAccount: FIREWALL_MGR_ADMIN_ACCOUNT_ID,
       });
+
       const data = await handler(CREATE_UUID_EVENT, {});
       expect(data.Status).toBe("SUCCESS");
       expect(data.Data["UUID"]).not.toBeNull();
     });
 
     it("creates new launch data event", async function () {
-      process.env.SEND_METRIC == "Yes";
       firewallManagerClientMock.on(GetAdminAccountCommand).resolves({
         AdminAccount: FIREWALL_MGR_ADMIN_ACCOUNT_ID,
       });
-      
+
       const data = await handler(CREATE_LAUNCH_DATA_EVENT, {});
       expect(data.Status).toBe("SUCCESS");
     });

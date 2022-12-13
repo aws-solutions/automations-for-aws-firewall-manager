@@ -320,7 +320,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset0ad8aa3929522b8e1922bcd7b952d99f89ff6b08688f5d01312dbf244e49c013.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset332cd915df4cfe99ce18813b9a848e7f1fda348be9a4dfdf4bf64007435c84f2.zip"
         },
         "Role": {
           "Fn::GetAtt": [

@@ -7,10 +7,11 @@
   },
   "scripts": {
     "pretest": "npm ci",
-    "test": "./node_modules/jest/bin/jest.js --coverage ./__tests__"
+    "test": "./node_modules/jest/bin/jest.js --coverage ./__tests__",
+    "build": "tsc"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "~1.98.0",
+    "@aws-cdk/assert": "~1.173.0",
     "@types/jest": "^25.2.3",
     "@types/node": "10.17.5",
     "aws-cdk": "^1.173.0",

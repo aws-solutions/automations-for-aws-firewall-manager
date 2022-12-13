@@ -50,7 +50,7 @@ module.exports = {
   ],
 
   // A list of paths to modules that run some code to configure or set up the testing environment
-  setupFiles: ["./jest.setup.js"],
+  setupFiles: ["./jest.setup.js", "./jestSetEnvVars.js"],
 
   coverageReporters: [["lcov", { projectRoot: "../" }], "text"],
 

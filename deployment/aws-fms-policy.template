@@ -297,7 +297,7 @@
               {
                 "Ref": "ManifestBucket46C412A5"
               },
-              "\",\"CopySource\":\"solutions-reference/aws-firewall-manager-automations-for-aws-organizations/v2.0.3/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1670430244843\"}}"
+              "\",\"CopySource\":\"solutions-reference/aws-firewall-manager-automations-for-aws-organizations/v2.0.3/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1670972290270\"}}"
             ]
           ]
         },
@@ -499,7 +499,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset4cf53e6bfe3ea007d2a1c5fb549493aaeddfd061d2879c70bb44af8f1b15c084.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset0f8b7bd4114f57a7a7ab1ef42c7437819ca8f15a5ae2e5304973d50a576651d2.zip"
         },
         "Role": {
           "Fn::GetAtt": [

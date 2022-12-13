@@ -9,6 +9,7 @@ import {
   ListRootsCommand,
   OrganizationsClient,
 } from "@aws-sdk/client-organizations";
+import { RAMClient } from "@aws-sdk/client-ram";
 import { FMSClient, GetAdminAccountCommand } from "@aws-sdk/client-fms";
 import {
   CloudFormationClient,
@@ -18,16 +19,32 @@ import {
 } from "@aws-sdk/client-cloudformation";
 import "jest";
 import { IPreReq, PreReqManager } from "../lib/preReqManager";
+import { EC2Client } from "@aws-sdk/client-ec2";
 
 const organizationsClientMock = mockClient(OrganizationsClient);
 const cloudFormationClientMock = mockClient(CloudFormationClient);
 const firewallManagerClientMock = mockClient(FMSClient);
+const ramClientMock = mockClient(RAMClient);
+const ec2Client = mockClient(EC2Client);
 
 const iPreReq: IPreReq = {
   accountId: "bar",
   region: "baz",
   globalStackSetName: "quz",
   regionalStackSetName: "quz-baz",
+};
+
+const mockRegions = {
+  Regions: [
+    {
+      Endpoint: "ec2.region-apne3.amazonaws.com",
+      RegionName: "ap-northeast-3",
+    },
+    {
+      Endpoint: "ec2.region-b.amazonaws.com",
+      RegionName: "region-b",
+    },
+  ],
 };
 
 describe("[enableConfig]", () => {
@@ -76,6 +93,12 @@ describe("PreReqManager", function () {
     firewallManagerClientMock.on(GetAdminAccountCommand).resolves({
       AdminAccount: FIREWALL_MGR_ADMIN_ACCOUNT_ID,
     });
+
+    ramClientMock.reset();
+    ramClientMock.onAnyCommand().resolves({});
+
+    ec2Client.reset();
+    ec2Client.onAnyCommand().resolves(mockRegions);
   });
 
   describe("Create event", function () {
@@ -118,7 +141,6 @@ describe("PreReqManager", function () {
 
       // when
       const response = await handler(updateEventWithEnableConfig, {});
-
       // then
       expect(response.Status).toEqual("SUCCESS");
       expect(response.Data).toEqual({
@@ -242,7 +264,6 @@ describe("PreReqManager", function () {
     it("succeeds if account setup is valid", async function () {
       // when
       const response = await handler(UPDATE_EVENT, {});
-
       // then
       expect(response.Status).toEqual("SUCCESS");
       expect(response.Data).toEqual({
@@ -371,7 +392,6 @@ describe("PreReqManager", function () {
 
       // when
       const response = await handler(DELETE_EVENT, {});
-
       // then
       expect(response.Status).toEqual("SUCCESS");
       expect(response.Data).toEqual({

@@ -7,9 +7,12 @@ import { mockClient } from "aws-sdk-client-mock";
 import { ComplianceGenerator } from "../lib/ComplianceGenerator";
 import { EC2Client, DescribeRegionsCommand } from "@aws-sdk/client-ec2";
 import { handler } from "../../complianceGenerator";
+import { S3Client } from "@aws-sdk/client-s3";
+import { Metrics } from "../lib/common/metrics";
 
 const firewallManagerClientMock = mockClient(FMSClient);
 const mockEC2 = mockClient(EC2Client);
+const mockS3 = mockClient(S3Client);
 
 const mockRegions = {
   Regions: [
@@ -145,10 +148,23 @@ describe("ComplianceGenerator", function () {
     });
   });
 
+  describe("metrics index", () => {
+    test("[BDD] successful send anonymous metric", async () => {
+      mockS3.onAnyCommand().resolves({});
+      const resp = await Metrics.sendAnonymousMetric("queueUrl", {
+        Solution: "",
+        UUID: "",
+        TimeStamp: "",
+        Data: {},
+      });
+      expect(resp).toBe(undefined);
+    });
+  });
+
   describe("index", () => {
     test("[BDD] cron event triggers fails on empty compliance generator return", async () => {
       mockEC2.on(DescribeRegionsCommand).resolves(mockRegions);
-      const data = await handler({"source": "aws.events"});
+      const data = await handler({ source: "aws.events" });
       expect(data).toBe(undefined);
     });
   });

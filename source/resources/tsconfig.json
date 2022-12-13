@@ -5,7 +5,9 @@
     "strictNullChecks": true,
     "alwaysStrict": true,
     "outDir": "./dist",
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "inlineSourceMap": true,
+    "inlineSources": true,
   },
   "exclude": ["cdk.out", "node_modules"]
 }
