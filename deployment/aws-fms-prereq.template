@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134N) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.2",
+  "Description": "(SO0134N) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.3",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -48,7 +48,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134N",
-        "SolutionVersion": "v2.0.2",
+        "SolutionVersion": "v2.0.3",
         "GlobalStackSetName": "FMS-EnableConfig-Global",
         "RegionalStackSetName": "FMS-EnableConfig-Regional"
       }
@@ -96,7 +96,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/assetb0fb6af9debb07eea6c649c1b1b91b817f8edecd385f04b04ef9f844e23bc0a6.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/assetfa5f2ace916918dcb45bcf602ebee5570be72d12cdbec9d2bafaf6ee97ad9663.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -149,7 +149,7 @@
         },
         "Handler": "index.handler",
         "MemorySize": 128,
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
         "Timeout": 5
       },
       "DependsOn": [
@@ -216,12 +216,28 @@
             {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "FMSHelperFunction59933F0A",
-                  "Arn"
-                ]
-              }
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "FMSHelperFunction59933F0A",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "FMSHelperFunction59933F0A",
+                          "Arn"
+                        ]
+                      },
+                      ":*"
+                    ]
+                  ]
+                }
+              ]
             }
           ],
           "Version": "2012-10-17"
@@ -244,7 +260,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset543c7a94b144a6259669eaf884305607b7a9abe85c43e4bfe62f9190ace37916.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset3b263c2ad043fd069ef446753788c36e595c82b51a70478e58258c8ef7471671.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -264,7 +280,7 @@
           }
         },
         "Handler": "framework.onEvent",
-        "Runtime": "nodejs12.x",
+        "Runtime": "nodejs14.x",
         "Timeout": 900
       },
       "DependsOn": [
@@ -384,7 +400,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset2ce0363386151b1ade9f4327e5fba71018394df8f106609a4a5fab0fd38ebf36.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/assetdd211e651499eec0e38d3d38c217a24962cf65592d2ea999afd781c84d707d56.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -437,7 +453,7 @@
         },
         "Handler": "index.handler",
         "MemorySize": 256,
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
         "Timeout": 15
       },
       "DependsOn": [
@@ -598,12 +614,28 @@
             {
               "Action": "lambda:InvokeFunction",
               "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "PreReqManagerFunction80D2ED4C",
-                  "Arn"
-                ]
-              }
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "PreReqManagerFunction80D2ED4C",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "PreReqManagerFunction80D2ED4C",
+                          "Arn"
+                        ]
+                      },
+                      ":*"
+                    ]
+                  ]
+                }
+              ]
             }
           ],
           "Version": "2012-10-17"
@@ -626,7 +658,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset543c7a94b144a6259669eaf884305607b7a9abe85c43e4bfe62f9190ace37916.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset3b263c2ad043fd069ef446753788c36e595c82b51a70478e58258c8ef7471671.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -646,7 +678,7 @@
           }
         },
         "Handler": "framework.onEvent",
-        "Runtime": "nodejs12.x",
+        "Runtime": "nodejs14.x",
         "Timeout": 900
       },
       "DependsOn": [
@@ -737,7 +769,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02O0WrDMAxFv6Xvjrp0he5xa6BvZSH7AtXWipvYDpbcMYz/fXG6wZ50r7hXOi20+xd42rziFzfajNusQyTIH4J6VN2n7zGiI6FYzRnn2fqremMmWSLXarrgWWLSorrEEtxAHFLUVAv/9XuSOUlVS8NYscEXVd/mCd3FIORT8rqua+ZPF2XRQR7C9DhYZx8mq79XulUVxc8NViaGFW3xcEx6JDkiU1F6BWviLw1DH8PdGopF+WAIbry9t3toD7Db3NjaJiYv1hEMj/kDDlanniYBAAA="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02O0U7DMAxFv2XvqUc0Aa+wSrwhqvIFJjFT1iapYmfTFOXfaTqQePK91r320aCfD/Cwe8Erd8ZO+2JiIiifgmZS/XcYMKEnodTMOy6LCyf1ykyyRk7N9DGwpGxE9Zkl+pE45mSoFf7rjyxLlqbWhnXiYqiqvS0z+i+LUN5yMG3dMn+6Koceyhjn+8E2hzg7c9voNlUVHzpsTAwb2urhmM1EckSmqswG1qVfGoYhxYuzlKoK0RKceX/RT6AfQe/O7FyXchDnCcb7/AG2kpPoJgEAAA=="
       },
       "Metadata": {
         "aws:cdk:path": "PreReqStack/CDKMetadata/Default"

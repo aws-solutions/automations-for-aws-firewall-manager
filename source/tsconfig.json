@@ -8,7 +8,7 @@
       "ES2018"
     ] /* Specify library files to be included in the compilation. */,
     "declaration": false /* Generates corresponding '.d.ts' file. */,
-    "noEmit": true,
+    "noEmit": false,
     "removeComments": true /* Do not emit comments to output. */,
     "resolveJsonModule": true /* Allows importing modules with a ‘.json’ extension */,
     /* Strict Type-Checking Options */

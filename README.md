@@ -1,4 +1,4 @@
-# AWS Firewall Manager Automations for AWS Organizations
+# Automations for AWS Firewall Manager
 
 :grey_exclamation: Notice: This solution supersedes AWS Centralized WAF & VPC SG Management solution.
 |-----------------------------------------|
@@ -7,7 +7,7 @@
 
 _Note:_ For any relevant information outside the scope of this readme, please refer to the solution landing page and implementation guide.
 
-## Table of content
+## Table of contents
 
 - [Solution Overview](#solution-overview)
 - [Architecture](#architecture)
@@ -26,7 +26,7 @@ _Note:_ For any relevant information outside the scope of this readme, please re
 
 ## Solution Overview
 
-The AWS Firewall Manager Automations for AWS Organizations solution is intended for customers looking to easily manage consistent security posture across their entire AWS Organization. The solution uses AWS Firewall Manager Service.
+The Automations for AWS Firewall Manager solution is intended for customers looking to easily manage consistent security posture across their entire AWS Organization. The solution uses AWS Firewall Manager Service.
 
 Additionally, solution eases the installation process required to fulfill Firewall Manager prerequisites so customers can focus more on their organization security posture.
 
@@ -77,7 +77,7 @@ For more details on custom policy template, read here in the [implementation gui
 
 ## Customization
 
-- Prerequisite: Node.js=12
+- Prerequisite: Node.js=16
 
 ### Setup
 
@@ -186,7 +186,7 @@ Additionally, if you want to control sending solution usage metrics to aws-solut
 
 ## File structure
 
-AWS Firewall Manager Automations for AWS Organizations solution consists of:
+Automations for AWS Firewall Manager solution consists of:
 
 - cdk constructs to generate needed resources
 - prereq manager to validate and install Firewall Manager prerequisites

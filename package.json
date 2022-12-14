@@ -1,9 +1,9 @@
 {
   "name": "aws-fms-automations",
   "version": "2.0.0",
-  "description": "AWS Firewall Manager Automations for AWS Organizations",
+  "description": "Automations for AWS Firewall Manager",
   "scripts": {
-    "docs": "./node_modules/typedoc/bin/typedoc --out docs --name \"AWS Firewall Manager Automations for AWS Organizations\"",
+    "docs": "./node_modules/typedoc/bin/typedoc --out docs --name \"Automations for AWS Firewall Manager\"",
     "lint": "./node_modules/eslint/bin/eslint.js . --ext .ts",
     "prettier-format": "./node_modules/prettier/bin-prettier.js --config .prettierrc.yml '**/*.ts' --write",
     "build:helper": "cd source/services/helper && npm run build:all",

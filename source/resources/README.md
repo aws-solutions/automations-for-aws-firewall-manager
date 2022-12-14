@@ -1,4 +1,4 @@
-# AWS Centralized WAF & Security Group Management CDK Project
+# Automations for AWS Firewall Manager CDK Project
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 

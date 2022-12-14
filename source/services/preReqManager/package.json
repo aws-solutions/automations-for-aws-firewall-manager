@@ -22,7 +22,7 @@
     "@aws-sdk/client-fms": "~3.18.0",
     "@aws-sdk/client-organizations": "~3.18.0",
     "@aws-sdk/client-ram": "~3.18.0",
-    "got": "~11.5.2",
+    "got": "~11.8.5",
     "winston": "~3.3.3"
   },
   "devDependencies": {
@@ -36,5 +36,8 @@
   },
   "jestSonar": {
     "reportPath": "coverage"
+  },
+  "jest": {
+    "verbose": true
   }
 }

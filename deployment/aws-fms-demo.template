@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134D) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations demo resources. Version v2.0.2",
+  "Description": "(SO0134D) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations demo resources. Version v2.0.3",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Resources": {
     "testcloudfronts3S3LoggingBucket90D239DD": {
@@ -431,7 +431,6 @@
     "testVPCPublicSubnet1SubnetD8AD9C87": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "CidrBlock": "10.0.0.0/18",
         "VpcId": {
           "Ref": "testVPC102E57DE"
         },
@@ -443,6 +442,7 @@
             }
           ]
         },
+        "CidrBlock": "10.0.0.0/18",
         "MapPublicIpOnLaunch": false,
         "Tags": [
           {
@@ -553,7 +553,6 @@
     "testVPCPublicSubnet2Subnet384459D2": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "CidrBlock": "10.0.64.0/18",
         "VpcId": {
           "Ref": "testVPC102E57DE"
         },
@@ -565,6 +564,7 @@
             }
           ]
         },
+        "CidrBlock": "10.0.64.0/18",
         "MapPublicIpOnLaunch": false,
         "Tags": [
           {
@@ -675,7 +675,6 @@
     "testVPCPrivateSubnet1Subnet096C7B7F": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "CidrBlock": "10.0.128.0/18",
         "VpcId": {
           "Ref": "testVPC102E57DE"
         },
@@ -687,6 +686,7 @@
             }
           ]
         },
+        "CidrBlock": "10.0.128.0/18",
         "MapPublicIpOnLaunch": false,
         "Tags": [
           {
@@ -756,7 +756,6 @@
     "testVPCPrivateSubnet2SubnetE307A6A8": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "CidrBlock": "10.0.192.0/18",
         "VpcId": {
           "Ref": "testVPC102E57DE"
         },
@@ -768,6 +767,7 @@
             }
           ]
         },
+        "CidrBlock": "10.0.192.0/18",
         "MapPublicIpOnLaunch": false,
         "Tags": [
           {
@@ -916,7 +916,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/3VRwW7CMAz9Fu5pWAFpO451A3HZKoq4p67ZAiVBiQNCVf59SQsLl538/Pz09GznPJ+98KfRq7jYrIPmMO5AG+RdRQIOrNDKknFAbI1WOwPIip16xEHRSJJaedZb2Cnv3hwckOL0hoZS6lbCNdFD7xm02jU7oxXxbuEURLeo+sPvMoSQteubLyO/pZoDoLWrBhVJ6j2L6LKILv8pHm08Q5jwbnuCONmWBStdHeJUrlZD9ITW2hFuRN1i4hM3t1aDFPfQ/SCCj1UZy6egpSC8iCsrjTwHmIxXitAEfBcMSW7dnMIHfo4hPqsQnAlLLI12pz7DI+G9Z1a3/Vo2g/vH7Dj+I902C59JN9roauqZ0g3yvR2f8xnPn/lktLdSZsaFkx2Rr4f6C9hOrY4jAgAA"
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/3VRTW/CMAz9LdzTsK7adh3rBuKyVRRxT12zBUqM8gFCVf77khYWLjv5+fnp6dnOef5S8IfJqzibrId2P+2BNPK+tgL2rCRlrHZg2QoNOQ3Iyq26x0HRSitJeTZYmIL3bw72aOP0isZSUSfhkuix9ww6cu1Wk7K8nzsF0S2q/vC7DCFk44bmS8tvqWYAaMyyRWWlHTzL6DKPLv8p7m08Q3jk/eYIcbKpSla5JsSpXaPG6AmtyFlci6bDxCduZgyBFLfQwyCCj2UVy6ewC2HxLC6s0vIUYDJeKos64JtgTHLtZjZ84OcQ4rMawemwxEKTOw4Z7gnvPTPUDWuZDG4fM9P4j3TbLHwm3WhNdeGZohb5zkxP+TPPn3g+2RkpM+3CyQ7IV2P9BTg15LUjAgAA"
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/CDKMetadata/Default"

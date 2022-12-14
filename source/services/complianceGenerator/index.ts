@@ -1,19 +1,9 @@
-/**
- *  Copyright 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance
- *  with the License. A copy of the License is located at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  or in the 'license' file accompanying this file. This file is distributed on an 'AS IS' BASIS, WITHOUT WARRANTIES
- *  OR CONDITIONS OF ANY KIND, express or implied. See the License for the specific language governing permissions
- *  and limitations under the License.
- */
+// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
 
 /**
  * @description
- * AWS Firewall Manager Automations for AWS Organizations
+ * Automations for AWS Firewall Manager
  * Microservice to generate compliance reports for FMS policies
  * @author aws-solutions
  */
@@ -21,7 +11,7 @@
 import { logger } from "./lib/common/logger";
 import { ComplianceGenerator, IMessage } from "./lib/ComplianceGenerator";
 
-exports.handler = async (event: {
+export const handler = async (event: {
   [key: string]: string | string[] | Record<string, unknown>[];
 }) => {
   logger.debug({ label: "ComplianceGenerator", message: "Loading event..." });

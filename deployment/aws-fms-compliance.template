@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations compliance reporter resources. Version v2.0.2",
+  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations compliance reporter resources. Version v2.0.3",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -41,7 +41,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.2"
+        "SolutionVersion": "v2.0.3"
       }
     }
   },
@@ -320,7 +320,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.2/asset88636237c0e4a294ce83c7bf4f72b753d5d8c3cc8b14d7f8063ad3153278678e.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset332cd915df4cfe99ce18813b9a848e7f1fda348be9a4dfdf4bf64007435c84f2.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -422,7 +422,7 @@
         "Handler": "index.handler",
         "MemorySize": 256,
         "ReservedConcurrentExecutions": 200,
-        "Runtime": "nodejs14.x",
+        "Runtime": "nodejs16.x",
         "Timeout": 300
       },
       "DependsOn": [
@@ -629,7 +629,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/01Q0W7CMAz8Ft5Tsw6k7XEDibexruwHQuqh0DYpccI0Rfn3JWmBvvju7Ms5cgnl+hWeFm/8lwrRtEsvtEHweySLzcFy0bLtj6q44T1aNEl88GGQ6sRqJO2MQPZOhDZ6T6kbDZ/ODs6yrVZkjRM29e7myOOgkVZqFVha62kFfuNEi9k5sRE2nDAwUgT+Ww9SJMNIcq10J8XfvTnJgzuSMHJIK9JsrmPYJYZ9OXT5LyPJ9RE2k4F1vD82HPzOKXFLnPMKTS+JcrbkPfhadzk64yP0lkergqeDEeS7MbyiisLXbnoWMYTAlG4QzrS8lmsoX+B5cSYpC+OUlT1CPeI/GcUafcABAAA="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/01Q0W7DIAz8lr4Td1HU7XVrpb5tzdL9ACVeRZNAhqHThPj3AUnbvPju7OOMXEL5UsHT6pX/UiHabu2FNgj+A8lie7RcdGz3rWpu+IAWTRLvfBylOrMGSTsjkL0RoY3ec+pGw8HZ0Vm204qsccKm3t0ceRy00kqtAktrPVXgt050mJ0zm2DLCQMjReC/9ChFMkwk11r3Uvzdm7M8uhMJI8e0Is2WOob9xLBPhy7/ZSK5PsIWMrCeD6eWg987JW6JS16jGSRRzpZ8AN/oPkdnfITe8qgqeDoYQb4bwyuqKHzj5mcRQwhM6RbhQutr+QzlBsrVhaQsjFNWDgjNhP/ayCChwAEAAA=="
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/CDKMetadata/Default"

@@ -18,7 +18,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@aws-sdk/client-fms": "~3.18.0",
-    "got": "~11.5.1",
+    "got": "~11.8.5",
     "uuid": "~8.2.0",
     "winston": "~3.3.3"
   },
@@ -26,6 +26,7 @@
     "@types/uuid": "^8.0.0",
     "@types/jest": "~26.0.1",
     "@types/node": "^14.0.23",
+    "aws-sdk-client-mock": "^0.6.2",
     "jest": "^26.0.1",
     "jest-sonar-reporter": "^2.0.0",
     "ts-jest": "^26.1.0",
