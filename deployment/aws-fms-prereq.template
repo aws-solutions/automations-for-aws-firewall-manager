@@ -96,7 +96,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/assetfa5f2ace916918dcb45bcf602ebee5570be72d12cdbec9d2bafaf6ee97ad9663.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset54a12c7d450d721fedbaa133a5a32cdea47192567f7d4d08b792bb889ff747f8.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -400,7 +400,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/assetdd211e651499eec0e38d3d38c217a24962cf65592d2ea999afd781c84d707d56.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset51ece6c792da66ce4b8856256f3e12e15f4b5b0e1a5fe7cae36e89086c4a9844.zip"
         },
         "Role": {
           "Fn::GetAtt": [
