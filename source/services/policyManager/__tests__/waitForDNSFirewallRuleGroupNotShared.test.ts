@@ -76,7 +76,7 @@ describe("waiter tests for waitUntilDNSFirewallRuleGroupNotShared", () => {
     } catch (e) {
       expect(e.message).toEqual(
         JSON.stringify({
-          result: { state: "FAILURE" },
+          result: { state: "FAILURE", reason: "AccessDenied" },
         })
       );
     }

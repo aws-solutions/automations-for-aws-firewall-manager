@@ -1,15 +1,15 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { Construct } from "@aws-cdk/core";
+import { Construct } from "constructs";
 import {
   IRole,
   Policy,
   PolicyStatement,
   Effect,
   CfnPolicy,
-} from "@aws-cdk/aws-iam";
-import { Bucket } from "@aws-cdk/aws-s3";
+} from "aws-cdk-lib/aws-iam";
+import { Bucket } from "aws-cdk-lib/aws-s3";
 
 interface IIam {
   policyTable: string;
@@ -36,7 +36,6 @@ export class IAMConstruct extends Construct {
 
     /**
      * @description iam policy for lambda role
-     * @type {iam.Policy}
      */
     const readPolicy: Policy = new Policy(this, "FMSPolicyRead", {
       roles: [props.role],
@@ -44,7 +43,6 @@ export class IAMConstruct extends Construct {
 
     /**
      * @description iam policy for lambda role
-     * @type {iam.Policy}
      */
     const writePolicy: Policy = new Policy(this, "FMSPolicyWrite", {
       roles: [props.role],
@@ -110,7 +108,6 @@ export class IAMConstruct extends Construct {
 
     /**
      * @description iam policy statement for sqs permissions
-     * @type {iam.PolicyStatement}
      */
     const po4: PolicyStatement = new PolicyStatement({
       effect: Effect.ALLOW,

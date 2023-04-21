@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations compliance reporter resources. Version v2.0.3",
+  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations compliance reporter resources. Version v2.0.4",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -41,7 +41,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.3"
+        "SolutionVersion": "v2.0.4"
       }
     }
   },
@@ -49,7 +49,6 @@
     "AccessLogsBucket83982689": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "AccessControl": "LogDeliveryWrite",
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
             {
@@ -104,6 +103,92 @@
         }
       }
     },
+    "AccessLogsBucketPolicy7F77476F": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "AccessLogsBucket83982689"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "AccessLogsBucket83982689",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "AccessLogsBucket83982689",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Action": "s3:PutObject",
+              "Condition": {
+                "ArnLike": {
+                  "aws:SourceArn": {
+                    "Fn::GetAtt": [
+                      "ComplianceReportBucketC209518B",
+                      "Arn"
+                    ]
+                  }
+                },
+                "StringEquals": {
+                  "aws:SourceAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "logging.s3.amazonaws.com"
+              },
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "AccessLogsBucket83982689",
+                        "Arn"
+                      ]
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/AccessLogsBucket/Policy/Resource"
+      }
+    },
     "ComplianceReportBucketC209518B": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
@@ -142,6 +227,56 @@
             }
           ]
         }
+      }
+    },
+    "ComplianceReportBucketPolicy00A36248": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ComplianceReportBucketC209518B"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ComplianceReportBucketC209518B",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ComplianceReportBucketC209518B",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/ComplianceReportBucket/Policy/Resource"
       }
     },
     "TopicBFC7AF6E": {
@@ -320,7 +455,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset41a5407bca18500cf7b553e770434e9d34140172c609dfc3e73ac0427410c36b.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.4/asset7ca48ba4c31630e32e9bbd83b4930a1cc50ce235d4df68ede7e2560ed40a09e1.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -629,7 +764,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/01Q0W7DIAz8lr4Td1HU7XVrpb5tzdL9ACVeRZNAhqHThPj3AUnbvPju7OOMXEL5UsHT6pX/UiHabu2FNgj+A8lie7RcdGz3rWpu+IAWTRLvfBylOrMGSTsjkL0RoY3ec+pGw8HZ0Vm204qsccKm3t0ceRy00kqtAktrPVXgt050mJ0zm2DLCQMjReC/9ChFMkwk11r3Uvzdm7M8uhMJI8e0Is2WOob9xLBPhy7/ZSK5PsIWMrCeD6eWg987JW6JS16jGSRRzpZ8AN/oPkdnfITe8qgqeDoYQb4bwyuqKHzj5mcRQwhM6RbhQutr+QzlBsrVhaQsjFNWDgjNhP/ayCChwAEAAA=="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02RzU7DMBCEn4W7YygVII60EjdoSLlXjrOttkns1GsXISvvjn9Skotnxrv7SV4/8pcn/nAnfqiQTVt0WHP/CWSh2VshW7Y9qlIY0YMFE8OHGAZUJxYGDp7W3G+cbMHG0uSylLpD+TtfTzmHjSAYGSni/lsPKGNbNumcZ5dx72qSBgeLWsXaMgfYJcC+HDiItWzSOcMWcWSd6OtGcP/ulLwRl74E0yNRYqPoua90l9BJZ+iNR+uDIAJL/C0KgyuoEHzlprGg48gqIO2MBJa6wopPcZmhvnN2cGmN/y3Bb7VqMD9Q6Qb4me6vq2e+eg1fdibEwjhlsQdeZf0DWOxBKM4BAAA="
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/CDKMetadata/Default"

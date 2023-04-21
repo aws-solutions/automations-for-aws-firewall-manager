@@ -17,11 +17,11 @@
   "author": "@aws-solutions",
   "license": "Apache-2.0",
   "dependencies": {
-    "@aws-sdk/client-cloudformation": "~3.18.0",
-    "@aws-sdk/client-ec2": "~3.18.0",
-    "@aws-sdk/client-fms": "~3.18.0",
-    "@aws-sdk/client-organizations": "~3.18.0",
-    "@aws-sdk/client-ram": "~3.18.0",
+    "@aws-sdk/client-cloudformation": "~3.288.0",
+    "@aws-sdk/client-ec2": "~3.288.0",
+    "@aws-sdk/client-fms": "~3.288.0",
+    "@aws-sdk/client-organizations": "~3.288.0",
+    "@aws-sdk/client-ram": "~3.288.0",
     "got": "~11.8.5",
     "winston": "~3.3.3"
   },

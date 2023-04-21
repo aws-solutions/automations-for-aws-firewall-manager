@@ -16,35 +16,34 @@ import {
   PolicyDocument,
   AnyPrincipal,
   CfnPolicy,
-} from "@aws-cdk/aws-iam";
-import { SnsEventSource } from "@aws-cdk/aws-lambda-event-sources";
+} from "aws-cdk-lib/aws-iam";
+import { SnsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import {
   BlockPublicAccess,
   Bucket,
-  BucketAccessControl,
   BucketEncryption,
   StorageClass,
-} from "@aws-cdk/aws-s3";
-import { Topic, TopicPolicy } from "@aws-cdk/aws-sns";
-import { Rule, Schedule } from "@aws-cdk/aws-events";
-import { LambdaFunction } from "@aws-cdk/aws-events-targets";
-import { Alias } from "@aws-cdk/aws-kms";
-import { Code, Runtime, Function, CfnFunction } from "@aws-cdk/aws-lambda";
+} from "aws-cdk-lib/aws-s3";
+import { Topic, TopicPolicy } from "aws-cdk-lib/aws-sns";
+import { Rule, Schedule } from "aws-cdk-lib/aws-events";
+import { LambdaFunction } from "aws-cdk-lib/aws-events-targets";
+import { Alias } from "aws-cdk-lib/aws-kms";
+import { Code, Runtime, Function, CfnFunction } from "aws-cdk-lib/aws-lambda";
 import {
   CfnMapping,
   CfnOutput,
   CfnParameter,
   CfnResource,
-  Construct,
   Duration,
   NestedStack,
   NestedStackProps,
   Stack,
-} from "@aws-cdk/core";
+} from "aws-cdk-lib";
+import {Construct} from "constructs";
 import * as path from "path";
 import manifest from "./solution_manifest.json";
 import { LOG_LEVEL } from "./exports";
-import { Queue, QueueEncryption, QueuePolicy } from "@aws-cdk/aws-sqs";
+import { Queue, QueueEncryption, QueuePolicy } from "aws-cdk-lib/aws-sqs";
 
 export class ComplianceGeneratorStack extends NestedStack {
   /**
@@ -55,12 +54,7 @@ export class ComplianceGeneratorStack extends NestedStack {
    * stack deployment region
    */
   readonly region: string;
-  /**
-   * @constructor
-   * @param {cdk.Construct} scope - parent of the construct
-   * @param {string} id - identifier for the object
-   * @param {NestedStackProps} props - initializing props for the nested stack
-   */
+
   constructor(scope: Construct, id: string, props: NestedStackProps) {
     super(scope, id, props);
     const stack = Stack.of(this);
@@ -131,7 +125,7 @@ export class ComplianceGeneratorStack extends NestedStack {
       encryption: BucketEncryption.S3_MANAGED,
       versioned: true,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      accessControl: BucketAccessControl.LOG_DELIVERY_WRITE,
+      enforceSSL: true,
       lifecycleRules: [
         {
           transitions: [
@@ -158,6 +152,7 @@ export class ComplianceGeneratorStack extends NestedStack {
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       serverAccessLogsBucket: accessLogsBucket,
+      enforceSSL: true,
     });
 
     /**

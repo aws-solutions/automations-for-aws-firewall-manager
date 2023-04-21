@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import "@aws-cdk/assert/jest";
-import { Stack, App } from "@aws-cdk/core";
+import { Stack, App } from "aws-cdk-lib";
 import { DemoStack } from "../lib/demo";
 
 describe("==Policy Stack Tests==", () => {

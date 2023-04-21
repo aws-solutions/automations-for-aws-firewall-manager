@@ -17,7 +17,7 @@
   "author": "aws-solutions",
   "license": "Apache-2.0",
   "dependencies": {
-    "@aws-sdk/client-fms": "~3.18.0",
+    "@aws-sdk/client-fms": "~3.288.0",
     "got": "~11.8.5",
     "uuid": "~8.2.0",
     "winston": "~3.3.3"

@@ -1,8 +1,8 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { App, CfnResource, Stack } from "@aws-cdk/core";
-import { Vpc, SecurityGroup, Peer, Port } from "@aws-cdk/aws-ec2";
+import { App, CfnResource, Stack, StackProps } from "aws-cdk-lib";
+import { Vpc, SecurityGroup, Peer, Port } from "aws-cdk-lib/aws-ec2";
 import manifest from "./solution_manifest.json";
 const {
   CloudFrontToS3,
@@ -16,8 +16,8 @@ const {
  */
 
 export class DemoStack extends Stack {
-  constructor(scope: App, id: string) {
-    super(scope, id);
+  constructor(scope: App, id: string, props?: StackProps) {
+    super(scope, id, props);
 
     //=============================================================================================
     // Metadata

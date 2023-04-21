@@ -10,35 +10,41 @@
  */
 
 import {
-  Stack,
-  Construct,
+  CfnCondition,
   CfnMapping,
-  RemovalPolicy,
-  Duration,
-  CustomResource,
   CfnOutput,
   CfnParameter,
-  CfnCondition,
+  CustomResource,
+  Duration,
   Fn,
   NestedStack,
-} from "@aws-cdk/core";
-import { Provider } from "@aws-cdk/custom-resources";
-import { Queue, QueueEncryption, QueuePolicy } from "@aws-cdk/aws-sqs";
-import { Table, AttributeType, BillingMode } from "@aws-cdk/aws-dynamodb";
-import { Code, Runtime, Function, CfnFunction } from "@aws-cdk/aws-lambda";
-import { SqsEventSource } from "@aws-cdk/aws-lambda-event-sources";
+  RemovalPolicy,
+  Stack,
+  StackProps,
+} from "aws-cdk-lib";
+import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import {
   AnyPrincipal,
   CfnPolicy,
   Effect,
   Policy,
   PolicyStatement,
-} from "@aws-cdk/aws-iam";
+} from "aws-cdk-lib/aws-iam";
 import * as path from "path";
 import manifest from "./solution_manifest.json";
 import { LOG_LEVEL, PolicyIdentifiers } from "./exports";
 import { PolicyStack } from "./policy";
 import { ComplianceGeneratorStack } from "./compliance";
+import { CfnFunction, Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
+import { Provider } from "aws-cdk-lib/custom-resources";
+import {
+  AttributeType,
+  BillingMode,
+  Table,
+  TableEncryption,
+} from "aws-cdk-lib/aws-dynamodb";
+import { Queue, QueueEncryption, QueuePolicy } from "aws-cdk-lib/aws-sqs";
+import { Construct } from "constructs";
 
 export class CommonResourceStack extends Stack {
   /**
@@ -51,11 +57,11 @@ export class CommonResourceStack extends Stack {
   readonly region: string;
   /**
    * @constructor
-   * @param {cdk.Construct} scope - parent of the construct
+   * @param {Construct} scope - parent of the construct
    * @param {string} id - identifier for the object
    */
-  constructor(scope: Construct, id: string) {
-    super(scope, id);
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
     const stack = Stack.of(this);
 
     this.account = stack.account; // Returns the AWS::AccountId for this stack (or the literal value if known)
@@ -211,7 +217,7 @@ export class CommonResourceStack extends Stack {
         type: AttributeType.STRING,
       },
       pointInTimeRecovery: true,
-      serverSideEncryption: true,
+      encryption: TableEncryption.AWS_MANAGED,
       removalPolicy: RemovalPolicy.DESTROY,
       billingMode: BillingMode.PAY_PER_REQUEST,
     });

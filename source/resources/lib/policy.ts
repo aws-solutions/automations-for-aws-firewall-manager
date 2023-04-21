@@ -10,7 +10,6 @@
  */
 import {
   Stack,
-  Construct,
   CfnMapping,
   RemovalPolicy,
   Duration,
@@ -19,32 +18,30 @@ import {
   CfnResource,
   CfnParameter,
   NestedStackProps,
-} from "@aws-cdk/core";
-import { StringListParameter, StringParameter } from "@aws-cdk/aws-ssm";
-import { Queue, QueueEncryption, QueuePolicy } from "@aws-cdk/aws-sqs";
-import { Code, Runtime, Function, CfnFunction } from "@aws-cdk/aws-lambda";
-import { LogGroup, RetentionDays } from "@aws-cdk/aws-logs";
+} from "aws-cdk-lib";
+import {Construct} from "constructs";
+import { StringListParameter, StringParameter } from "aws-cdk-lib/aws-ssm";
+import { Queue, QueueEncryption, QueuePolicy } from "aws-cdk-lib/aws-sqs";
+import { Code, Runtime, Function, CfnFunction } from "aws-cdk-lib/aws-lambda";
+import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
 import * as path from "path";
 import {
   BlockPublicAccess,
   Bucket,
-  BucketAccessControl,
   BucketEncryption,
   StorageClass,
-} from "@aws-cdk/aws-s3";
+} from "aws-cdk-lib/aws-s3";
 import {
   AwsCustomResource,
   AwsCustomResourcePolicy,
   PhysicalResourceId,
-} from "@aws-cdk/custom-resources";
-import { AnyPrincipal, Effect, PolicyStatement } from "@aws-cdk/aws-iam";
+} from "aws-cdk-lib/custom-resources";
+import { AnyPrincipal, Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { IAMConstruct } from "./iam";
 import manifest from "./solution_manifest.json";
 import { LOG_LEVEL } from "./exports";
+import {EventbridgeToLambda} from "@aws-solutions-constructs/aws-eventbridge-lambda";
 
-const {
-  EventsRuleToLambda,
-} = require("@aws-solutions-constructs/aws-events-rule-lambda");
 
 export class PolicyStack extends NestedStack {
   /**
@@ -55,11 +52,7 @@ export class PolicyStack extends NestedStack {
    * stack deployment region
    */
   readonly region: string;
-  /**
-   * @constructor
-   * @param {cdk.Construct} scope - parent of the construct
-   * @param {string} id - identifier for the object
-   */
+
   constructor(scope: Construct, id: string, props: NestedStackProps) {
     super(scope, id, props);
     const stack = Stack.of(this);
@@ -192,7 +185,7 @@ export class PolicyStack extends NestedStack {
       versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      accessControl: BucketAccessControl.LOG_DELIVERY_WRITE,
+      enforceSSL: true,
       lifecycleRules: [
         {
           transitions: [
@@ -219,6 +212,7 @@ export class PolicyStack extends NestedStack {
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       serverAccessLogsBucket: accessLogsBucket,
+      enforceSSL: true
     });
 
     /**
@@ -339,26 +333,9 @@ export class PolicyStack extends NestedStack {
       timeout: Duration.minutes(15),
     });
 
-    /**
-     * @description Events rule to Lambda construct pattern
-     * @example `
-     * {
-          "source": [
-            "aws.ssm"
-          ],
-          "detail-type": [
-            "Parameter Store Change"
-          ],
-          "resources": [
-            "arn:aws:ssm:<region>:<account-id>:parameter<parameter-name>",
-            "arn:aws:ssm:<region>:<account-id>:parameter<parameter-name-2>",
-          ]
-        }
-     */
-    new EventsRuleToLambda(this, "EventsRuleLambda", {
+    new EventbridgeToLambda(this, "EventsRuleLambda", {
       existingLambdaObj: policyManager,
       eventRuleProps: {
-        ruleName: `FMSPolicyRule-${policyIdentifier.valueAsString}`,
         eventPattern: {
           source: ["aws.ssm"],
           detailType: ["Parameter Store Change"],

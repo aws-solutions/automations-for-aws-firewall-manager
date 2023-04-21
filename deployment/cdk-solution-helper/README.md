@@ -1,7 +1,7 @@
 # cdk-solution-helper
 
-A lightweight helper function that cleans-up synthesized templates from the AWS Cloud Development Kit (CDK) and prepares
-them for use with the AWS Solutions publishing pipeline. This function performs the following tasks:
+A postprocessor for CloudFormation templates synthesized with the AWS Cloud Development Kit (CDK). The postprocessing 
+prepares the templates for use with the AWS Solutions publishing pipeline. This function performs the following tasks:
 
 #### Lambda function preparation
 
@@ -15,7 +15,6 @@ used by the AWS Solutions publishing pipeline.
 These placeholders are then replaced with the appropriate values using the default find/replace operation run by the pipeline.
 
 Before:
-
 ```
 "examplefunction67F55935": {
       "Type": "AWS::Lambda::Function",
@@ -62,7 +61,6 @@ Before:
 ```
 
 After helper function run:
-
 ```
 "examplefunction67F55935": {
       "Type": "AWS::Lambda::Function",
@@ -75,7 +73,6 @@ After helper function run:
 ```
 
 After build script run:
-
 ```
 "examplefunction67F55935": {
       "Type": "AWS::Lambda::Function",
@@ -88,7 +85,6 @@ After build script run:
 ```
 
 After CloudFormation deployment:
-
 ```
 "examplefunction67F55935": {
       "Type": "AWS::Lambda::Function",
@@ -107,7 +103,6 @@ been used to specify Lambda source code properties. This allows solution-specifi
 removes unnecessary clutter.
 
 Before:
-
 ```
 "Parameters": {
     "AssetParametersd513e93e266931de36e1c7e79c27b196f84ab928fce63d364d9152ca501551f7S3Bucket54E71A95": {
@@ -134,10 +129,9 @@ Before:
         "Type" : "String"
     }
   }
-```
+  ```
 
 After:
-
 ```
 "Parameters": {
     "CorsEnabled" : {
@@ -152,8 +146,7 @@ After:
         "Type" : "String"
     }
   }
-```
+  ```
 
----
-
-&copy; Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+***
+&copy; Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
