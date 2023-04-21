@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.3",
+  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.4",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -64,7 +64,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.3"
+        "SolutionVersion": "v2.0.4"
       }
     }
   },
@@ -141,7 +141,6 @@
     "AccessLogsBucket83982689": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "AccessControl": "LogDeliveryWrite",
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
             {
@@ -196,6 +195,92 @@
         }
       }
     },
+    "AccessLogsBucketPolicy7F77476F": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "AccessLogsBucket83982689"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "AccessLogsBucket83982689",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "AccessLogsBucket83982689",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Action": "s3:PutObject",
+              "Condition": {
+                "ArnLike": {
+                  "aws:SourceArn": {
+                    "Fn::GetAtt": [
+                      "ManifestBucket46C412A5",
+                      "Arn"
+                    ]
+                  }
+                },
+                "StringEquals": {
+                  "aws:SourceAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "logging.s3.amazonaws.com"
+              },
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "AccessLogsBucket83982689",
+                        "Arn"
+                      ]
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AccessLogsBucket/Policy/Resource"
+      }
+    },
     "ManifestBucket46C412A5": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
@@ -234,6 +319,88 @@
             }
           ]
         }
+      }
+    },
+    "ManifestBucketPolicy82948026": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ManifestBucket46C412A5"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ManifestBucket46C412A5",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ManifestBucket46C412A5",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/ManifestBucket/Policy/Resource"
+      }
+    },
+    "CopyManifest652A9A13": {
+      "Type": "Custom::AWS",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "Arn"
+          ]
+        },
+        "Create": {
+          "Fn::Join": [
+            "",
+            [
+              "{\"service\":\"S3\",\"action\":\"copyObject\",\"parameters\":{\"Bucket\":\"",
+              {
+                "Ref": "ManifestBucket46C412A5"
+              },
+              "\",\"CopySource\":\"solutions-reference/aws-firewall-manager-automations-for-aws-organizations/v2.0.4/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1682091098757\"}}"
+            ]
+          ]
+        },
+        "InstallLatestAwsSdk": true
+      },
+      "DependsOn": [
+        "CopyManifestCustomResourcePolicy37D7914D"
+      ],
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CopyManifest/Resource/Default"
       }
     },
     "CopyManifestCustomResourcePolicy37D7914D": {
@@ -280,38 +447,6 @@
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CopyManifest/CustomResourcePolicy/Resource"
       }
     },
-    "CopyManifest652A9A13": {
-      "Type": "Custom::AWS",
-      "Properties": {
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
-            "Arn"
-          ]
-        },
-        "Create": {
-          "Fn::Join": [
-            "",
-            [
-              "{\"service\":\"S3\",\"action\":\"copyObject\",\"parameters\":{\"Bucket\":\"",
-              {
-                "Ref": "ManifestBucket46C412A5"
-              },
-              "\",\"CopySource\":\"solutions-reference/aws-firewall-manager-automations-for-aws-organizations/v2.0.3/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1671058585545\"}}"
-            ]
-          ]
-        },
-        "InstallLatestAwsSdk": true
-      },
-      "DependsOn": [
-        "CopyManifestCustomResourcePolicy37D7914D"
-      ],
-      "UpdateReplacePolicy": "Delete",
-      "DeletionPolicy": "Delete",
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CopyManifest/Resource/Default"
-      }
-    },
     "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -353,7 +488,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset105b4f39ae68785e705640aa91919e412fcba2dd454aca53412747be8d955286.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.4/asseta9d3d4d1afa000946b9863b3e7578a5a5ad86d88274b3639938aa2baebf822ce.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -369,22 +504,10 @@
         "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
       ],
       "Metadata": {
-        "cfn_nag": {
-          "rules_to_suppress": [
-            {
-              "id": "W58",
-              "reason": "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole"
-            },
-            {
-              "id": "W89",
-              "reason": "Not a valid use case for Lambda functions to be deployed inside a VPC"
-            },
-            {
-              "id": "W92",
-              "reason": "Lambda ReservedConcurrentExecutions not needed"
-            }
-          ]
-        }
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AWS679f53fac002430cb0da5b7982bd2287/Resource",
+        "aws:asset:path": "asset.a9d3d4d1afa000946b9863b3e7578a5a5ad86d88274b3639938aa2baebf822ce",
+        "aws:asset:is-bundled": false,
+        "aws:asset:property": "Code"
       }
     },
     "DLQ581697C4": {
@@ -499,7 +622,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.3/asset14a7a7b7f18432db6d10e578d851bc963c8e0a4fd8db77ef35272eef94110e55.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.4/assetb37c9b103cb70e73a7d6abedb9f592d8116a0ea00f7ffd2713bd1630ab397bdc.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -683,7 +806,7 @@
         "Principal": "events.amazonaws.com",
         "SourceArn": {
           "Fn::GetAtt": [
-            "EventsRuleLambdaEventsRuleLambdaWEventsRule7176364B",
+            "EventsRuleLambdaEventsRule0A996B52",
             "Arn"
           ]
         }
@@ -692,7 +815,7 @@
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManager/AwsEventsLambdaInvokePermission-1"
       }
     },
-    "EventsRuleLambdaEventsRuleLambdaWEventsRule7176364B": {
+    "EventsRuleLambdaEventsRule0A996B52": {
       "Type": "AWS::Events::Rule",
       "Properties": {
         "EventPattern": {
@@ -774,17 +897,6 @@
             }
           ]
         },
-        "Name": {
-          "Fn::Join": [
-            "",
-            [
-              "FMSPolicyRule-",
-              {
-                "Ref": "PolicyIdentifier"
-              }
-            ]
-          ]
-        },
         "State": "ENABLED",
         "Targets": [
           {
@@ -799,7 +911,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/EventsRuleLambda/EventsRuleLambdaW/EventsRule/Resource"
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/EventsRuleLambda/EventsRule/Resource"
       }
     },
     "PolicyMangerLogGroupE410035C": {
@@ -1126,7 +1238,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/21R207DMAz9lr2nGdUEvMImQEgDRscPZKlXZW2TEiebUNV/x0m6jkm8xMfXc2LnPL9f8JvZgzhh1suynvfSWOD9O6CDcuuErNlqrzfCihYc2OC8ia5TumIrj860BaDxVkLITPgRERx1V7HOaHTWSxdKPrzrfEQULpVTRg8ssiO2vN86Sy1rhe6K8uKkgskfGC54v/Syhjh0RMksBcLAGtHuSkGjqa8BZ/Sz1zLwsglQ44SfjqDdqz6aGkjhXlUh+29wA7ZViPEHSpD4jWmU/ImphArTpL2QDUozEfaCPK6H4Tfy/tODjzUJxPcy5487MAgiqKXw41QfpjamotjaVC/W+C7Ez3gYmIwnyux4F2I+4fXZSJZpfPg5ZvJ8KJzHiyTCzBJPNm4xLgID85dZx1CStbOqrK6rUuhcRmK0KYEfcH7M73h+y/PZAZWi6dqpFniR7C8TyeqdkgIAAA=="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/21STU/DMAz9LdzTDJj4usGmgZAGjI77lKVelbVNSpxsQlX/O07atYC4xO+92I4d+5I3N1f8/EwcMZFZkZRqy5tXQAfZ2glZsPlOr4QVFTiwgbyIulY6ZxSwaRAr3qydJWGp0P1yHEnnMPCW4ZQ3My8LcMGxR51ZmVLJr1HueUdmAqFlpai2maB3KWkJzuhHr6VTRrMBUPiAFwfQ7lkfTAFzo3cqD7f/iiuwlUKkoJYpQZ2NxfQoNSUEGmxoYyMQwSF/CIbhJ/Lm3YOPPh2I55jnB20ZhCIoJPV9Vh+yliYnbWnyJ2t8HfQTblsmPTpTbSyg8VYCvXzEedTSXmJ/KeU94QHEemm+eZgkebx5V/s4DPqNTLn4BdNb2ov7sBhoSh80WhE6nPXS4SRcxA62VmU5JP1YFqP0YZZRa5k2GfA9Tg4X1/zijtLuUanEeu1UBTzt7DezQUtgiwIAAA=="
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CDKMetadata/Default"

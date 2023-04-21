@@ -10,10 +10,10 @@ import {
   CfnMapping,
   CfnOutput,
   Duration,
-} from "@aws-cdk/core";
-import { Provider } from "@aws-cdk/custom-resources";
-import { Policy, Effect, PolicyStatement, CfnPolicy } from "@aws-cdk/aws-iam";
-import { Code, Runtime, Function, CfnFunction } from "@aws-cdk/aws-lambda";
+} from "aws-cdk-lib";
+import { Provider } from "aws-cdk-lib/custom-resources";
+import { Policy, Effect, PolicyStatement, CfnPolicy } from "aws-cdk-lib/aws-iam";
+import { Code, Runtime, Function, CfnFunction } from "aws-cdk-lib/aws-lambda";
 import * as path from "path";
 import manifest from "./solution_manifest.json";
 import { LOG_LEVEL } from "./exports";
@@ -28,11 +28,6 @@ export class PreReqStack extends Stack {
   readonly account: string;
   readonly region: string;
 
-  /**
-   * @constructor
-   * @param {cdk.Construct} scope - parent of the construct
-   * @param {string} id - identifier for the object
-   */
   constructor(scope: App, id: string, props?: StackProps) {
     super(scope, id, props);
     const stack = Stack.of(this);

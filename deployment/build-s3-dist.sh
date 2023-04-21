@@ -16,6 +16,9 @@
 #
 #  - version-code: version of the package
 
+[ "$DEBUG" == 'true' ] && set -x
+set -e # exit on error, so that the pipeline stage fails
+
 # Check to see if input has been provided:
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ]; then
     echo "Please provide the base source bucket name, trademark approved solution name and version where the lambda code will eventually reside."
@@ -62,6 +65,7 @@ echo "cd $template_dir/cdk-solution-helper"
 cd $template_dir/cdk-solution-helper
 echo "npm install"
 npm install
+npm run build
 
 echo "------------------------------------------------------------------------------"
 echo "[Synth] CDK Project"
@@ -118,8 +122,8 @@ done
 
 # Run the helper to clean-up the templates and remove unnecessary CDK elements
 echo "Run the helper to clean-up the templates and remove unnecessary CDK elements"
-echo "node $template_dir/cdk-solution-helper/index"
-node $template_dir/cdk-solution-helper/index
+echo "node $template_dir/cdk-solution-helper/build/index"
+node $template_dir/cdk-solution-helper/build/index
 if [ "$?" = "1" ]; then
 	echo "(cdk-solution-helper) ERROR: there is likely output above." 1>&2
 	exit 1

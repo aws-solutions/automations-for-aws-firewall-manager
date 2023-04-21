@@ -11,11 +11,11 @@ import {
 } from "@aws-sdk/client-fms";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { PublishCommand, SNSClient } from "@aws-sdk/client-sns";
-import { RETRY_MODES } from "@aws-sdk/middleware-retry";
 import { createObjectCsvWriter } from "csv-writer";
 import fs from "fs";
 import { logger, serviceLogger } from "./common/logger";
 import { Metrics } from "./common/metrics";
+import { RETRY_MODES } from "@aws-sdk/util-retry";
 
 const customUserAgent = <string>process.env.CUSTOM_SDK_USER_AGENT;
 
@@ -114,7 +114,7 @@ export class ComplianceGenerator {
       customUserAgent,
       logger: serviceLogger,
       maxAttempts: +(process.env.MAX_ATTEMPTS as string), // to avoid throttling exceptions
-      retryMode: RETRY_MODES.STANDARD, // retry mode for SDK
+      retryMode: RETRY_MODES.STANDARD,
     });
     const accountCompliance_records: { [key: string]: string }[] = [];
     const resourceViolator_records: { [key: string]: string }[] = [];

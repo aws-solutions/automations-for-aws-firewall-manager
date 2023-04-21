@@ -7,7 +7,7 @@ import {
   arrayWith,
   anything,
 } from "@aws-cdk/assert/lib/assertions/have-resource-matchers";
-import { Stack } from "@aws-cdk/core";
+import { Stack } from "aws-cdk-lib";
 import { PolicyStack } from "../lib/policy";
 
 describe("==Policy Stack Tests==", () => {

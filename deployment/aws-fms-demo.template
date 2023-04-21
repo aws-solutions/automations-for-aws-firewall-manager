@@ -1,11 +1,10 @@
 {
-  "Description": "(SO0134D) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations demo resources. Version v2.0.3",
+  "Description": "(SO0134D) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations demo resources. Version v2.0.4",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Resources": {
     "testcloudfronts3S3LoggingBucket90D239DD": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
-        "AccessControl": "LogDeliveryWrite",
         "BucketEncryption": {
           "ServerSideEncryptionConfiguration": [
             {
@@ -80,6 +79,42 @@
                   ]
                 }
               ]
+            },
+            {
+              "Action": "s3:PutObject",
+              "Condition": {
+                "ArnLike": {
+                  "aws:SourceArn": {
+                    "Fn::GetAtt": [
+                      "testcloudfronts3S3BucketE0C5F76E",
+                      "Arn"
+                    ]
+                  }
+                },
+                "StringEquals": {
+                  "aws:SourceAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "logging.s3.amazonaws.com"
+              },
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "testcloudfronts3S3LoggingBucket90D239DD",
+                        "Arn"
+                      ]
+                    },
+                    "/*"
+                  ]
+                ]
+              }
             }
           ],
           "Version": "2012-10-17"
@@ -222,13 +257,13 @@
     "testcloudfronts3SetHttpSecurityHeaders6C5A1E69": {
       "Type": "AWS::CloudFront::Function",
       "Properties": {
-        "Name": "SetHttpSecurityHeadersc8fc3f3620f2d12733e9771bcc62deb56f30fc09cd",
-        "AutoPublish": true,
         "FunctionCode": "function handler(event) { var response = event.response;       var headers = response.headers;       headers['strict-transport-security'] = { value: 'max-age=63072000; includeSubdomains; preload'};       headers['content-security-policy'] = { value: \"default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'\"};       headers['x-content-type-options'] = { value: 'nosniff'};       headers['x-frame-options'] = {value: 'DENY'};       headers['x-xss-protection'] = {value: '1; mode=block'};       return response;     }",
         "FunctionConfig": {
           "Comment": "SetHttpSecurityHeadersc8fc3f3620f2d12733e9771bcc62deb56f30fc09cd",
           "Runtime": "cloudfront-js-1.0"
-        }
+        },
+        "Name": "SetHttpSecurityHeadersc8fc3f3620f2d12733e9771bcc62deb56f30fc09cd",
+        "AutoPublish": true
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-cloudfront-s3/SetHttpSecurityHeaders/Resource"
@@ -244,6 +279,13 @@
               "ServerSideEncryptionByDefault": {
                 "SSEAlgorithm": "AES256"
               }
+            }
+          ]
+        },
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "ObjectWriter"
             }
           ]
         },
@@ -546,6 +588,10 @@
           }
         ]
       },
+      "DependsOn": [
+        "testVPCPublicSubnet1DefaultRouteFAE04176",
+        "testVPCPublicSubnet1RouteTableAssociationA69C95A8"
+      ],
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-VPC/PublicSubnet1/NATGateway"
       }
@@ -668,6 +714,10 @@
           }
         ]
       },
+      "DependsOn": [
+        "testVPCPublicSubnet2DefaultRoute92199F72",
+        "testVPCPublicSubnet2RouteTableAssociation356EF8C0"
+      ],
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-VPC/PublicSubnet2/NATGateway"
       }
@@ -916,7 +966,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/3VRTW/CMAz9LdzTsK7adh3rBuKyVRRxT12zBUqM8gFCVf77khYWLjv5+fnp6dnOef5S8IfJqzibrId2P+2BNPK+tgL2rCRlrHZg2QoNOQ3Iyq26x0HRSitJeTZYmIL3bw72aOP0isZSUSfhkuix9ww6cu1Wk7K8nzsF0S2q/vC7DCFk44bmS8tvqWYAaMyyRWWlHTzL6DKPLv8p7m08Q3jk/eYIcbKpSla5JsSpXaPG6AmtyFlci6bDxCduZgyBFLfQwyCCj2UVy6ewC2HxLC6s0vIUYDJeKos64JtgTHLtZjZ84OcQ4rMawemwxEKTOw4Z7gnvPTPUDWuZDG4fM9P4j3TbLHwm3WhNdeGZohb5zkxP+TPPn3g+2RkpM+3CyQ7IV2P9BTg15LUjAgAA"
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/3VRy27CMBD8lt4dU0B93UrTgnJpI4K4Vs7GtCbBRvYahKL8e9cOEC69eGfHq/F4Z8Lbpwd+fyeOLoGqThpV8rZAATUj6rt1U96+eaglsnSjz6gvuWkUnAa67zsGjfHVxhqNvJ17DaiMDlNX/K4cWlX62HxZ9aP0DEA6l1VSo8KomQaVeVD5b+JWpmMSJrxd7yHcrPOU5b4kO4UvdW99QEvjUa5E2ciBH7iZcwaUuJiOFwF8ZHkonwIXAuVRnFhu1YHgIJxplJbwZaB3cu5mSEv93ZF9Vkjwlj6xsMbvo4dbouvYUjrjLcR3b3FqdKX6706fKbTXkJozTVwB5UcHWg/oRjHOaw4JpTjsc2WKace0qSTfutFh/MjHLyS2dUol1tN6d5Iv+/oHEmoDhh4CAAA="
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/CDKMetadata/Default"

@@ -3,7 +3,7 @@
 
 import "@aws-cdk/assert/jest";
 import { PreReqStack } from "../lib/prereq";
-import { App } from "@aws-cdk/core";
+import { App } from "aws-cdk-lib";
 
 describe("==Pre-requisite Stack Tests==", () => {
   const app = new App();

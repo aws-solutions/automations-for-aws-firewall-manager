@@ -9,5 +9,5 @@
     "inlineSourceMap": true,
     "inlineSources": true,
   },
-  "exclude": ["cdk.out", "node_modules"]
+  "exclude": ["cdk.out", "node_modules", "dist"]
 }
