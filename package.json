@@ -14,7 +14,10 @@
     "build": "npm run build:helper && npm run build:policyManager && npm run build:prereqManager && npm run build:metricsManager && npm run build:complianceGenerator",
     "test": "cd ./deployment && chmod +x run-unit-tests.sh && ./run-unit-tests.sh"
   },
-  "author": "aws-solutions",
+  "author": {
+    "name": "Amazon Web Services",
+    "url": "https://aws.amazon.com/solutions"
+  },
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/uuid": "^8.3.4",

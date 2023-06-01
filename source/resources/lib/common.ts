@@ -117,6 +117,7 @@ export class CommonResourceStack extends Stack {
         Solution: {
           SolutionId: manifest.solution.primarySolutionId,
           SolutionVersion: manifest.solution.solutionVersion,
+          UserAgentPrefix: manifest.solution.userAgentPrefix,
         },
       },
     });
@@ -153,10 +154,7 @@ export class CommonResourceStack extends Stack {
         METRICS_ENDPOINT: map.findInMap("Metric", "MetricsEndpoint"),
         SEND_METRIC: map.findInMap("Metric", "SendAnonymousMetric"),
         LOG_LEVEL: LOG_LEVEL.INFO, //change as needed
-        CUSTOM_SDK_USER_AGENT: `AwsSolution/${map.findInMap(
-          "Solution",
-          "SolutionId"
-        )}/${map.findInMap("Solution", "SolutionVersion")}`,
+        USER_AGENT_PREFIX: map.findInMap("Solution", "UserAgentPrefix"),
       },
     });
 
@@ -445,7 +443,7 @@ export class CommonResourceStack extends Stack {
     });
 
     new CfnOutput(this, "Metrics SQS Queue", {
-      description: "SQS queue for solution anonymous metric",
+      description: "SQS queue for solution anonymized metric",
       value: metricsQueue.queueName,
     });
 

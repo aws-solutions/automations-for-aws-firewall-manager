@@ -216,7 +216,7 @@ async function handleCreateOrUpdate(
     const firewallManagerAdminSetup = new FirewallManagerAdminSetup({
       firewallManagerAdminAccountId: properties.FMSAdmin,
       firewallManagerClient: new FMSClient({
-        customUserAgent,
+        customUserAgent: customUserAgent,
         region: dataplane,
         maxAttempts: 3,
       }),

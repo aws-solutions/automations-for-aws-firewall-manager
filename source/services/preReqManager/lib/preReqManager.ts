@@ -66,7 +66,7 @@ export class PreReqManager {
 
     this.organizationsClient = new OrganizationsClient({
       region: dataplane,
-      customUserAgent,
+      customUserAgent: customUserAgent,
       maxAttempts: 12,
     });
   }
@@ -81,7 +81,7 @@ export class PreReqManager {
       message: `getting EC2 regions`,
     });
     const ec2 = new EC2Client({
-      customUserAgent,
+      customUserAgent: customUserAgent,
     });
     const _r = await ec2.send(
       new DescribeRegionsCommand({ AllRegions: false })
@@ -139,7 +139,7 @@ export class PreReqManager {
 
       const ram = new RAMClient({
         region: dataplane,
-        customUserAgent,
+        customUserAgent: customUserAgent,
         maxAttempts: 3,
       });
       await ram.send(new EnableSharingWithAwsOrganizationCommand({}));
@@ -255,7 +255,7 @@ export class PreReqManager {
     });
 
     const cloudformation = new CloudFormationClient({
-      customUserAgent,
+      customUserAgent: customUserAgent,
     });
     const params = {
       StackSetName: "NOP",
@@ -407,7 +407,7 @@ export class PreReqManager {
       message: `initiating aws config delete`,
     });
     const cloudformation = new CloudFormationClient({
-      customUserAgent,
+      customUserAgent: customUserAgent,
     });
     try {
       const roots = await this.getOrgRoot();

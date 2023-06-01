@@ -5,6 +5,7 @@
     "declaration": false,
     "noImplicitAny": true,
     "noEmit": false,
+    "skipLibCheck": true,
     "experimentalDecorators": false
   }
 }

@@ -9,7 +9,7 @@ import { logger } from "../logger/index";
  */
 export class Metrics {
   /**
-   * Sends anonymous metric
+   * Sends anonymized metric
    * @param {object} metric - metric JSON data
    */
   static sendAnonymousMetric = async (

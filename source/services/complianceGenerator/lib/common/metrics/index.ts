@@ -10,7 +10,7 @@ import { logger } from "../logger/index";
  */
 export class Metrics {
   /**
-   * Sends anonymous metric
+   * Sends anonymized metric
    * @param {string} queueURL - sqs queue URL
    * @param {object} metric - metric JSON data
    */

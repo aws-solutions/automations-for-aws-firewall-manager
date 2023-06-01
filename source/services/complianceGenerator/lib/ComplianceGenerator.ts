@@ -16,8 +16,10 @@ import fs from "fs";
 import { logger, serviceLogger } from "./common/logger";
 import { Metrics } from "./common/metrics";
 import { RETRY_MODES } from "@aws-sdk/util-retry";
+import { UserAgent, UserAgentPair } from "@aws-sdk/types";
 
-const customUserAgent = <string>process.env.CUSTOM_SDK_USER_AGENT;
+const userAgentPair : UserAgentPair = [`${process.env.USER_AGENT_PREFIX}/${process.env.SOLUTION_ID}`, `${process.env.SOLUTION_VERSION}`]
+export const customUserAgent : UserAgent = [userAgentPair];
 
 export interface IMessage {
   /**
@@ -70,7 +72,7 @@ export class ComplianceGenerator {
     });
     const fms = new FMSClient({
       region: this.region,
-      customUserAgent,
+      customUserAgent: customUserAgent,
       logger: serviceLogger,
     });
     const paginatorConfig = {
@@ -111,7 +113,7 @@ export class ComplianceGenerator {
     });
     const fms = new FMSClient({
       region: this.region,
-      customUserAgent,
+      customUserAgent: customUserAgent,
       logger: serviceLogger,
       maxAttempts: +(process.env.MAX_ATTEMPTS as string), // to avoid throttling exceptions
       retryMode: RETRY_MODES.STANDARD,
@@ -291,7 +293,7 @@ export class ComplianceGenerator {
         message: `uploading report to ${Bucket}`,
       });
       const s3 = new S3Client({
-        customUserAgent,
+        customUserAgent: customUserAgent,
         logger: serviceLogger,
       });
       await s3.send(new PutObjectCommand({ Bucket, Key, Body }));
@@ -315,7 +317,7 @@ export class ComplianceGenerator {
     });
     try {
       const ec2 = new EC2Client({
-        customUserAgent,
+        customUserAgent: customUserAgent,
         logger: serviceLogger,
       });
 
@@ -357,7 +359,7 @@ export class ComplianceGenerator {
     try {
       const fms = new FMSClient({
         region,
-        customUserAgent,
+        customUserAgent: customUserAgent,
         logger: serviceLogger,
       });
       const paginatorConfig = {
@@ -398,7 +400,7 @@ export class ComplianceGenerator {
     try {
       const sns = new SNSClient({
         region,
-        customUserAgent,
+        customUserAgent: customUserAgent,
         logger: serviceLogger,
       });
       await sns.send(

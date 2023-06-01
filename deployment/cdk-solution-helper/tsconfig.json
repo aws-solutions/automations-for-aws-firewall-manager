@@ -3,6 +3,7 @@
     "outDir": "build",
     "alwaysStrict": true,
     "charset": "utf8",
+    "ignoreDeprecations": "5.0",
     "declaration": true,
     "experimentalDecorators": true,
     "inlineSourceMap": true,

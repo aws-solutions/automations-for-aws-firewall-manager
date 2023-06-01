@@ -4,6 +4,7 @@
     "secondarySolutionId": "SO0134N",
     "demoSolutionId": "SO0134D",
     "solutionVersion": "%%VERSION%%",
+    "userAgentPrefix": "AwsSolution",
     "metricsEndpoint": "https://metrics.awssolutionsbuilder.com/generic",
     "name": "%%SOLUTION_NAME%%",
     "policyBucket": "%%TEMPLATE_BUCKET%%",
