@@ -5,14 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.5] - 2023-06-05
+
+### Changed
+
+- Update parameter names for consistency
+- Refactor to reduce code complexity
+- Update client configs to latest sdk version
+- Fix broken URLs in README
+
 ## [2.0.4] - 2023-04-21
 
 ### Changed
 
 - Fix npm json5 vulnerabilites [CVE-2022-46175](https://nvd.nist.gov/vuln/detail/CVE-2022-46175)
 - Upgrade AWS CDK dependencies to version 2
- - Changed the Object Ownership for logging bucket from 'Object writer' to 'Bucket owner enforced' to mitigate the impact caused by new S3 default settings.
- - Updated S3 bucket policy to support access logging.
+- Changed the Object Ownership for logging bucket from 'Object writer' to 'Bucket owner enforced' to mitigate the impact caused by new S3 default settings.
+- Updated S3 bucket policy to support access logging.
 
 ## [2.0.3] - 2022-12-14
 

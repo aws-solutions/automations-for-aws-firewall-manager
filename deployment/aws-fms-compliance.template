@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations compliance reporter resources. Version v2.0.4",
+  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations compliance reporter resources. Version v2.0.5",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -31,7 +31,7 @@
     },
     "MetricsQueue": {
       "Type": "String",
-      "Description": "Metrics queue for solution anonymous metrics"
+      "Description": "Metrics queue for solution anonymized metrics"
     }
   },
   "Mappings": {
@@ -41,7 +41,8 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.4"
+        "SolutionVersion": "v2.0.5",
+        "UserAgentPrefix": "AwsSolution"
       }
     }
   },
@@ -455,7 +456,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.4/asset7ca48ba4c31630e32e9bbd83b4930a1cc50ce235d4df68ede7e2560ed40a09e1.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/asset738d410bd06b89003de777add46019407797681fbd3f108c2e93f72586460f7a.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -529,27 +530,11 @@
                 ]
               ]
             },
-            "CUSTOM_SDK_USER_AGENT": {
-              "Fn::Join": [
-                "",
-                [
-                  "AwsSolution/",
-                  {
-                    "Fn::FindInMap": [
-                      "PolicyStackMap",
-                      "Solution",
-                      "SolutionId"
-                    ]
-                  },
-                  "/",
-                  {
-                    "Fn::FindInMap": [
-                      "PolicyStackMap",
-                      "Solution",
-                      "SolutionVersion"
-                    ]
-                  }
-                ]
+            "USER_AGENT_PREFIX": {
+              "Fn::FindInMap": [
+                "PolicyStackMap",
+                "Solution",
+                "UserAgentPrefix"
               ]
             }
           }
@@ -764,7 +749,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02RzU7DMBCEn4W7YygVII60EjdoSLlXjrOttkns1GsXISvvjn9Skotnxrv7SV4/8pcn/nAnfqiQTVt0WHP/CWSh2VshW7Y9qlIY0YMFE8OHGAZUJxYGDp7W3G+cbMHG0uSylLpD+TtfTzmHjSAYGSni/lsPKGNbNumcZ5dx72qSBgeLWsXaMgfYJcC+HDiItWzSOcMWcWSd6OtGcP/ulLwRl74E0yNRYqPoua90l9BJZ+iNR+uDIAJL/C0KgyuoEHzlprGg48gqIO2MBJa6wopPcZmhvnN2cGmN/y3Bb7VqMD9Q6Qb4me6vq2e+eg1fdibEwjhlsQdeZf0DWOxBKM4BAAA="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02Ry27DIBBFv6V7TPOQqm6bSN2ldZzuI4yn0cQ2OAykqpD/vTyc2hvuvczMkRg2/HXNV0/ihwrZtEWHNfcfQBaakxWyZftvVQojerBgYjiIYUB1YWHg7GnL/c7JFmwsTS5LqTuUv/P1lHPYCYKRkSLuv/SAMrZlk855dhlPriZpcLCoVawtc4DdAuzowEGsZZPOGbaII+tEXzeC+3en5IO49CWYHokSG0XPfaW7hE46Qx882p4FEVjib1EY3EGF4Cs3jQUdR1YBaWcksNQVVnyJywz1T2cHl9b43xL8XqsG8wOVboBf6fm+fuGbVfiyKyEWximLPfAq6x9YUz12zgEAAA=="
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/CDKMetadata/Default"

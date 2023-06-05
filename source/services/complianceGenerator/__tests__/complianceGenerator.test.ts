@@ -149,7 +149,7 @@ describe("ComplianceGenerator", function () {
   });
 
   describe("metrics index", () => {
-    test("[BDD] successful send anonymous metric", async () => {
+    test("[BDD] successful send anonymized metric", async () => {
       mockS3.onAnyCommand().resolves({});
       const resp = await Metrics.sendAnonymousMetric("queueUrl", {
         Solution: "",

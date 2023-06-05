@@ -40,8 +40,7 @@ describe("waiter tests for waitUntilDNSFirewallRuleGroupNotShared", () => {
       console.log(`negative test ${e}`);
     }
   });
-  test("failed with waiter timeout error", async () => {
-    jest.setTimeout(60000); // increasing jest default timeout to allow waiter to err with timeout
+  test("failed with waiter timeout error", async () => {    
     mock.mockResolvedValue({
       FirewallRuleGroup: { id: "myId", ShareStatus: ShareStatus.SharedByMe },
     });
@@ -62,7 +61,8 @@ describe("waiter tests for waitUntilDNSFirewallRuleGroupNotShared", () => {
         })
       );
     }
-  });
+    // increasing jest default timeout to allow waiter to err with timeout 60000 ms (60 seconds)
+  }, 60000);
   test("failed with API error", async () => {
     mock.mockRejectedValue("AccessDenied");
     try {

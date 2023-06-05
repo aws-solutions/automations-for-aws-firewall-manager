@@ -70,7 +70,7 @@ export class FMSHelper {
     });
     try {
       const ddb = new DynamoDBClient({
-        customUserAgent,
+        customUserAgent: customUserAgent,
         logger: serviceLogger,
       });
       const params = {
@@ -137,7 +137,7 @@ export class FMSHelper {
     });
     try {
       const ddb = new DynamoDBClient({
-        customUserAgent,
+        customUserAgent: customUserAgent,
         logger: serviceLogger,
       });
       const params = {
@@ -213,7 +213,7 @@ export class FMSHelper {
     });
     try {
       const ddb = new DynamoDBClient({
-        customUserAgent,
+        customUserAgent: customUserAgent,
         logger: serviceLogger,
       });
       const params = {
@@ -264,7 +264,11 @@ export class FMSHelper {
       message: `getting ssm parameter ${ssmParameterName}`,
     });
     try {
-      const ssm = new SSMClient({ customUserAgent, logger: serviceLogger });
+      const ssm = new SSMClient({
+        customUserAgent: customUserAgent,
+        logger: serviceLogger,
+      });
+
       const response = await ssm.send(
         new GetParameterCommand({ Name: ssmParameterName })
       );
@@ -305,7 +309,7 @@ export class FMSHelper {
     });
     try {
       const ec2 = new EC2Client({
-        customUserAgent,
+        customUserAgent: customUserAgent,
         logger: serviceLogger,
       });
 
@@ -354,14 +358,14 @@ export class FMSHelper {
       if (region === "Global") {
         fms = new FMSClient({
           region: "us-east-1",
-          customUserAgent,
+          customUserAgent: customUserAgent,
           logger: serviceLogger,
         });
       } else {
         fms = new FMSClient({
           region: region,
           maxAttempts: +(process.env.MAX_ATTEMPTS as string), // to avoid throttling exceptions
-          customUserAgent,
+          customUserAgent: customUserAgent,
           logger: serviceLogger,
         });
       }
@@ -410,14 +414,14 @@ export class FMSHelper {
           fms = new FMSClient({
             region: "us-east-1",
             maxAttempts: +(process.env.MAX_ATTEMPTS as string), // to avoid throttling exceptions
-            customUserAgent,
+            customUserAgent: customUserAgent,
             logger: serviceLogger,
           });
         } else {
           fms = new FMSClient({
             region: region,
             maxAttempts: +(process.env.MAX_ATTEMPTS as string), // to avoid throttling exceptions
-            customUserAgent,
+            customUserAgent: customUserAgent,
             logger: serviceLogger,
           });
         }

@@ -53,52 +53,9 @@ export class PolicyEngine {
       message: `triggering event: ${trigger}`,
     });
     if (trigger === "Region") {
-      if (this.validatorObject.ouDelete) {
-        // nothing to do
-      } else if (
-        this.validatorObject.ouValid &&
-        this.validatorObject.regionDelete
-      ) {
-        // delete regional policies
-        await this.deleteRegionalPolicy("All");
-      } else if (
-        this.validatorObject.ouValid &&
-        this.validatorObject.regionValid
-      ) {
-        // save regional policies
-        const _regions = await FMSHelper.getRegions();
-        const delRegions = _regions.filter((r) => !this.regions.includes(r));
-        await this.deleteRegionalPolicy(delRegions);
-        await this.saveRegionalPolicy(this.regions);
-      }
+      await this.handleTriggerRegion();
     } else if (trigger === "OU") {
-      if (this.validatorObject.ouDelete) {
-        // delete global + regional policies
-        await this.deleteAllPolicy(
-          [POLICY_TYPE.WAF_GLOBAL, POLICY_TYPE.SHIELD_GLOBAL],
-          "Global"
-        );
-        await this.deleteRegionalPolicy(this.regions);
-      } else if (
-        this.validatorObject.ouValid &&
-        this.validatorObject.regionValid
-      ) {
-        // save global + regional policies
-        await this.saveAllPolicy(
-          [POLICY_TYPE.WAF_GLOBAL, POLICY_TYPE.SHIELD_GLOBAL],
-          "Global"
-        );
-        await this.saveRegionalPolicy(this.regions);
-      } else if (
-        this.validatorObject.ouValid &&
-        (this.validatorObject.regionDelete || !this.validatorObject.regionValid)
-      ) {
-        // save global policies
-        await this.saveAllPolicy(
-          [POLICY_TYPE.WAF_GLOBAL, POLICY_TYPE.SHIELD_GLOBAL],
-          "Global"
-        );
-      }
+      await this.handleTriggerOU();
     } else if (trigger === "Tag") {
       if (this.validatorObject.ouDelete) {
         // nothing to do
@@ -302,7 +259,7 @@ export class PolicyEngine {
     const Key = manifestLocation.split("|")[1];
 
     const s3 = new S3Client({
-      customUserAgent,
+      customUserAgent: customUserAgent,
       logger: serviceLogger,
     });
 
@@ -334,4 +291,56 @@ export class PolicyEngine {
       throw new Error("error getting policy manifest");
     }
   };
+
+  private handleTriggerRegion = async (): Promise<void> => {
+    if (!this.validatorObject.ouDelete) {
+      if (
+        this.validatorObject.ouValid &&
+        this.validatorObject.regionDelete
+      ) {
+        // delete regional policies
+        await this.deleteRegionalPolicy("All");
+      } else if (
+        this.validatorObject.ouValid &&
+        this.validatorObject.regionValid
+      ) {
+        // save regional policies
+        const _regions = await FMSHelper.getRegions();
+        const delRegions = _regions.filter((r) => !this.regions.includes(r));
+        await this.deleteRegionalPolicy(delRegions);
+        await this.saveRegionalPolicy(this.regions);
+      }
+    }
+  };
+
+  private handleTriggerOU = async (): Promise<void> => {
+    if (this.validatorObject.ouDelete) {
+      // delete global + regional policies
+      await this.deleteAllPolicy(
+        [POLICY_TYPE.WAF_GLOBAL, POLICY_TYPE.SHIELD_GLOBAL],
+        "Global"
+      );
+      await this.deleteRegionalPolicy(this.regions);
+    } else if (
+      this.validatorObject.ouValid &&
+      this.validatorObject.regionValid
+    ) {
+      // save global + regional policies
+      await this.saveAllPolicy(
+        [POLICY_TYPE.WAF_GLOBAL, POLICY_TYPE.SHIELD_GLOBAL],
+        "Global"
+      );
+      await this.saveRegionalPolicy(this.regions);
+    } else if (
+      this.validatorObject.ouValid &&
+      (this.validatorObject.regionDelete || !this.validatorObject.regionValid)
+    ) {
+      // save global policies
+      await this.saveAllPolicy(
+        [POLICY_TYPE.WAF_GLOBAL, POLICY_TYPE.SHIELD_GLOBAL],
+        "Global"
+      );
+    }
+  };
 }
+

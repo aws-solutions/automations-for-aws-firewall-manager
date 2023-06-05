@@ -15,29 +15,32 @@
     "build:deployment": "npm run build:ts && npm run build:zip",
     "build:all": "npm run build:clean && npm run build:install && npm run build:ts && npm prune --production && npm run build:copy && npm run build:zip"
   },
-  "author": "@aws-solutions",
+  "author": {
+    "name": "Amazon Web Services",
+    "url": "https://aws.amazon.com/solutions"
+  },
   "license": "Apache-2.0",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "~3.288.0",
-    "@aws-sdk/client-ec2": "~3.288.0",
-    "@aws-sdk/client-fms": "~3.288.0",
-    "@aws-sdk/client-ram": "~3.288.0",
-    "@aws-sdk/client-route53resolver": "~3.288.0",
-    "@aws-sdk/client-s3": "~3.288.0",
-    "@aws-sdk/client-sqs": "~3.288.0",
-    "@aws-sdk/client-ssm": "~3.288.0",
-    "@aws-sdk/middleware-retry": "~3.287.0",
-    "@aws-sdk/util-waiter": "~3.272.0",
-    "winston": "~3.3.3"
+    "@aws-sdk/client-dynamodb": "~3.342.0",
+    "@aws-sdk/client-ec2": "~3.342.0",
+    "@aws-sdk/client-fms": "~3.342.0",
+    "@aws-sdk/client-ram": "~3.342.0",
+    "@aws-sdk/client-route53resolver": "~3.342.0",
+    "@aws-sdk/client-s3": "~3.342.0",
+    "@aws-sdk/client-sqs": "~3.342.0",
+    "@aws-sdk/client-ssm": "~3.342.0",
+    "@aws-sdk/middleware-retry": "~3.342.0",
+    "@aws-sdk/util-waiter": "~3.342.0",
+    "winston": "~3.9.0"
   },
   "devDependencies": {
-    "@types/jest": "~26.0.1",
-    "@types/node": "^14.0.12",
-    "jest": "~26.0.1",
+    "@types/jest": "^29.5.1",
+    "@types/node": "^18.11.9",
+    "jest": "^29.5.0",
     "jest-sonar-reporter": "^2.0.0",
     "aws-sdk-client-mock": "^0.6.2",
-    "ts-jest": "^26.1.0",
-    "ts-node": "^8.10.2",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
     "typescript": "^4.0.2"
   },
   "jestSonar": {

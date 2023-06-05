@@ -70,7 +70,7 @@ export class ComplianceGeneratorStack extends NestedStack {
     });
 
     const metricsQueue = new CfnParameter(this, "MetricsQueue", {
-      description: "Metrics queue for solution anonymous metrics",
+      description: "Metrics queue for solution anonymized metrics",
       type: "String",
     });
 
@@ -110,6 +110,7 @@ export class ComplianceGeneratorStack extends NestedStack {
         Solution: {
           SolutionId: manifest.solution.primarySolutionId,
           SolutionVersion: manifest.solution.solutionVersion,
+          UserAgentPrefix: manifest.solution.userAgentPrefix,
         },
       },
     });
@@ -253,10 +254,7 @@ export class ComplianceGeneratorStack extends NestedStack {
           MAX_ATTEMPTS: "" + 10, // retry attempts for SDKs, increase if you see throttling errors
           UUID: uuid.valueAsString,
           METRICS_QUEUE: `https://sqs.${this.region}.amazonaws.com/${this.account}/${metricsQueue.valueAsString}`,
-          CUSTOM_SDK_USER_AGENT: `AwsSolution/${map.findInMap(
-            "Solution",
-            "SolutionId"
-          )}/${map.findInMap("Solution", "SolutionVersion")}`,
+          USER_AGENT_PREFIX: map.findInMap("Solution", "UserAgentPrefix"),
         },
         timeout: Duration.seconds(300),
       }

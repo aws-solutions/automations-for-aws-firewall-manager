@@ -73,7 +73,7 @@ The policy template requires following parameters:
 
 _Value for other parameters **Policy Table**, **Metric Queue** and **UUID** can be found out from output section of primary FMS automations stack_
 
-For more details on custom policy template, read here in the [implementation guide](https://docs.aws.amazon.com/solutions/latest/aws-firewall-manager-automations-for-aws-organizations/customize-policies.html)
+For more details on custom policy template, read here in the [implementation guide](https://docs.aws.amazon.com/solutions/latest/automations-for-aws-firewall-manager/customize-policies.html)
 
 ## Customization
 
@@ -249,7 +249,7 @@ Automations for AWS Firewall Manager solution consists of:
 
 ## Collection of operational metrics
 
-This solution collects anonymous operational metrics to help AWS improve the quality and features of the solution. For more information, including how to disable this capability, please see the [implementation guide](https://docs.aws.amazon.com/solutions/latest/aws-firewall-manager-automations-for-aws-organizations).
+This solution collects anonymized operational metrics to help AWS improve the quality and features of the solution. For more information, including how to disable this capability, please see the [implementation guide](https://docs.aws.amazon.com/solutions/latest/automations-for-aws-firewall-manager/solution-overview.html).
 
 ---
 

@@ -26,7 +26,7 @@ describe("Firewall Manager Admin setup", function () {
     service = new FirewallManagerAdminSetup({
       firewallManagerAdminAccountId: ADMIN_ACCOUNT_ID,
       firewallManagerClient: new FMSClient({
-        customUserAgent,
+        customUserAgent: customUserAgent,
         region: dataplane,
         maxAttempts: 3,
       }),

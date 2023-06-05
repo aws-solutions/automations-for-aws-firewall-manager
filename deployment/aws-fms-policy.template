@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.4",
+  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.5",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -50,7 +50,7 @@
     },
     "MetricsQueue": {
       "Type": "String",
-      "Description": "Metrics queue for solution anonymous metrics"
+      "Description": "Metrics queue for solution anonymized metrics"
     },
     "PolicyIdentifier": {
       "Type": "String",
@@ -64,7 +64,109 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.4"
+        "SolutionVersion": "v2.0.5",
+        "UserAgentPrefix": "AwsSolution"
+      }
+    },
+    "DefaultCrNodeVersionMap": {
+      "af-south-1": {
+        "value": "nodejs16.x"
+      },
+      "ap-east-1": {
+        "value": "nodejs16.x"
+      },
+      "ap-northeast-1": {
+        "value": "nodejs16.x"
+      },
+      "ap-northeast-2": {
+        "value": "nodejs16.x"
+      },
+      "ap-northeast-3": {
+        "value": "nodejs16.x"
+      },
+      "ap-south-1": {
+        "value": "nodejs16.x"
+      },
+      "ap-south-2": {
+        "value": "nodejs16.x"
+      },
+      "ap-southeast-1": {
+        "value": "nodejs16.x"
+      },
+      "ap-southeast-2": {
+        "value": "nodejs16.x"
+      },
+      "ap-southeast-3": {
+        "value": "nodejs16.x"
+      },
+      "ca-central-1": {
+        "value": "nodejs16.x"
+      },
+      "cn-north-1": {
+        "value": "nodejs16.x"
+      },
+      "cn-northwest-1": {
+        "value": "nodejs16.x"
+      },
+      "eu-central-1": {
+        "value": "nodejs16.x"
+      },
+      "eu-central-2": {
+        "value": "nodejs16.x"
+      },
+      "eu-north-1": {
+        "value": "nodejs16.x"
+      },
+      "eu-south-1": {
+        "value": "nodejs16.x"
+      },
+      "eu-south-2": {
+        "value": "nodejs16.x"
+      },
+      "eu-west-1": {
+        "value": "nodejs16.x"
+      },
+      "eu-west-2": {
+        "value": "nodejs16.x"
+      },
+      "eu-west-3": {
+        "value": "nodejs16.x"
+      },
+      "me-central-1": {
+        "value": "nodejs16.x"
+      },
+      "me-south-1": {
+        "value": "nodejs16.x"
+      },
+      "sa-east-1": {
+        "value": "nodejs16.x"
+      },
+      "us-east-1": {
+        "value": "nodejs16.x"
+      },
+      "us-east-2": {
+        "value": "nodejs16.x"
+      },
+      "us-gov-east-1": {
+        "value": "nodejs16.x"
+      },
+      "us-gov-west-1": {
+        "value": "nodejs16.x"
+      },
+      "us-iso-east-1": {
+        "value": "nodejs14.x"
+      },
+      "us-iso-west-1": {
+        "value": "nodejs14.x"
+      },
+      "us-isob-east-1": {
+        "value": "nodejs14.x"
+      },
+      "us-west-1": {
+        "value": "nodejs16.x"
+      },
+      "us-west-2": {
+        "value": "nodejs16.x"
       }
     }
   },
@@ -388,7 +490,7 @@
               {
                 "Ref": "ManifestBucket46C412A5"
               },
-              "\",\"CopySource\":\"solutions-reference/aws-firewall-manager-automations-for-aws-organizations/v2.0.4/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1682091098757\"}}"
+              "\",\"CopySource\":\"solutions-reference/aws-firewall-manager-automations-for-aws-organizations/v2.0.5/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1685737722912\"}}"
             ]
           ]
         },
@@ -488,7 +590,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.4/asseta9d3d4d1afa000946b9863b3e7578a5a5ad86d88274b3639938aa2baebf822ce.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/assetbb459fac5f6b4b052aac9803443226d161a5cfe96f4648b21f9e4912c698bf30.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -497,7 +599,15 @@
           ]
         },
         "Handler": "index.handler",
-        "Runtime": "nodejs14.x",
+        "Runtime": {
+          "Fn::FindInMap": [
+            "DefaultCrNodeVersionMap",
+            {
+              "Ref": "AWS::Region"
+            },
+            "value"
+          ]
+        },
         "Timeout": 120
       },
       "DependsOn": [
@@ -505,7 +615,7 @@
       ],
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AWS679f53fac002430cb0da5b7982bd2287/Resource",
-        "aws:asset:path": "asset.a9d3d4d1afa000946b9863b3e7578a5a5ad86d88274b3639938aa2baebf822ce",
+        "aws:asset:path": "asset.bb459fac5f6b4b052aac9803443226d161a5cfe96f4648b21f9e4912c698bf30",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Code"
       }
@@ -622,7 +732,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.4/assetb37c9b103cb70e73a7d6abedb9f592d8116a0ea00f7ffd2713bd1630ab397bdc.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/assetc441e06e248f52dd548cba7275f7a1aa6e62a5fb382a8acd0dd0f71d522be5ab.zip"
         },
         "Role": {
           "Fn::GetAtt": [
@@ -726,27 +836,11 @@
                 ]
               ]
             },
-            "CUSTOM_SDK_USER_AGENT": {
-              "Fn::Join": [
-                "",
-                [
-                  "AwsSolution/",
-                  {
-                    "Fn::FindInMap": [
-                      "PolicyStackMap",
-                      "Solution",
-                      "SolutionId"
-                    ]
-                  },
-                  "/",
-                  {
-                    "Fn::FindInMap": [
-                      "PolicyStackMap",
-                      "Solution",
-                      "SolutionVersion"
-                    ]
-                  }
-                ]
+            "USER_AGENT_PREFIX": {
+              "Fn::FindInMap": [
+                "PolicyStackMap",
+                "Solution",
+                "UserAgentPrefix"
               ]
             }
           }
@@ -1238,7 +1332,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/21STU/DMAz9LdzTDJj4usGmgZAGjI77lKVelbVNSpxsQlX/O07atYC4xO+92I4d+5I3N1f8/EwcMZFZkZRqy5tXQAfZ2glZsPlOr4QVFTiwgbyIulY6ZxSwaRAr3qydJWGp0P1yHEnnMPCW4ZQ3My8LcMGxR51ZmVLJr1HueUdmAqFlpai2maB3KWkJzuhHr6VTRrMBUPiAFwfQ7lkfTAFzo3cqD7f/iiuwlUKkoJYpQZ2NxfQoNSUEGmxoYyMQwSF/CIbhJ/Lm3YOPPh2I55jnB20ZhCIoJPV9Vh+yliYnbWnyJ2t8HfQTblsmPTpTbSyg8VYCvXzEedTSXmJ/KeU94QHEemm+eZgkebx5V/s4DPqNTLn4BdNb2ov7sBhoSh80WhE6nPXS4SRcxA62VmU5JP1YFqP0YZZRa5k2GfA9Tg4X1/zijtLuUanEeu1UBTzt7DezQUtgiwIAAA=="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/21STU/DMAz9LdzT7EtCcAOmgZAGjI77lKVelbVNSpxsQlX/O07atYC4xO+92I4de86bmxmfXokzJjIrklLtefMK6CDbOiELtjzojbCiAgc2kBdR10rnjAJ2DWLFm62zJKwVul+OI+kcBt4yXPDmwcsCXHDsUWc2plTya5R73pEHgdCyUlT7TNC7lLQEZ/Sj19Ipo9kAKHzAqxNo96xPpoCl0QeVh9t/xQ3YSiFSUMuUoM7GYnqUmhICDTa0sROI4JDfB8PwE3nz7sFHnw7Ec8zzg7YMQhEUkvo+qw9ZS5OTtjb5kzW+DvoFty2THp2pdhbQeCuBXj7jMmppL7G/lPJe8ABivTTfPEySPN68q30cBv1Gplz8gsUt7cVdWAw0pQ8arQgdznrpcBIuYgd7q7Ickn4sq1H6MOuotUybDPgRJ6fZNZ9PKe0RlUqs105VwNPOfgP4EImyiwIAAA=="
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CDKMetadata/Default"

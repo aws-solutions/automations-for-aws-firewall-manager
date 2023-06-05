@@ -91,6 +91,7 @@ export class PreReqStack extends Stack {
           SolutionVersion: manifest.solution.solutionVersion,
           GlobalStackSetName: manifest.prereqStack.globalStackSetName,
           RegionalStackSetName: manifest.prereqStack.regionalStackSetName,
+          UserAgentPrefix: manifest.solution.userAgentPrefix,
         },
       },
     });
@@ -110,15 +111,12 @@ export class PreReqStack extends Stack {
       ),
       handler: "index.handler",
       memorySize: 128,
-      timeout: Duration.seconds(5),
+      timeout: Duration.seconds(30),
       environment: {
         METRICS_ENDPOINT: map.findInMap("Metric", "MetricsEndpoint"),
         SEND_METRIC: map.findInMap("Metric", "SendAnonymousMetric"),
         LOG_LEVEL: LOG_LEVEL.INFO, //change as needed
-        CUSTOM_SDK_USER_AGENT: `AwsSolution/${map.findInMap(
-          "Solution",
-          "SolutionId"
-        )}/${map.findInMap("Solution", "SolutionVersion")}`,
+        USER_AGENT_PREFIX: map.findInMap("Solution", "UserAgentPrefix"),
       },
     });
 
@@ -170,15 +168,12 @@ export class PreReqStack extends Stack {
         ),
         handler: "index.handler",
         memorySize: 256,
-        timeout: Duration.seconds(15),
+        timeout: Duration.seconds(60),
         environment: {
           METRICS_ENDPOINT: map.findInMap("Metric", "MetricsEndpoint"),
           SEND_METRIC: map.findInMap("Metric", "SendAnonymousMetric"),
           LOG_LEVEL: LOG_LEVEL.INFO, //change as needed
-          CUSTOM_SDK_USER_AGENT: `AwsSolution/${map.findInMap(
-            "Solution",
-            "SolutionId"
-          )}/${map.findInMap("Solution", "SolutionVersion")}`,
+          USER_AGENT_PREFIX: map.findInMap("Solution", "UserAgentPrefix"),
         },
       }
     );

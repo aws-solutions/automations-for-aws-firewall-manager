@@ -4,6 +4,7 @@
     "outDir": "./dist",
     "declaration": false,
     "noImplicitAny": true,
+    "skipLibCheck": true,
     "noEmit": false
   }
 }

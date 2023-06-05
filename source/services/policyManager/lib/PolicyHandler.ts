@@ -216,7 +216,7 @@ export class PolicyHandler {
       message: `deleting DNS firewall rule group for AWSManagedDomains list in ${region}`,
     });
     const route53Client = new Route53ResolverClient({
-      customUserAgent,
+      customUserAgent: customUserAgent,
       region,
       logger: serviceLogger,
     });
@@ -265,7 +265,7 @@ export class PolicyHandler {
             message: `deleting resource share in ${region}`,
           });
           const ramClient = new RAMClient({
-            customUserAgent,
+            customUserAgent: customUserAgent,
             region,
             logger: serviceLogger,
           });
@@ -323,7 +323,7 @@ export class PolicyHandler {
     });
     // get AWS Managed domain list
     const route53Client = new Route53ResolverClient({
-      customUserAgent,
+      customUserAgent: customUserAgent,
       region,
       logger: serviceLogger,
     });

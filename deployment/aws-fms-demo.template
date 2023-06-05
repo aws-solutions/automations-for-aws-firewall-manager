@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134D) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations demo resources. Version v2.0.4",
+  "Description": "(SO0134D) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations demo resources. Version v2.0.5",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Resources": {
     "testcloudfronts3S3LoggingBucket90D239DD": {
@@ -966,7 +966,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/3VRy27CMBD8lt4dU0B93UrTgnJpI4K4Vs7GtCbBRvYahKL8e9cOEC69eGfHq/F4Z8Lbpwd+fyeOLoGqThpV8rZAATUj6rt1U96+eaglsnSjz6gvuWkUnAa67zsGjfHVxhqNvJ17DaiMDlNX/K4cWlX62HxZ9aP0DEA6l1VSo8KomQaVeVD5b+JWpmMSJrxd7yHcrPOU5b4kO4UvdW99QEvjUa5E2ciBH7iZcwaUuJiOFwF8ZHkonwIXAuVRnFhu1YHgIJxplJbwZaB3cu5mSEv93ZF9Vkjwlj6xsMbvo4dbouvYUjrjLcR3b3FqdKX6706fKbTXkJozTVwB5UcHWg/oRjHOaw4JpTjsc2WKace0qSTfutFh/MjHLyS2dUol1tN6d5Iv+/oHEmoDhh4CAAA="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/3VRy27CMBD8lt4d85Kq9laaFpRLGyWIa+VsTGsINrLXIBTl37t2gHDh4p0dr8bjnSlvXyZ8/CROLoF6lzSq4m2JAnaMqJ/WzXj77mEnkaUbfUF9yU2j4DzQfd8xaIyvN9Zo5O3Ca0BldJi64Q/l0KrKx+bbql+l5wDSuayWGhVGzTSoLILKo4l7mY5JmPJ2fYBws85TlvuK7JS+0r31ARXGo1yJqpEDP3Bz5wwocTUdLwL4zPJQvgQuBcqTOLPcqiPBQTjTKC3h60Dv5NLNkZb6tyf7rJTgLX1iaY0/RA/3RNexQjrjLcR373FqdK36785eKbS3kJozTVwB5UcHWg/oRjHOWw4JpTjsc2XKWce0qSXfutFx8synYxLbOqUS62m9e8mLvv4D9kFK4h4CAAA="
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/CDKMetadata/Default"
