@@ -24,7 +24,8 @@
     "@aws-sdk/client-s3": "~3.342.0",
     "got": "~11.8.6",
     "uuid": "~9.0.0",
-    "winston": "~3.9.0"
+    "winston": "~3.9.0",
+    "fast-xml-parser": "4.2.4"
   },
   "devDependencies": {
     "@types/uuid": "^9.0.0",
@@ -38,5 +39,11 @@
   },
   "jestSonar": {
     "reportPath": "coverage"
+  },
+  "overrides": {
+    "fast-xml-parser": "4.2.4"
+  },
+  "resolutions": {
+    "fast-xml-parser": "4.2.4"
   }
 }
