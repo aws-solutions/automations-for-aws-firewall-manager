@@ -7,7 +7,7 @@
     "userAgentPrefix": "AwsSolution",
     "metricsEndpoint": "https://metrics.awssolutionsbuilder.com/generic",
     "name": "%%SOLUTION_NAME%%",
-    "policyBucket": "%%TEMPLATE_BUCKET%%",
+    "policyBucket": "%%BUCKET_NAME%%",
     "templateVersion": "2010-09-09",
     "sendMetric": "Yes"
   },
@@ -16,5 +16,7 @@
     "regionalStackSetName": "FMS-EnableConfig-Regional",
     "prereqPolicy": "FMS-PreReqManager-Policy"
   },
-  "commonResourceStack": { "helperPolicy": "FMS-Helper-Policy" }
+  "commonResourceStack": {
+    "helperPolicy": "FMS-Helper-Policy"
+  }
 }
