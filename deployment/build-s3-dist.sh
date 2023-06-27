@@ -95,8 +95,8 @@ echo "cp $staging_dist_dir/*.template.json $template_dist_dir/"
 cp $staging_dist_dir/*.template.json $template_dist_dir/
 rm *.template.json
 
-# Move policy_manifest to template_dist_dir
-cp $resource_dir/lib/policy_manifest.json $template_dist_dir/
+# Move policy_manifest to build_dist_dir
+ cp $resource_dir/lib/policy_manifest.json $build_dist_dir/
 
 # Rename all *.template.json files to *.template
 echo "Rename all *.template.json to *.template"

@@ -19,7 +19,7 @@ import {
   CfnParameter,
   NestedStackProps,
 } from "aws-cdk-lib";
-import {Construct} from "constructs";
+import { Construct } from "constructs";
 import { StringListParameter, StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Queue, QueueEncryption, QueuePolicy } from "aws-cdk-lib/aws-sqs";
 import { Code, Runtime, Function, CfnFunction } from "aws-cdk-lib/aws-lambda";
@@ -40,8 +40,7 @@ import { AnyPrincipal, Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { IAMConstruct } from "./iam";
 import manifest from "./solution_manifest.json";
 import { LOG_LEVEL } from "./exports";
-import {EventbridgeToLambda} from "@aws-solutions-constructs/aws-eventbridge-lambda";
-
+import { EventbridgeToLambda } from "@aws-solutions-constructs/aws-eventbridge-lambda";
 
 export class PolicyStack extends NestedStack {
   /**
@@ -213,7 +212,7 @@ export class PolicyStack extends NestedStack {
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       serverAccessLogsBucket: accessLogsBucket,
-      enforceSSL: true
+      enforceSSL: true,
     });
 
     /**
@@ -238,7 +237,7 @@ export class PolicyStack extends NestedStack {
         action: "copyObject",
         parameters: {
           Bucket: policyBucket.bucketName,
-          CopySource: `${manifest.solution.policyBucket}/${manifest.solution.name}/${manifest.solution.solutionVersion}/policy_manifest.json`,
+          CopySource: `${manifest.solution.policyBucket}-${this.region}/${manifest.solution.name}/${manifest.solution.solutionVersion}/policy_manifest.json`,
           Key: "policy_manifest.json",
         },
         physicalResourceId: PhysicalResourceId.of(Date.now().toString()),
@@ -248,7 +247,9 @@ export class PolicyStack extends NestedStack {
           effect: Effect.ALLOW,
           sid: "S3Get",
           actions: ["s3:GetObject"],
-          resources: [`arn:aws:s3:::${manifest.solution.policyBucket}/*`],
+          resources: [
+            `arn:aws:s3:::${manifest.solution.policyBucket}-${this.region}/*`,
+          ],
         }),
         new PolicyStatement({
           effect: Effect.ALLOW,
