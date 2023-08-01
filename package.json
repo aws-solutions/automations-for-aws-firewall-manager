@@ -31,5 +31,11 @@
     "typedoc-plugin-no-inherit": "1.3.0",
     "typescript": "^4.2.2",
     "@aws-sdk/client-s3": "^3.315"
+  },
+  "overrides": {
+    "word-wrap": "1.2.4"
+  },
+  "resolutions": {
+    "word-wrap": "1.2.4"
   }
 }

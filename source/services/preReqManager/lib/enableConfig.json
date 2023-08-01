@@ -5,7 +5,9 @@
     "AWS::CloudFormation::Interface": {
       "ParameterGroups": [
         {
-          "Label": { "default": "Recorder Configuration" },
+          "Label": {
+            "default": "Recorder Configuration"
+          },
           "Parameters": [
             "AllSupported",
             "IncludeGlobalResourceTypes",
@@ -13,16 +15,28 @@
           ]
         },
         {
-          "Label": { "default": "Delivery Channel Configuration" },
-          "Parameters": ["DeliveryChannelName", "Frequency"]
+          "Label": {
+            "default": "Delivery Channel Configuration"
+          },
+          "Parameters": [
+            "DeliveryChannelName",
+            "Frequency"
+          ]
         },
         {
-          "Label": { "default": "Delivery Notifications" },
-          "Parameters": ["TopicArn", "NotificationEmail"]
+          "Label": {
+            "default": "Delivery Notifications"
+          },
+          "Parameters": [
+            "TopicArn",
+            "NotificationEmail"
+          ]
         }
       ],
       "ParameterLabels": {
-        "AllSupported": { "default": "Support all resource types" },
+        "AllSupported": {
+          "default": "Support all resource types"
+        },
         "IncludeGlobalResourceTypes": {
           "default": "Include global resource types"
         },
@@ -32,9 +46,15 @@
         "DeliveryChannelName": {
           "default": "Configuration delivery channel name"
         },
-        "Frequency": { "default": "Snapshot delivery frequency" },
-        "TopicArn": { "default": "SNS topic name" },
-        "NotificationEmail": { "default": "Notification Email (optional)" }
+        "Frequency": {
+          "default": "Snapshot delivery frequency"
+        },
+        "TopicArn": {
+          "default": "SNS topic name"
+        },
+        "NotificationEmail": {
+          "default": "Notification Email (optional)"
+        }
       }
     }
   },
@@ -43,13 +63,19 @@
       "Type": "String",
       "Default": true,
       "Description": "Indicates whether to record all supported resource types.",
-      "AllowedValues": [true, false]
+      "AllowedValues": [
+        true,
+        false
+      ]
     },
     "IncludeGlobalResourceTypes": {
       "Type": "String",
       "Default": true,
       "Description": "Indicates whether AWS Config records all supported global resource types.",
-      "AllowedValues": [true, false]
+      "AllowedValues": [
+        true,
+        false
+      ]
     },
     "ResourceTypes": {
       "Type": "List<String>",
@@ -65,7 +91,13 @@
       "Type": "String",
       "Default": "24hours",
       "Description": "The frequency with which AWS Config delivers configuration snapshots.",
-      "AllowedValues": ["1hour", "3hours", "6hours", "12hours", "24hours"]
+      "AllowedValues": [
+        "1hour",
+        "3hours",
+        "6hours",
+        "12hours",
+        "24hours"
+      ]
     },
     "TopicArn": {
       "Type": "String",
@@ -79,18 +111,44 @@
     }
   },
   "Conditions": {
-    "IsAllSupported": { "Fn::Equals": [{ "Ref": "AllSupported" }, true] },
-    "IsGeneratedDeliveryChannelName": {
-      "Fn::Equals": [{ "Ref": "DeliveryChannelName" }, "<Generated>"]
+    "IsAllSupported": {
+      "Fn::Equals": [
+        {
+          "Ref": "AllSupported"
+        },
+        true
+      ]
     },
-    "CreateTopic": { "Fn::Equals": [{ "Ref": "TopicArn" }, "<New Topic>"] },
+    "IsGeneratedDeliveryChannelName": {
+      "Fn::Equals": [
+        {
+          "Ref": "DeliveryChannelName"
+        },
+        "<Generated>"
+      ]
+    },
+    "CreateTopic": {
+      "Fn::Equals": [
+        {
+          "Ref": "TopicArn"
+        },
+        "<New Topic>"
+      ]
+    },
     "CreateSubscription": {
       "Fn::And": [
-        { "Condition": "CreateTopic" },
+        {
+          "Condition": "CreateTopic"
+        },
         {
           "Fn::Not": [
             {
-              "Fn::Equals": [{ "Ref": "NotificationEmail" }, "<None>"]
+              "Fn::Equals": [
+                {
+                  "Ref": "NotificationEmail"
+                },
+                "<None>"
+              ]
             }
           ]
         }
@@ -148,40 +206,70 @@
         },
         "VersioningConfiguration": {
           "Status": "Enabled"
+        },
+        "AccessControl": "LogDeliveryWrite"
+      },
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W35",
+              "reason": "Configuration bucket is being used for storing logs and does not require logging configuration"
+            }
+          ]
         }
       }
     },
     "ConfigBucketPolicy": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {
-        "Bucket": { "Ref": "ConfigBucket" },
+        "Bucket": {
+          "Ref": "ConfigBucket"
+        },
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
             {
               "Action": "s3:*",
-              "Effect":"Deny",
+              "Effect": "Deny",
               "Principal": "*",
               "Resource": [
-                { "Fn::Sub": "arn:aws:s3:::${ConfigBucket}/*" },
-                { "Fn::Sub": "arn:aws:s3:::${ConfigBucket}" }
+                {
+                  "Fn::Sub": "arn:aws:s3:::${ConfigBucket}/*"
+                },
+                {
+                  "Fn::Sub": "arn:aws:s3:::${ConfigBucket}"
+                }
               ],
-              "Condition":{
-                "Bool":
-                { "aws:SecureTransport": false }
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": false
+                }
               }
             },
             {
               "Sid": "AWSConfigBucketPermissionsCheck",
               "Effect": "Allow",
-              "Principal": { "Service": ["config.amazonaws.com"] },
+              "Principal": {
+                "Service": [
+                  "config.amazonaws.com"
+                ]
+              },
               "Action": "s3:GetBucketAcl",
-              "Resource": [{ "Fn::Sub": "arn:aws:s3:::${ConfigBucket}" }]
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:aws:s3:::${ConfigBucket}"
+                }
+              ]
             },
             {
               "Sid": "AWSConfigBucketDelivery",
               "Effect": "Allow",
-              "Principal": { "Service": ["config.amazonaws.com"] },
+              "Principal": {
+                "Service": [
+                  "config.amazonaws.com"
+                ]
+              },
               "Action": "s3:PutObject",
               "Resource": [
                 {
@@ -197,7 +285,9 @@
       "Condition": "CreateTopic",
       "Type": "AWS::SNS::Topic",
       "Properties": {
-        "TopicName": { "Fn::Sub": "config-topic-${AWS::AccountId}" },
+        "TopicName": {
+          "Fn::Sub": "config-topic-${AWS::AccountId}"
+        },
         "DisplayName": "AWS Config Notification Topic",
         "KmsMasterKeyId": {
           "Fn::Join": [
@@ -225,15 +315,27 @@
       "Condition": "CreateTopic",
       "Type": "AWS::SNS::TopicPolicy",
       "Properties": {
-        "Topics": [{ "Ref": "ConfigTopic" }],
+        "Topics": [
+          {
+            "Ref": "ConfigTopic"
+          }
+        ],
         "PolicyDocument": {
           "Statement": [
             {
               "Sid": "AWSConfigSNSPolicy",
-              "Action": ["sns:Publish"],
+              "Action": [
+                "sns:Publish"
+              ],
               "Effect": "Allow",
-              "Resource": { "Ref": "ConfigTopic" },
-              "Principal": { "Service": ["config.amazonaws.com"] }
+              "Resource": {
+                "Ref": "ConfigTopic"
+              },
+              "Principal": {
+                "Service": [
+                  "config.amazonaws.com"
+                ]
+              }
             }
           ]
         }
@@ -243,9 +345,13 @@
       "Condition": "CreateSubscription",
       "Type": "AWS::SNS::Subscription",
       "Properties": {
-        "Endpoint": { "Ref": "NotificationEmail" },
+        "Endpoint": {
+          "Ref": "NotificationEmail"
+        },
         "Protocol": "email",
-        "TopicArn": { "Ref": "ConfigTopic" }
+        "TopicArn": {
+          "Ref": "ConfigTopic"
+        }
       }
     },
     "ConfigRecorderRole": {
@@ -256,8 +362,14 @@
           "Statement": [
             {
               "Effect": "Allow",
-              "Principal": { "Service": ["config.amazonaws.com"] },
-              "Action": ["sts:AssumeRole"]
+              "Principal": {
+                "Service": [
+                  "config.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
             }
           ]
         },
@@ -269,17 +381,33 @@
     },
     "ConfigRecorder": {
       "Type": "AWS::Config::ConfigurationRecorder",
-      "DependsOn": ["ConfigBucketPolicy", "ConfigTopicPolicy"],
+      "DependsOn": [
+        "ConfigBucketPolicy",
+        "ConfigTopicPolicy"
+      ],
       "Properties": {
-        "RoleARN": { "Fn::GetAtt": ["ConfigRecorderRole", "Arn"] },
+        "RoleARN": {
+          "Fn::GetAtt": [
+            "ConfigRecorderRole",
+            "Arn"
+          ]
+        },
         "RecordingGroup": {
-          "AllSupported": { "Ref": "AllSupported" },
-          "IncludeGlobalResourceTypes": { "Ref": "IncludeGlobalResourceTypes" },
+          "AllSupported": {
+            "Ref": "AllSupported"
+          },
+          "IncludeGlobalResourceTypes": {
+            "Ref": "IncludeGlobalResourceTypes"
+          },
           "ResourceTypes": {
             "Fn::If": [
               "IsAllSupported",
-              { "Ref": "AWS::NoValue" },
-              { "Ref": "ResourceTypes" }
+              {
+                "Ref": "AWS::NoValue"
+              },
+              {
+                "Ref": "ResourceTypes"
+              }
             ]
           }
         }
@@ -287,13 +415,20 @@
     },
     "ConfigDeliveryChannel": {
       "Type": "AWS::Config::DeliveryChannel",
-      "DependsOn": ["ConfigBucketPolicy", "ConfigTopicPolicy"],
+      "DependsOn": [
+        "ConfigBucketPolicy",
+        "ConfigTopicPolicy"
+      ],
       "Properties": {
         "Name": {
           "Fn::If": [
             "IsGeneratedDeliveryChannelName",
-            { "Ref": "AWS::NoValue" },
-            { "Ref": "DeliveryChannelName" }
+            {
+              "Ref": "AWS::NoValue"
+            },
+            {
+              "Ref": "DeliveryChannelName"
+            }
           ]
         },
         "ConfigSnapshotDeliveryProperties": {
@@ -301,16 +436,24 @@
             "Fn::FindInMap": [
               "Settings",
               "FrequencyMap",
-              { "Ref": "Frequency" }
+              {
+                "Ref": "Frequency"
+              }
             ]
           }
         },
-        "S3BucketName": { "Ref": "ConfigBucket" },
+        "S3BucketName": {
+          "Ref": "ConfigBucket"
+        },
         "SnsTopicARN": {
           "Fn::If": [
             "CreateTopic",
-            { "Ref": "ConfigTopic" },
-            { "Ref": "TopicArn" }
+            {
+              "Ref": "ConfigTopic"
+            },
+            {
+              "Ref": "TopicArn"
+            }
           ]
         }
       }
