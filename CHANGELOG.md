@@ -5,8 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
- ## [2.0.6] - 2023-06-27
-  		  
+## [2.0.7] - 2023-08-10
+
+### Changed
+
+- Update aws-cdk-lib to force CustomResourceProvider and Provider to update lambda runtimes to Nodejs18.x.
+
+## [2.0.6] - 2023-06-27
+
 ### Fixed
 
 - Fixed dependabot issues for fast-xml-parser, [CVE-2023-34104](https://nvd.nist.gov/vuln/detail/CVE-2023-34104).
