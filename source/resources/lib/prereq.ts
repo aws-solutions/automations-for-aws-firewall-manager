@@ -168,7 +168,7 @@ export class PreReqStack extends Stack {
         ),
         handler: "index.handler",
         memorySize: 256,
-        timeout: Duration.seconds(60),
+        timeout: Duration.seconds(300),
         environment: {
           METRICS_ENDPOINT: map.findInMap("Metric", "MetricsEndpoint"),
           SEND_METRIC: map.findInMap("Metric", "SendAnonymousMetric"),
