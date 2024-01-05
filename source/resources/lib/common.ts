@@ -144,7 +144,7 @@ export class CommonResourceStack extends Stack {
         "Solution",
         "SolutionId"
       )} - Function to help with FMS solution installation (DO NOT DELETE)`,
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_18_X,
       code: Code.fromAsset(
         `${path.dirname(__dirname)}/../services/helper/dist/helperFunction.zip`
       ),
@@ -279,7 +279,7 @@ export class CommonResourceStack extends Stack {
         "Solution",
         "SolutionId"
       )} - Function to publish FMS solution metrics to aws-solutions`,
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_18_X,
       code: Code.fromAsset(
         `${path.dirname(
           __dirname

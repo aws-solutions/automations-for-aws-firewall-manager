@@ -1,7 +1,7 @@
 ---
 id: SO0134 # Solution Id
 name: automations-for-aws-firewall-manager # trademarked name
-version: v2.0.8 # current version of the solution. Used to verify template headers
+version: v2.0.9 # current version of the solution. Used to verify template headers
 regions: # List of supported regions per partition -or- `all` for all regions in partition
    commercial:
     - all # All the commercial regions; otherwise provide a list of regions
@@ -15,4 +15,4 @@ cloudformation_templates: # This list should match with AWS CloudFormation templ
   - template: aws-fms-compliance.template
   - template: aws-fms-demo.template
 build_environment:
-    build_image: 'aws/codebuild/standard:7.0' # Options include: 'aws/codebuild/standard:5.0','aws/codebuild/standard:6.0','aws/codebuild/standard:7.0','aws/codebuild/amazonlinux2-x86_64-standard:4.0','aws/codebuild/amazonlinux2-x86_64-standard:5.0'
+    build_image: 'aws/codebuild/standard:7.0'
