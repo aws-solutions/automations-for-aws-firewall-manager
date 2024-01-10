@@ -232,7 +232,7 @@ export class ComplianceGeneratorStack extends NestedStack {
       "ComplianceGenerator",
       {
         description: `${manifest.solution.primarySolutionId} - Function to generate compliance reports for FMS policies`,
-        runtime: Runtime.NODEJS_16_X,
+        runtime: Runtime.NODEJS_18_X,
         deadLetterQueue: dlq,
         code: Code.fromAsset(
           `${path.dirname(

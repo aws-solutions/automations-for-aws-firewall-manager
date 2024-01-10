@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.0.9] - 2024-01-07
+
+### Changed
+
+- Update NodeJS runtimes to Nodejs18.x for all the lambda functions in the solution.
+
 ## [2.0.8] - 2023-10-31
 
 ### Changed
@@ -20,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update aws-cdk-lib to force CustomResourceProvider and Provider to update lambda runtimes to Nodejs18.x.
+- Update aws-cdk-lib to force CustomResourceProvider and Provider to update lambda runtime to Nodejs18.x.
 
 ## [2.0.6] - 2023-06-27
 

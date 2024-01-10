@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { App, CfnResource, Stack, StackProps } from "aws-cdk-lib";
-import { Vpc, SecurityGroup, Peer, Port } from "aws-cdk-lib/aws-ec2";
+import { Vpc, SecurityGroup, Peer, Port, IpAddresses, ISubnet } from "aws-cdk-lib/aws-ec2";
 import manifest from "./solution_manifest.json";
 const {
   CloudFrontToS3,
@@ -38,11 +38,11 @@ export class DemoStack extends Stack {
      * Security Groups
      */
     const vpc = new Vpc(this, "test-VPC", {
-      cidr: "10.0.0.0/16",
+      ipAddresses: IpAddresses.cidr("10.0.0.0/16"),
     });
 
-    vpc.publicSubnets.forEach((s) => {
-      const cfnSubnet = s.node.defaultChild as CfnResource;
+    vpc.publicSubnets.forEach((subnet: ISubnet) => {
+      const cfnSubnet = subnet.node.defaultChild as CfnResource;
       cfnSubnet.addPropertyOverride("MapPublicIpOnLaunch", false);
     });
 

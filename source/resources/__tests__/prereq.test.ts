@@ -13,9 +13,9 @@ describe("==Pre-requisite Stack Tests==", () => {
     test("has helper, pre-req and provider lambda functions", () => {
       expect(stack).toCountResources("AWS::Lambda::Function", 4);
     });
-    test("lambda function has nodejs16 runtime", () => {
+    test("lambda function has nodejs18 runtime", () => {
       expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-        Runtime: "nodejs16.x",
+        Runtime: "nodejs18.x",
       });
     });
     test("has custom resource for launch", () => {

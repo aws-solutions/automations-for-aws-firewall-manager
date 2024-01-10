@@ -105,7 +105,7 @@ export class PreReqStack extends Stack {
      */
     const helperFunction: Function = new Function(this, "FMSHelperFunction", {
       description: "DO NOT DELETE - FMS helper function",
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_18_X,
       code: Code.fromAsset(
         `${path.dirname(__dirname)}/../services/helper/dist/helperFunction.zip`
       ),
@@ -160,7 +160,7 @@ export class PreReqStack extends Stack {
       {
         description:
           "Function to validate and install pre-requisites for the FMS solution",
-        runtime: Runtime.NODEJS_16_X,
+        runtime: Runtime.NODEJS_18_X,
         code: Code.fromAsset(
           `${path.dirname(
             __dirname
