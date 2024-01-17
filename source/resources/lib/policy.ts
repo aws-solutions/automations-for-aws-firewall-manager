@@ -301,7 +301,7 @@ export class PolicyStack extends NestedStack {
         "Solution",
         "SolutionId"
       )} - Function to create/update/delete FMS security policies`,
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_18_X,
       code: Code.fromAsset(
         `${path.dirname(
           __dirname
