@@ -37,7 +37,7 @@ describe("==Policy Stack Tests==", () => {
     });
     test("has policy manager lambda function", () => {
       expect(policyStack).toHaveResource("AWS::Lambda::Function", {
-        Runtime: "nodejs16.x",
+        Runtime: "nodejs18.x",
       });
     });
     test("has cloudwatch log group", () => {
