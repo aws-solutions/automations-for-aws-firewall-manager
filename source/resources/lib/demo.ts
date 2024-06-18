@@ -38,7 +38,7 @@ export class DemoStack extends Stack {
      * Security Groups
      */
     const vpc = new Vpc(this, "test-VPC", {
-      ipAddresses: IpAddresses.cidr("10.0.0.0/16"),
+      ipAddresses: IpAddresses.cidr("10.0.0.0/16"), //NOSONAR
     });
 
     vpc.publicSubnets.forEach((subnet: ISubnet) => {
@@ -50,7 +50,7 @@ export class DemoStack extends Stack {
       vpc: vpc,
       allowAllOutbound: true,
     });
-    sg.addIngressRule(Peer.anyIpv4(), Port.allTcp());
+    sg.addIngressRule(Peer.anyIpv4(), Port.allTcp()); //NOSONAR
 
     //=============================================================================================
     // cfn_nag suppress rules

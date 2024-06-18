@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.10] - 2024-06-19
+
+### Security
+- Upgraded `braces` package to mitigate [CVE-2024-4068](https://avd.aquasec.com/nvd/2024/cve-2024-4068/)
+
+### Fixed
+- Fixed intermittent deployment failure caused by "CopyManifest" custom resource installing latest SDK version.
 
 ## [2.0.9] - 2024-01-07
 

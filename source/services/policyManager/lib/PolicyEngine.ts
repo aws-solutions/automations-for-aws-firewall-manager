@@ -275,7 +275,7 @@ export class PolicyEngine {
       Bucket,
       Key,
     });
-
+    
     try {
       const { Body } = await s3.send(command);
       logger.info({
