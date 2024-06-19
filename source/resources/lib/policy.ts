@@ -242,6 +242,7 @@ export class PolicyStack extends NestedStack {
         },
         physicalResourceId: PhysicalResourceId.of(Date.now().toString()),
       },
+      installLatestAwsSdk: false,
       policy: AwsCustomResourcePolicy.fromStatements([
         new PolicyStatement({
           effect: Effect.ALLOW,

@@ -16,7 +16,5 @@
     "regionalStackSetName": "FMS-EnableConfig-Regional",
     "prereqPolicy": "FMS-PreReqManager-Policy"
   },
-  "commonResourceStack": {
-    "helperPolicy": "FMS-Helper-Policy"
-  }
+  "commonResourceStack": { "helperPolicy": "FMS-Helper-Policy" }
 }

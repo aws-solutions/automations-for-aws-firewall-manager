@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134N) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.5",
+  "Description": "(SO0134N) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.10",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -48,7 +48,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134N",
-        "SolutionVersion": "v2.0.5",
+        "SolutionVersion": "v2.0.10",
         "GlobalStackSetName": "FMS-EnableConfig-Global",
         "RegionalStackSetName": "FMS-EnableConfig-Regional",
         "UserAgentPrefix": "AwsSolution"
@@ -97,13 +97,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/assetf61d8efdffd22a1aaf0e604e17c95273adfd0cfbc4bd714478dbdb7e5adea20b.zip"
-        },
-        "Role": {
-          "Fn::GetAtt": [
-            "FMSHelperFunctionServiceRoleA51F4DD9",
-            "Arn"
-          ]
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/assetd121122acde085efd7d2a7f074c5a51327e86cc2fb1104c44095fa98bb2fdd69.zip"
         },
         "Description": "DO NOT DELETE - FMS helper function",
         "Environment": {
@@ -134,7 +128,13 @@
         },
         "Handler": "index.handler",
         "MemorySize": 128,
-        "Runtime": "nodejs16.x",
+        "Role": {
+          "Fn::GetAtt": [
+            "FMSHelperFunctionServiceRoleA51F4DD9",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
         "Timeout": 30
       },
       "DependsOn": [
@@ -245,13 +245,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/asset8e3d635893ea17fa3158623489cd42c680fad925b38de1ef51cb10d84f6e245e.zip"
-        },
-        "Role": {
-          "Fn::GetAtt": [
-            "HelperProviderframeworkonEventServiceRole1962DD43",
-            "Arn"
-          ]
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
         },
         "Description": "AWS CDK resource provider framework - onEvent (PreReqStack/HelperProvider)",
         "Environment": {
@@ -265,7 +259,13 @@
           }
         },
         "Handler": "framework.onEvent",
-        "Runtime": "nodejs14.x",
+        "Role": {
+          "Fn::GetAtt": [
+            "HelperProviderframeworkonEventServiceRole1962DD43",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
         "Timeout": 900
       },
       "DependsOn": [
@@ -385,13 +385,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/assetecb807f9c070081e0c4bd9ac06d2751895c07aed841ef68af5849e44caee7239.zip"
-        },
-        "Role": {
-          "Fn::GetAtt": [
-            "PreReqManagerFunctionServiceRole3E2704D1",
-            "Arn"
-          ]
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/assetf3f84a266840977b5a680778ded4c90b32a4741935a3e43fff15f180297682b1.zip"
         },
         "Description": "Function to validate and install pre-requisites for the FMS solution",
         "Environment": {
@@ -422,8 +416,14 @@
         },
         "Handler": "index.handler",
         "MemorySize": 256,
-        "Runtime": "nodejs16.x",
-        "Timeout": 60
+        "Role": {
+          "Fn::GetAtt": [
+            "PreReqManagerFunctionServiceRole3E2704D1",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 300
       },
       "DependsOn": [
         "PreReqManagerFunctionServiceRole3E2704D1"
@@ -627,13 +627,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/asset8e3d635893ea17fa3158623489cd42c680fad925b38de1ef51cb10d84f6e245e.zip"
-        },
-        "Role": {
-          "Fn::GetAtt": [
-            "PreReqProviderframeworkonEventServiceRoleF7D67BDC",
-            "Arn"
-          ]
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
         },
         "Description": "AWS CDK resource provider framework - onEvent (PreReqStack/PreReqProvider)",
         "Environment": {
@@ -647,7 +641,13 @@
           }
         },
         "Handler": "framework.onEvent",
-        "Runtime": "nodejs14.x",
+        "Role": {
+          "Fn::GetAtt": [
+            "PreReqProviderframeworkonEventServiceRoleF7D67BDC",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
         "Timeout": 900
       },
       "DependsOn": [
@@ -738,7 +738,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/01Q0U7DMAz8Ft5Tsw0J8com8YaoygdUXmImr01Sxc6mqeq/02SAeLqzz/advIOXLWwe8CqNdUMz8hHmT0U7mMNXaDGhJ6VUinecJg4ns47284j+6BDmtxyscgxl4JcvhtHD3MWRSrtiG0e2t3qzssXIU48ipAKvBdYa9tkOpHsUWkxHEnOyZKq6JjoVb5tFo+/TjyjQpnhhVwJW5W+r+P7jH1mnrIUdYnB8TxmiIzjL42X7DLvN+oSzMDcpB2VP0N3xG1usIq4gAQAA"
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02OwU7DMAyGn2X31FB2GUc2idtE1T1A5SVm8tokVexsQlXfHSUDxOn/7N/27xdo2x08b/AujXVjM/EZlpOiHc3hM3SY0JNSKsUR55nDxeBdhmVCf3YIy3sOVjmGMvDLq2H0sPRxotKu2sWJ7Ve9WWk1sh1QhFTgrYiRLeyzHUn3KLSaniTmZMlU96R4Kdk2i0Y/pB9ToEvxxq48WJ2/rZL7jz+yzlkLHWJw/PgyREdwladbu4P2FdrNVZiblIOyJ+gf+g0sSuuEIQEAAA=="
       },
       "Metadata": {
         "aws:cdk:path": "PreReqStack/CDKMetadata/Default"
@@ -899,6 +899,22 @@
                 {
                   "Ref": "AWS::Region"
                 },
+                "il-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
                 "me-south-1"
               ]
             },
@@ -909,7 +925,11 @@
                 },
                 "sa-east-1"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
             {
               "Fn::Equals": [
                 {
@@ -925,11 +945,7 @@
                 },
                 "us-east-2"
               ]
-            }
-          ]
-        },
-        {
-          "Fn::Or": [
+            },
             {
               "Fn::Equals": [
                 {

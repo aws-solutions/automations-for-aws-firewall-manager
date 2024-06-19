@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.5",
+  "Description": "(SO0134) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.10",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -38,7 +38,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.5",
+        "SolutionVersion": "v2.0.10",
         "UserAgentPrefix": "AwsSolution"
       }
     }
@@ -193,6 +193,22 @@
                 {
                   "Ref": "AWS::Region"
                 },
+                "il-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
                 "me-south-1"
               ]
             },
@@ -203,7 +219,11 @@
                 },
                 "sa-east-1"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
             {
               "Fn::Equals": [
                 {
@@ -219,11 +239,7 @@
                 },
                 "us-east-2"
               ]
-            }
-          ]
-        },
-        {
-          "Fn::Or": [
+            },
             {
               "Fn::Equals": [
                 {
@@ -287,13 +303,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/assetf61d8efdffd22a1aaf0e604e17c95273adfd0cfbc4bd714478dbdb7e5adea20b.zip"
-        },
-        "Role": {
-          "Fn::GetAtt": [
-            "HelperFunctionServiceRole6B43B152",
-            "Arn"
-          ]
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/assetd121122acde085efd7d2a7f074c5a51327e86cc2fb1104c44095fa98bb2fdd69.zip"
         },
         "Description": {
           "Fn::Join": [
@@ -338,7 +348,13 @@
         },
         "Handler": "index.handler",
         "MemorySize": 512,
-        "Runtime": "nodejs16.x"
+        "Role": {
+          "Fn::GetAtt": [
+            "HelperFunctionServiceRole6B43B152",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x"
       },
       "DependsOn": [
         "HelperFunctionServiceRole6B43B152"
@@ -448,13 +464,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/asset8e3d635893ea17fa3158623489cd42c680fad925b38de1ef51cb10d84f6e245e.zip"
-        },
-        "Role": {
-          "Fn::GetAtt": [
-            "HelperProviderframeworkonEventServiceRole1962DD43",
-            "Arn"
-          ]
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
         },
         "Description": "AWS CDK resource provider framework - onEvent (CommonResourceStack/HelperProvider)",
         "Environment": {
@@ -468,7 +478,13 @@
           }
         },
         "Handler": "framework.onEvent",
-        "Runtime": "nodejs14.x",
+        "Role": {
+          "Fn::GetAtt": [
+            "HelperProviderframeworkonEventServiceRole1962DD43",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
         "Timeout": 900
       },
       "DependsOn": [
@@ -573,16 +589,6 @@
     "FMSTable84B8646C": {
       "Type": "AWS::DynamoDB::Table",
       "Properties": {
-        "KeySchema": [
-          {
-            "AttributeName": "PolicyName",
-            "KeyType": "HASH"
-          },
-          {
-            "AttributeName": "Region",
-            "KeyType": "RANGE"
-          }
-        ],
         "AttributeDefinitions": [
           {
             "AttributeName": "PolicyName",
@@ -594,6 +600,16 @@
           }
         ],
         "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": [
+          {
+            "AttributeName": "PolicyName",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "Region",
+            "KeyType": "RANGE"
+          }
+        ],
         "PointInTimeRecoverySpecification": {
           "PointInTimeRecoveryEnabled": true
         },
@@ -773,13 +789,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/assetd72c40e9198a7f69e1e525c456cae4305e1dc8b40874eca18533b8157e166a7d.zip"
-        },
-        "Role": {
-          "Fn::GetAtt": [
-            "MetricsManagerServiceRole00F759D1",
-            "Arn"
-          ]
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/assetc2fc4947fa6b45b1ca7c63d62ff33796fd3ecb60c42097ac6bf591e52d481b39.zip"
         },
         "Description": {
           "Fn::Join": [
@@ -811,7 +821,13 @@
         "Handler": "index.handler",
         "MemorySize": 128,
         "ReservedConcurrentExecutions": 1,
-        "Runtime": "nodejs16.x",
+        "Role": {
+          "Fn::GetAtt": [
+            "MetricsManagerServiceRole00F759D1",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
         "Timeout": 15
       },
       "DependsOn": [
@@ -836,15 +852,15 @@
     "MetricsManagerSqsEventSourceCommonResourceStackMetricsQueueBA3FDDBD01BF5955": {
       "Type": "AWS::Lambda::EventSourceMapping",
       "Properties": {
-        "FunctionName": {
-          "Ref": "MetricsManager98639C73"
-        },
         "BatchSize": 1,
         "EventSourceArn": {
           "Fn::GetAtt": [
             "MetricsQueue0DAB96B7",
             "Arn"
           ]
+        },
+        "FunctionName": {
+          "Ref": "MetricsManager98639C73"
         }
       },
       "Metadata": {
@@ -886,7 +902,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/2VRTU/DMAz9LdyzsA0JcWUTuyFKx71yEzNlbZJSJ0VT1f9O4qJSiUv8nu3nr+zl005u7+CbNko3m9bUcjwHUI04froCerAYsM/kFbrOuEuGR++0CcY7kXTV2IKtNcjxFJ1ib0pZ8MuALpx97BWuKvz3TsKAlWPpW8wJbAvfGnXjSRhNgh4qIMJA8jmbxOUhqgbDAQiFvjmwXqcVPqCe6zBIui+S43vEyM4Z8Ms6Rn/NVnSaRInEcwrumG5zyTuoSMHbqv8Nkix6PxidT8WRRZV3WeHltm8xdDFMwnmN8kr3w+5R7rfpK65kzKaPLhiLspztDyJ/yIymAQAA"
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WQTU/DMAyGf8vuqaHsMo5sghuitNwrN8mmrE1S4qTTFPW/o6SoVOKS97Edfz5BWR7gcYc3Krjoi0F1EBuPvGens6nQoZZeumS84zgqc0l4skYor6xheKM2Dqg7gRDfguHZezqblV8naXxjg+NyU+G/d2YKNcTaDjJ9yFrZQfF7niTTzGjfIpH0BC9JGO3hGHgv/RFJMnE3qK3oIH5ht9TJMDP6JoifQYbsXCC/OS/TX7ONOc+slpTnZLlj4/GSduCBvNWt+w0SVM5OSqRT5cialXbZ8Hrbj+DH4GdmrJBwpYepPED5DOXuSkoVLhivtIR60R9Gp9e8pwEAAA=="
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/CDKMetadata/Default"
@@ -896,7 +912,6 @@
     "ComplianceStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.5/aws-fms-compliance.template",
         "Parameters": {
           "MetricsQueue": {
             "Fn::GetAtt": [
@@ -910,7 +925,8 @@
               "UUID"
             ]
           }
-        }
+        },
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.10/aws-fms-compliance.template"
       },
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete",
@@ -924,7 +940,6 @@
     "PolicyStack": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.5/aws-fms-policy.template",
         "Parameters": {
           "PolicyTable": {
             "Ref": "FMSTable84B8646C"
@@ -942,7 +957,8 @@
             ]
           },
           "PolicyIdentifier": "DefaultPolicy"
-        }
+        },
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.10/aws-fms-policy.template"
       },
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete",

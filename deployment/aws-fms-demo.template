@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134D) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations demo resources. Version v2.0.5",
+  "Description": "(SO0134D) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations demo resources. Version v2.0.10",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Resources": {
     "testcloudfronts3S3LoggingBucket90D239DD": {
@@ -257,13 +257,13 @@
     "testcloudfronts3SetHttpSecurityHeaders6C5A1E69": {
       "Type": "AWS::CloudFront::Function",
       "Properties": {
+        "AutoPublish": true,
         "FunctionCode": "function handler(event) { var response = event.response;       var headers = response.headers;       headers['strict-transport-security'] = { value: 'max-age=63072000; includeSubdomains; preload'};       headers['content-security-policy'] = { value: \"default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'\"};       headers['x-content-type-options'] = { value: 'nosniff'};       headers['x-frame-options'] = {value: 'DENY'};       headers['x-xss-protection'] = {value: '1; mode=block'};       return response;     }",
         "FunctionConfig": {
           "Comment": "SetHttpSecurityHeadersc8fc3f3620f2d12733e9771bcc62deb56f30fc09cd",
           "Runtime": "cloudfront-js-1.0"
         },
-        "Name": "SetHttpSecurityHeadersc8fc3f3620f2d12733e9771bcc62deb56f30fc09cd",
-        "AutoPublish": true
+        "Name": "SetHttpSecurityHeadersc8fc3f3620f2d12733e9771bcc62deb56f30fc09cd"
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-cloudfront-s3/SetHttpSecurityHeaders/Resource"
@@ -473,9 +473,6 @@
     "testVPCPublicSubnet1SubnetD8AD9C87": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "VpcId": {
-          "Ref": "testVPC102E57DE"
-        },
         "AvailabilityZone": {
           "Fn::Select": [
             0,
@@ -499,7 +496,10 @@
             "Key": "Name",
             "Value": "DemoStack/test-VPC/PublicSubnet1"
           }
-        ]
+        ],
+        "VpcId": {
+          "Ref": "testVPC102E57DE"
+        }
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-VPC/PublicSubnet1/Subnet"
@@ -508,15 +508,15 @@
     "testVPCPublicSubnet1RouteTable295B11B5": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
-        "VpcId": {
-          "Ref": "testVPC102E57DE"
-        },
         "Tags": [
           {
             "Key": "Name",
             "Value": "DemoStack/test-VPC/PublicSubnet1"
           }
-        ]
+        ],
+        "VpcId": {
+          "Ref": "testVPC102E57DE"
+        }
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-VPC/PublicSubnet1/RouteTable"
@@ -539,12 +539,12 @@
     "testVPCPublicSubnet1DefaultRouteFAE04176": {
       "Type": "AWS::EC2::Route",
       "Properties": {
-        "RouteTableId": {
-          "Ref": "testVPCPublicSubnet1RouteTable295B11B5"
-        },
         "DestinationCidrBlock": "0.0.0.0/0",
         "GatewayId": {
           "Ref": "testVPCIGW757B9544"
+        },
+        "RouteTableId": {
+          "Ref": "testVPCPublicSubnet1RouteTable295B11B5"
         }
       },
       "DependsOn": [
@@ -572,14 +572,14 @@
     "testVPCPublicSubnet1NATGateway0136082C": {
       "Type": "AWS::EC2::NatGateway",
       "Properties": {
-        "SubnetId": {
-          "Ref": "testVPCPublicSubnet1SubnetD8AD9C87"
-        },
         "AllocationId": {
           "Fn::GetAtt": [
             "testVPCPublicSubnet1EIP3939D616",
             "AllocationId"
           ]
+        },
+        "SubnetId": {
+          "Ref": "testVPCPublicSubnet1SubnetD8AD9C87"
         },
         "Tags": [
           {
@@ -599,9 +599,6 @@
     "testVPCPublicSubnet2Subnet384459D2": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "VpcId": {
-          "Ref": "testVPC102E57DE"
-        },
         "AvailabilityZone": {
           "Fn::Select": [
             1,
@@ -625,7 +622,10 @@
             "Key": "Name",
             "Value": "DemoStack/test-VPC/PublicSubnet2"
           }
-        ]
+        ],
+        "VpcId": {
+          "Ref": "testVPC102E57DE"
+        }
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-VPC/PublicSubnet2/Subnet"
@@ -634,15 +634,15 @@
     "testVPCPublicSubnet2RouteTableE0FFB0D0": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
-        "VpcId": {
-          "Ref": "testVPC102E57DE"
-        },
         "Tags": [
           {
             "Key": "Name",
             "Value": "DemoStack/test-VPC/PublicSubnet2"
           }
-        ]
+        ],
+        "VpcId": {
+          "Ref": "testVPC102E57DE"
+        }
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-VPC/PublicSubnet2/RouteTable"
@@ -665,12 +665,12 @@
     "testVPCPublicSubnet2DefaultRoute92199F72": {
       "Type": "AWS::EC2::Route",
       "Properties": {
-        "RouteTableId": {
-          "Ref": "testVPCPublicSubnet2RouteTableE0FFB0D0"
-        },
         "DestinationCidrBlock": "0.0.0.0/0",
         "GatewayId": {
           "Ref": "testVPCIGW757B9544"
+        },
+        "RouteTableId": {
+          "Ref": "testVPCPublicSubnet2RouteTableE0FFB0D0"
         }
       },
       "DependsOn": [
@@ -698,14 +698,14 @@
     "testVPCPublicSubnet2NATGatewayF26FCD14": {
       "Type": "AWS::EC2::NatGateway",
       "Properties": {
-        "SubnetId": {
-          "Ref": "testVPCPublicSubnet2Subnet384459D2"
-        },
         "AllocationId": {
           "Fn::GetAtt": [
             "testVPCPublicSubnet2EIPD027E151",
             "AllocationId"
           ]
+        },
+        "SubnetId": {
+          "Ref": "testVPCPublicSubnet2Subnet384459D2"
         },
         "Tags": [
           {
@@ -725,9 +725,6 @@
     "testVPCPrivateSubnet1Subnet096C7B7F": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "VpcId": {
-          "Ref": "testVPC102E57DE"
-        },
         "AvailabilityZone": {
           "Fn::Select": [
             0,
@@ -751,7 +748,10 @@
             "Key": "Name",
             "Value": "DemoStack/test-VPC/PrivateSubnet1"
           }
-        ]
+        ],
+        "VpcId": {
+          "Ref": "testVPC102E57DE"
+        }
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-VPC/PrivateSubnet1/Subnet"
@@ -760,15 +760,15 @@
     "testVPCPrivateSubnet1RouteTable56F6EAE0": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
-        "VpcId": {
-          "Ref": "testVPC102E57DE"
-        },
         "Tags": [
           {
             "Key": "Name",
             "Value": "DemoStack/test-VPC/PrivateSubnet1"
           }
-        ]
+        ],
+        "VpcId": {
+          "Ref": "testVPC102E57DE"
+        }
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-VPC/PrivateSubnet1/RouteTable"
@@ -791,12 +791,12 @@
     "testVPCPrivateSubnet1DefaultRoute31FC9F7C": {
       "Type": "AWS::EC2::Route",
       "Properties": {
-        "RouteTableId": {
-          "Ref": "testVPCPrivateSubnet1RouteTable56F6EAE0"
-        },
         "DestinationCidrBlock": "0.0.0.0/0",
         "NatGatewayId": {
           "Ref": "testVPCPublicSubnet1NATGateway0136082C"
+        },
+        "RouteTableId": {
+          "Ref": "testVPCPrivateSubnet1RouteTable56F6EAE0"
         }
       },
       "Metadata": {
@@ -806,9 +806,6 @@
     "testVPCPrivateSubnet2SubnetE307A6A8": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-        "VpcId": {
-          "Ref": "testVPC102E57DE"
-        },
         "AvailabilityZone": {
           "Fn::Select": [
             1,
@@ -832,7 +829,10 @@
             "Key": "Name",
             "Value": "DemoStack/test-VPC/PrivateSubnet2"
           }
-        ]
+        ],
+        "VpcId": {
+          "Ref": "testVPC102E57DE"
+        }
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-VPC/PrivateSubnet2/Subnet"
@@ -841,15 +841,15 @@
     "testVPCPrivateSubnet2RouteTable77E55988": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
-        "VpcId": {
-          "Ref": "testVPC102E57DE"
-        },
         "Tags": [
           {
             "Key": "Name",
             "Value": "DemoStack/test-VPC/PrivateSubnet2"
           }
-        ]
+        ],
+        "VpcId": {
+          "Ref": "testVPC102E57DE"
+        }
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/test-VPC/PrivateSubnet2/RouteTable"
@@ -872,12 +872,12 @@
     "testVPCPrivateSubnet2DefaultRoute33BB2C0B": {
       "Type": "AWS::EC2::Route",
       "Properties": {
-        "RouteTableId": {
-          "Ref": "testVPCPrivateSubnet2RouteTable77E55988"
-        },
         "DestinationCidrBlock": "0.0.0.0/0",
         "NatGatewayId": {
           "Ref": "testVPCPublicSubnet2NATGatewayF26FCD14"
+        },
+        "RouteTableId": {
+          "Ref": "testVPCPrivateSubnet2RouteTable77E55988"
         }
       },
       "Metadata": {
@@ -901,11 +901,11 @@
     "testVPCVPCGWC5F7FA73": {
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {
-        "VpcId": {
-          "Ref": "testVPC102E57DE"
-        },
         "InternetGatewayId": {
           "Ref": "testVPCIGW757B9544"
+        },
+        "VpcId": {
+          "Ref": "testVPC102E57DE"
         }
       },
       "Metadata": {
@@ -966,7 +966,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/3VRy27CMBD8lt4d85Kq9laaFpRLGyWIa+VsTGsINrLXIBTl37t2gHDh4p0dr8bjnSlvXyZ8/CROLoF6lzSq4m2JAnaMqJ/WzXj77mEnkaUbfUF9yU2j4DzQfd8xaIyvN9Zo5O3Ca0BldJi64Q/l0KrKx+bbql+l5wDSuayWGhVGzTSoLILKo4l7mY5JmPJ2fYBws85TlvuK7JS+0r31ARXGo1yJqpEDP3Bz5wwocTUdLwL4zPJQvgQuBcqTOLPcqiPBQTjTKC3h60Dv5NLNkZb6tyf7rJTgLX1iaY0/RA/3RNexQjrjLcR373FqdK36785eKbS3kJozTVwB5UcHWg/oRjHOWw4JpTjsc2XKWce0qSXfutFx8synYxLbOqUS62m9e8mLvv4D9kFK4h4CAAA="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/3VRwW7CMAz9Fu5poPQCt7FuIC5bRRHXKXXNZigJih0QqvrvU1tGuez0np+tlxd7qus4nunJyFw5gvIYVVToOhcDR2Wu/FVzouvXAEcUle7tnfWQuYrgNsh93SioXCj33lnR9TJYEHK2nXrwN2LxVISu+PT0TXYBgMzrEq2QdJ5p67JsXf6beLZpFMJU17sztJ1dlqosFBVBHgrbRx/YxgXBrSkqHPRBWzA7IPMXumu05H2dtfBhZGUEr+amMk8XIzgYr62gt/gY6JPcq4WIgZ8TWlE5QvAkt5V34dxleBaaRm2QXfDQvfvMU2dL6r+bzPVk9NJejV3VrYAjcJbFBxAed+d83CHiRA/73Lo8aZR1JeoDjy/xTMdzHY8OTBT5YIVOqDc9/gKZNfYMHwIAAA=="
       },
       "Metadata": {
         "aws:cdk:path": "DemoStack/CDKMetadata/Default"
@@ -1116,6 +1116,22 @@
                 {
                   "Ref": "AWS::Region"
                 },
+                "il-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
                 "me-south-1"
               ]
             },
@@ -1126,7 +1142,11 @@
                 },
                 "sa-east-1"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
             {
               "Fn::Equals": [
                 {
@@ -1142,11 +1162,7 @@
                 },
                 "us-east-2"
               ]
-            }
-          ]
-        },
-        {
-          "Fn::Or": [
+            },
             {
               "Fn::Equals": [
                 {

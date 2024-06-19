@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations compliance reporter resources. Version v2.0.5",
+  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations compliance reporter resources. Version v2.0.10",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -41,7 +41,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.5",
+        "SolutionVersion": "v2.0.10",
         "UserAgentPrefix": "AwsSolution"
       }
     }
@@ -456,13 +456,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/asset738d410bd06b89003de777add46019407797681fbd3f108c2e93f72586460f7a.zip"
-        },
-        "Role": {
-          "Fn::GetAtt": [
-            "ComplianceGeneratorServiceRoleA6DF4428",
-            "Arn"
-          ]
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/asset0c65a0f491e8d69cddfd0b45da98ee9512cd72e06239557b07637450dc95539a.zip"
         },
         "DeadLetterConfig": {
           "TargetArn": {
@@ -542,7 +536,13 @@
         "Handler": "index.handler",
         "MemorySize": 256,
         "ReservedConcurrentExecutions": 200,
-        "Runtime": "nodejs16.x",
+        "Role": {
+          "Fn::GetAtt": [
+            "ComplianceGeneratorServiceRoleA6DF4428",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
         "Timeout": 300
       },
       "DependsOn": [
@@ -586,15 +586,15 @@
     "ComplianceGeneratorTopic955E6B6A": {
       "Type": "AWS::SNS::Subscription",
       "Properties": {
-        "Protocol": "lambda",
-        "TopicArn": {
-          "Ref": "TopicBFC7AF6E"
-        },
         "Endpoint": {
           "Fn::GetAtt": [
             "ComplianceGeneratorAF34739A",
             "Arn"
           ]
+        },
+        "Protocol": "lambda",
+        "TopicArn": {
+          "Ref": "TopicBFC7AF6E"
         }
       },
       "Metadata": {
@@ -749,7 +749,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02Ry27DIBBFv6V7TPOQqm6bSN2ldZzuI4yn0cQ2OAykqpD/vTyc2hvuvczMkRg2/HXNV0/ihwrZtEWHNfcfQBaakxWyZftvVQojerBgYjiIYUB1YWHg7GnL/c7JFmwsTS5LqTuUv/P1lHPYCYKRkSLuv/SAMrZlk855dhlPriZpcLCoVawtc4DdAuzowEGsZZPOGbaII+tEXzeC+3en5IO49CWYHokSG0XPfaW7hE46Qx882p4FEVjib1EY3EGF4Cs3jQUdR1YBaWcksNQVVnyJywz1T2cHl9b43xL8XqsG8wOVboBf6fm+fuGbVfiyKyEWximLPfAq6x9YUz12zgEAAA=="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/01QQW6DMBB8S+5mW5pLemyQektLoffImCVyAJt67USVxd8r26Rw2ZnxzI7kfYE8P8Dzjt8pE22fDbIB/4Fksa0tFz0rOlVyw0e0aII48WmS6sL4nc6e9uCPTvRog7WwBKUepPhdnxedxJETzowUgf/WkxQhlkic6+5W1q4hYeRkpVbB2+qZ0Q+B/3LoMHiJxLmWbeTMBj42LQf/7pR4NG55iWaURLFb8hF8pYdYHXEtffTR/syJ0BK8BWB4Q2UJfOWWNTfgPLMKSTsjkMVUbfklHLPo1Kezk4tn/I8UnSq0amX6oNItwpWebvkB8lfId1eSMjNOWTkiVAn/AJceVgfPAQAA"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/CDKMetadata/Default"
@@ -915,6 +915,22 @@
                 {
                   "Ref": "AWS::Region"
                 },
+                "il-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
                 "me-south-1"
               ]
             },
@@ -925,7 +941,11 @@
                 },
                 "sa-east-1"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
             {
               "Fn::Equals": [
                 {
@@ -941,11 +961,7 @@
                 },
                 "us-east-2"
               ]
-            }
-          ]
-        },
-        {
-          "Fn::Or": [
+            },
             {
               "Fn::Equals": [
                 {

@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.5",
+  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.10",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -64,109 +64,8 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.5",
+        "SolutionVersion": "v2.0.10",
         "UserAgentPrefix": "AwsSolution"
-      }
-    },
-    "DefaultCrNodeVersionMap": {
-      "af-south-1": {
-        "value": "nodejs16.x"
-      },
-      "ap-east-1": {
-        "value": "nodejs16.x"
-      },
-      "ap-northeast-1": {
-        "value": "nodejs16.x"
-      },
-      "ap-northeast-2": {
-        "value": "nodejs16.x"
-      },
-      "ap-northeast-3": {
-        "value": "nodejs16.x"
-      },
-      "ap-south-1": {
-        "value": "nodejs16.x"
-      },
-      "ap-south-2": {
-        "value": "nodejs16.x"
-      },
-      "ap-southeast-1": {
-        "value": "nodejs16.x"
-      },
-      "ap-southeast-2": {
-        "value": "nodejs16.x"
-      },
-      "ap-southeast-3": {
-        "value": "nodejs16.x"
-      },
-      "ca-central-1": {
-        "value": "nodejs16.x"
-      },
-      "cn-north-1": {
-        "value": "nodejs16.x"
-      },
-      "cn-northwest-1": {
-        "value": "nodejs16.x"
-      },
-      "eu-central-1": {
-        "value": "nodejs16.x"
-      },
-      "eu-central-2": {
-        "value": "nodejs16.x"
-      },
-      "eu-north-1": {
-        "value": "nodejs16.x"
-      },
-      "eu-south-1": {
-        "value": "nodejs16.x"
-      },
-      "eu-south-2": {
-        "value": "nodejs16.x"
-      },
-      "eu-west-1": {
-        "value": "nodejs16.x"
-      },
-      "eu-west-2": {
-        "value": "nodejs16.x"
-      },
-      "eu-west-3": {
-        "value": "nodejs16.x"
-      },
-      "me-central-1": {
-        "value": "nodejs16.x"
-      },
-      "me-south-1": {
-        "value": "nodejs16.x"
-      },
-      "sa-east-1": {
-        "value": "nodejs16.x"
-      },
-      "us-east-1": {
-        "value": "nodejs16.x"
-      },
-      "us-east-2": {
-        "value": "nodejs16.x"
-      },
-      "us-gov-east-1": {
-        "value": "nodejs16.x"
-      },
-      "us-gov-west-1": {
-        "value": "nodejs16.x"
-      },
-      "us-iso-east-1": {
-        "value": "nodejs14.x"
-      },
-      "us-iso-west-1": {
-        "value": "nodejs14.x"
-      },
-      "us-isob-east-1": {
-        "value": "nodejs14.x"
-      },
-      "us-west-1": {
-        "value": "nodejs16.x"
-      },
-      "us-west-2": {
-        "value": "nodejs16.x"
       }
     }
   },
@@ -174,8 +73,6 @@
     "FMSOUs9CEEEC1C": {
       "Type": "AWS::SSM::Parameter",
       "Properties": {
-        "Type": "StringList",
-        "Value": "NOP",
         "Description": "FMS parameter store for OUs",
         "Name": {
           "Fn::Join": [
@@ -188,7 +85,9 @@
               "/OUs"
             ]
           ]
-        }
+        },
+        "Type": "StringList",
+        "Value": "NOP"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/FMSOUs/Resource"
@@ -197,8 +96,6 @@
     "FMSTags216E0D22": {
       "Type": "AWS::SSM::Parameter",
       "Properties": {
-        "Type": "String",
-        "Value": "NOP",
         "Description": "fms parameter for fms tags",
         "Name": {
           "Fn::Join": [
@@ -211,7 +108,9 @@
               "/Tags"
             ]
           ]
-        }
+        },
+        "Type": "String",
+        "Value": "NOP"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/FMSTags/Resource"
@@ -220,8 +119,6 @@
     "FMSRegions39DF213B": {
       "Type": "AWS::SSM::Parameter",
       "Properties": {
-        "Type": "StringList",
-        "Value": "NOP",
         "Description": "fms parameter for fms regions",
         "Name": {
           "Fn::Join": [
@@ -234,7 +131,9 @@
               "/Regions"
             ]
           ]
-        }
+        },
+        "Type": "StringList",
+        "Value": "NOP"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/FMSRegions/Resource"
@@ -490,11 +389,15 @@
               {
                 "Ref": "ManifestBucket46C412A5"
               },
-              "\",\"CopySource\":\"solutions-reference/aws-firewall-manager-automations-for-aws-organizations/v2.0.5/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1685737722912\"}}"
+              "\",\"CopySource\":\"solutions-",
+              {
+                "Ref": "AWS::Region"
+              },
+              "/aws-firewall-manager-automations-for-aws-organizations/v2.0.10/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1718725613573\"}}"
             ]
           ]
         },
-        "InstallLatestAwsSdk": true
+        "InstallLatestAwsSdk": false
       },
       "DependsOn": [
         "CopyManifestCustomResourcePolicy37D7914D"
@@ -513,7 +416,18 @@
             {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Resource": "arn:aws:s3:::solutions-reference/*",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::solutions-",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "/*"
+                  ]
+                ]
+              },
               "Sid": "S3Get"
             },
             {
@@ -590,24 +504,16 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/assetbb459fac5f6b4b052aac9803443226d161a5cfe96f4648b21f9e4912c698bf30.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/asset17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544.zip"
         },
+        "Handler": "index.handler",
         "Role": {
           "Fn::GetAtt": [
             "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
             "Arn"
           ]
         },
-        "Handler": "index.handler",
-        "Runtime": {
-          "Fn::FindInMap": [
-            "DefaultCrNodeVersionMap",
-            {
-              "Ref": "AWS::Region"
-            },
-            "value"
-          ]
-        },
+        "Runtime": "nodejs18.x",
         "Timeout": 120
       },
       "DependsOn": [
@@ -615,7 +521,7 @@
       ],
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AWS679f53fac002430cb0da5b7982bd2287/Resource",
-        "aws:asset:path": "asset.bb459fac5f6b4b052aac9803443226d161a5cfe96f4648b21f9e4912c698bf30",
+        "aws:asset:path": "asset.17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Code"
       }
@@ -732,13 +638,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.5/assetc441e06e248f52dd548cba7275f7a1aa6e62a5fb382a8acd0dd0f71d522be5ab.zip"
-        },
-        "Role": {
-          "Fn::GetAtt": [
-            "PolicyManagerServiceRoleC35CBD54",
-            "Arn"
-          ]
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/asset013e8c75d236c32a1fab745b7186aba0455339de79b1c9ca3d7499c59b99d3d4.zip"
         },
         "DeadLetterConfig": {
           "TargetArn": {
@@ -847,7 +747,13 @@
         },
         "Handler": "index.handler",
         "MemorySize": 512,
-        "Runtime": "nodejs16.x",
+        "Role": {
+          "Fn::GetAtt": [
+            "PolicyManagerServiceRoleC35CBD54",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
         "Timeout": 900
       },
       "DependsOn": [
@@ -879,9 +785,9 @@
         "FunctionName": {
           "Ref": "PolicyManager16647975"
         },
-        "Qualifier": "$LATEST",
         "MaximumEventAgeInSeconds": 900,
-        "MaximumRetryAttempts": 0
+        "MaximumRetryAttempts": 0,
+        "Qualifier": "$LATEST"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManager/EventInvokeConfig/Resource"
@@ -1326,13 +1232,19 @@
               "reason": "Read & Write permissions needed to create WAFv2 policies"
             }
           ]
+        },
+        "guard": {
+          "SuppressedRules": [
+            "IAM_POLICY_NON_COMPLIANT_ARN"
+          ],
+          "Reason": "DTAS guard rule incorrectly marks ARNs with wildcard (*) in region/account section as invalid"
         }
       }
     },
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/21STU/DMAz9LdzT7EtCcAOmgZAGjI77lKVelbVNSpxsQlX/O07atYC4xO+92I4de86bmxmfXokzJjIrklLtefMK6CDbOiELtjzojbCiAgc2kBdR10rnjAJ2DWLFm62zJKwVul+OI+kcBt4yXPDmwcsCXHDsUWc2plTya5R73pEHgdCyUlT7TNC7lLQEZ/Sj19Ipo9kAKHzAqxNo96xPpoCl0QeVh9t/xQ3YSiFSUMuUoM7GYnqUmhICDTa0sROI4JDfB8PwE3nz7sFHnw7Ec8zzg7YMQhEUkvo+qw9ZS5OTtjb5kzW+DvoFty2THp2pdhbQeCuBXj7jMmppL7G/lPJe8ABivTTfPEySPN68q30cBv1Gplz8gsUt7cVdWAw0pQ8arQgdznrpcBIuYgd7q7Ickn4sq1H6MOuotUybDPgRJ6fZNZ9PKe0RlUqs105VwNPOfgP4EImyiwIAAA=="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/22SwW7bMAyGnyV3ma3XS3tra3TDgGxLk94DRaYNNTaZiVSCQfC7F7K9eBt2Ef//E0GQoj5BKst7uF3ZixSuPhadP0D6jqJY79S6o6ka2thge1QM2Xyzp5On1tiL7JNID2mnwVO79qJ/JS5mSrj6wcgdpOfojqg5cVZT2HDn3a8Fz34yz1ZwMJ3tD7WFtPPUdqhMnyM59UzmKqpmgS9nJP1KZz5ixdT4Nt/+F24w9F7EMw3G2x7S0systtxhtjnmMfZWBFXgKQcjPwXSa8Q45kxiPJc6f9jBYG5CIG3jXDXmqh23AmnN7ZfA8ZT5bz0MxkVR7vcBhWNwKPB0kWpk2xmZf21DV30VY787tW3eZNXQj6inOC6jYqq9jk9w9wC3q8f8MYS7mJkUjkk0RKdyky/GCQ7B1y0W81peFvTG65ENhrhGeJebc3kP5QOUq3fxvgiR1PcI2yl+ACkz0r2MAgAA"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CDKMetadata/Default"
@@ -1498,6 +1410,22 @@
                 {
                   "Ref": "AWS::Region"
                 },
+                "il-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
                 "me-south-1"
               ]
             },
@@ -1508,7 +1436,11 @@
                 },
                 "sa-east-1"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
             {
               "Fn::Equals": [
                 {
@@ -1524,11 +1456,7 @@
                 },
                 "us-east-2"
               ]
-            }
-          ]
-        },
-        {
-          "Fn::Or": [
+            },
             {
               "Fn::Equals": [
                 {

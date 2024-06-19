@@ -238,6 +238,11 @@ export class IAMConstruct extends Construct {
             },
           ],
         },
+        guard: {
+          SuppressedRules: ["IAM_POLICY_NON_COMPLIANT_ARN"],
+          Reason:
+            "DTAS guard rule incorrectly marks ARNs with wildcard (*) in region/account section as invalid",
+        },
       };
   }
 }

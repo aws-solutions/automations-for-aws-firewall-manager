@@ -34,4 +34,6 @@ __snapshots__
 # IDE project files
 .idea
 
+#vscode settings
+.vscode
 
