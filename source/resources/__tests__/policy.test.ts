@@ -42,7 +42,7 @@ describe("==Policy Stack Tests==", () => {
     });
     test("has cloudwatch log group", () => {
       expect(policyStack).toHaveResource("AWS::Logs::LogGroup", {
-        RetentionInDays: 7,
+        RetentionInDays: 3653,
       });
     });
   });

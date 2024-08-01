@@ -355,7 +355,7 @@ export class PolicyStack extends NestedStack {
     const lg: LogGroup = new LogGroup(this, "PolicyMangerLogGroup", {
       logGroupName: `/aws/lambda/${policyManager.functionName}`,
       removalPolicy: RemovalPolicy.DESTROY,
-      retention: RetentionDays.ONE_WEEK,
+      retention: RetentionDays.TEN_YEARS,
     });
 
     /**

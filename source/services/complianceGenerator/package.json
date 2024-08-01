@@ -40,6 +40,9 @@
     "winston": "~3.9.0",
     "got": "~11.8.6"
   },
+  "overrides": {
+    "fast-xml-parser": ">=4.4.1"
+  },
   "jestSonar": {
     "reportPath": "coverage"
   }

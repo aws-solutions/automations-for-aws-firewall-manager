@@ -31,6 +31,9 @@
     "name": "Amazon Web Services",
     "url": "https://aws.amazon.com/solutions"
   },
+  "overrides": {
+    "fast-xml-parser": ">=4.4.1"
+  },
   "license": "Apache-2.0",
   "jestSonar": {
     "reportPath": "coverage"

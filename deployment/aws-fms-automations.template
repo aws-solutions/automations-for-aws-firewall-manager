@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.10",
+  "Description": "(SO0134) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.11",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -38,7 +38,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.10",
+        "SolutionVersion": "v2.0.11",
         "UserAgentPrefix": "AwsSolution"
       }
     }
@@ -303,7 +303,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/assetd121122acde085efd7d2a7f074c5a51327e86cc2fb1104c44095fa98bb2fdd69.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/asset65cb064f1448ec88ad58959c7b3936a7c0f0b90b6a84e2143aa944da5ab7e61b.zip"
         },
         "Description": {
           "Fn::Join": [
@@ -464,7 +464,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
         },
         "Description": "AWS CDK resource provider framework - onEvent (CommonResourceStack/HelperProvider)",
         "Environment": {
@@ -789,7 +789,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/assetc2fc4947fa6b45b1ca7c63d62ff33796fd3ecb60c42097ac6bf591e52d481b39.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/assetcf37c8159d10a0ef4973f62aecd215913bc1e21a8fe6fba6656497a30267d0df.zip"
         },
         "Description": {
           "Fn::Join": [
@@ -926,7 +926,7 @@
             ]
           }
         },
-        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.10/aws-fms-compliance.template"
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.11/aws-fms-compliance.template"
       },
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete",
@@ -958,7 +958,7 @@
           },
           "PolicyIdentifier": "DefaultPolicy"
         },
-        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.10/aws-fms-policy.template"
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.11/aws-fms-policy.template"
       },
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete",
