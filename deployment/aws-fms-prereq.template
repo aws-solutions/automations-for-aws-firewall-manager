@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134N) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.10",
+  "Description": "(SO0134N) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.11",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -48,7 +48,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134N",
-        "SolutionVersion": "v2.0.10",
+        "SolutionVersion": "v2.0.11",
         "GlobalStackSetName": "FMS-EnableConfig-Global",
         "RegionalStackSetName": "FMS-EnableConfig-Regional",
         "UserAgentPrefix": "AwsSolution"
@@ -97,7 +97,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/assetd121122acde085efd7d2a7f074c5a51327e86cc2fb1104c44095fa98bb2fdd69.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/asset65cb064f1448ec88ad58959c7b3936a7c0f0b90b6a84e2143aa944da5ab7e61b.zip"
         },
         "Description": "DO NOT DELETE - FMS helper function",
         "Environment": {
@@ -245,7 +245,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
         },
         "Description": "AWS CDK resource provider framework - onEvent (PreReqStack/HelperProvider)",
         "Environment": {
@@ -385,7 +385,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/assetf3f84a266840977b5a680778ded4c90b32a4741935a3e43fff15f180297682b1.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/asset8652d017578624dfafbf9e62e678f4a6eb113df1cfa4e55027279723fbf7e847.zip"
         },
         "Description": "Function to validate and install pre-requisites for the FMS solution",
         "Environment": {
@@ -627,7 +627,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
         },
         "Description": "AWS CDK resource provider framework - onEvent (PreReqStack/PreReqProvider)",
         "Environment": {

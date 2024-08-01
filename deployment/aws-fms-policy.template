@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.10",
+  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.11",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -64,7 +64,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.10",
+        "SolutionVersion": "v2.0.11",
         "UserAgentPrefix": "AwsSolution"
       }
     }
@@ -393,7 +393,7 @@
               {
                 "Ref": "AWS::Region"
               },
-              "/aws-firewall-manager-automations-for-aws-organizations/v2.0.10/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1718725613573\"}}"
+              "/aws-firewall-manager-automations-for-aws-organizations/v2.0.11/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1722475091257\"}}"
             ]
           ]
         },
@@ -504,7 +504,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/asset17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/asset17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544.zip"
         },
         "Handler": "index.handler",
         "Role": {
@@ -638,7 +638,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.10/asset013e8c75d236c32a1fab745b7186aba0455339de79b1c9ca3d7499c59b99d3d4.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/asset282f99aacf96565b4780d1e9874c90fa48ef0abf40ccf66721408e97e6d3b664.zip"
         },
         "DeadLetterConfig": {
           "TargetArn": {
@@ -928,7 +928,7 @@
             ]
           ]
         },
-        "RetentionInDays": 7
+        "RetentionInDays": 3653
       },
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete",
