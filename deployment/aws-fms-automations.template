@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.11",
+  "Description": "(SO0134) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.12",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -38,7 +38,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.11",
+        "SolutionVersion": "v2.0.12",
         "UserAgentPrefix": "AwsSolution"
       }
     }
@@ -303,7 +303,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/asset65cb064f1448ec88ad58959c7b3936a7c0f0b90b6a84e2143aa944da5ab7e61b.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.12/asset852c523ec89e3d754f604d53aa104e2534f9e08400ab5316c2b1190723944b23.zip"
         },
         "Description": {
           "Fn::Join": [
@@ -464,7 +464,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.12/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
         },
         "Description": "AWS CDK resource provider framework - onEvent (CommonResourceStack/HelperProvider)",
         "Environment": {
@@ -789,7 +789,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.11/assetcf37c8159d10a0ef4973f62aecd215913bc1e21a8fe6fba6656497a30267d0df.zip"
+          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.12/asset34d33ef15affcc97be820831ac4fc66892b255d37fedfc7ff9700bc03c5b729e.zip"
         },
         "Description": {
           "Fn::Join": [
@@ -902,7 +902,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WQTU/DMAyGf8vuqaHsMo5sghuitNwrN8mmrE1S4qTTFPW/o6SoVOKS97Edfz5BWR7gcYc3Krjoi0F1EBuPvGens6nQoZZeumS84zgqc0l4skYor6xheKM2Dqg7gRDfguHZezqblV8naXxjg+NyU+G/d2YKNcTaDjJ9yFrZQfF7niTTzGjfIpH0BC9JGO3hGHgv/RFJMnE3qK3oIH5ht9TJMDP6JoifQYbsXCC/OS/TX7ONOc+slpTnZLlj4/GSduCBvNWt+w0SVM5OSqRT5cialXbZ8Hrbj+DH4GdmrJBwpYepPED5DOXuSkoVLhivtIR60R9Gp9e8pwEAAA=="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WQTW+DMAyGf0vvwWvLpdcVbbdqDHZHJkmrFJIwnFBVEf99SpgY0i55H9vx5xEOhxPsd/igjIsu61ULoXbIO1ZcTYkjaunkGI0LDoMyt4iFNUI5ZQ3DBzWhR90KhPDuDU/e4mpWfpukcbX1I5ebCv+9M1OoIVS2l/FD0tL2ij/TJIlmRnmDRNIRvEZhlMPZ8066M5Jk4mlQW9FC+MJ2qZNgZvRNED699Mm5QHpTXqK/ZhtznlklKc3JUsfa4S3uwD05q5vxN0hQjnZSIp4qRdasuMuG19t+eDd4NzNjhYQ7vUyHExz3kO/upFQ2euOUllAt+gMMgUL0pwEAAA=="
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/CDKMetadata/Default"
@@ -926,7 +926,7 @@
             ]
           }
         },
-        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.11/aws-fms-compliance.template"
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.12/aws-fms-compliance.template"
       },
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete",
@@ -958,7 +958,7 @@
           },
           "PolicyIdentifier": "DefaultPolicy"
         },
-        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.11/aws-fms-policy.template"
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/aws-firewall-manager-automations-for-aws-organizations/v2.0.12/aws-fms-policy.template"
       },
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete",
