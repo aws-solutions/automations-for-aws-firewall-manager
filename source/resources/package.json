@@ -30,7 +30,7 @@
     "@aws-solutions-constructs/aws-cloudfront-s3": "~2.39.0",
     "@aws-solutions-constructs/aws-eventbridge-lambda": "~2.39.0",
     "constructs": "^10.2.0",
-    "aws-cdk-lib": "^2.88.0"
+    "aws-cdk-lib": "^2.138.0"
   },
   "jestSonar": {
     "reportPath": "coverage"

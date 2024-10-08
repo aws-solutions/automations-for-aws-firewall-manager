@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { logger } from "./common/logger";
+import { logger } from "solutions-utils";
 import {
   AssociateAdminAccountCommand,
   FMSClient,
@@ -30,44 +30,30 @@ export class FirewallManagerAdminSetup {
    * fms admin can only be set from organization management account
    */
   setUpCurrentAccountAsFirewallManagerAdmin = async (): Promise<void> => {
-    const loggerLabel =
-      "PreRegManager/setUpCurrentAccountAsFirewallManagerAdmin";
-    logger.debug({
-      label: loggerLabel,
-      message: `initiating fms admin check`,
-    });
-
     const existingAdminAccount = await this.getFirewallManagerAdminAccount();
 
     if (!existingAdminAccount) {
       await this.setUpFirewallManagerAdmin();
     } else if (this.firewallManagerAdminAccountId === existingAdminAccount) {
-      logger.debug({
-        label: loggerLabel,
-        message: `fms admin already set up`,
+      logger.debug("fms admin already configured", {
+        existingAdminAccount: existingAdminAccount,
       });
     } else {
       const _m =
         "provided firewall manager admin account does not match with existing firewall manager admin";
-      logger.error({
-        label: loggerLabel,
-        message: _m,
+      logger.error(_m, {
+        existingAdminAccount: existingAdminAccount,
+        providedFirewallManagerAdminAccount: this.firewallManagerAdminAccountId,
       });
       throw new Error(_m);
     }
 
-    logger.info({
-      label: loggerLabel,
-      message: `success`,
+    logger.info("successfully setup fms admin", {
+      firewallManagerAdminAccount: this.firewallManagerAdminAccountId,
     });
   };
 
   private async setUpFirewallManagerAdmin() {
-    const loggerLabel = "PreRegManager/setUpFirewallManagerAdmin";
-    logger.debug({
-      label: loggerLabel,
-      message: `associating ${this.firewallManagerAdminAccountId} as firewall manager admin`,
-    });
     try {
       await this.firewallManagerClient.send(
         new AssociateAdminAccountCommand({
@@ -75,36 +61,40 @@ export class FirewallManagerAdminSetup {
         })
       );
     } catch (e) {
-      logger.error({
-        label: loggerLabel,
-        message: `AssociateAdminAccountCommand error: ${e.message}`,
+      logger.error("encountered error associating fms admin account", {
+        error: e,
+        firewallManagerAdminAccount: this.firewallManagerAdminAccountId,
+        requestId: e.$metadata ? e.$metadata.requestId : undefined,
       });
       throw new Error(e.message);
     }
+
+    logger.debug("associated fms admin account", {
+      firewallManagerAdminAccount: this.firewallManagerAdminAccountId,
+    });
   }
 
   private async getFirewallManagerAdminAccount() {
-    const loggerLabel = "PreRegManager/getFirewallManagerAdminAccount";
     try {
       const response = await this.firewallManagerClient.send(
         new GetAdminAccountCommand({})
       );
-      logger.debug({
-        label: loggerLabel,
-        message: `GetAdminAccountCommand response: ${JSON.stringify(response)}`,
+
+      logger.debug("retrieved fms admin account", {
+        firewallManagerAdminAccount: response.AdminAccount,
       });
       return response.AdminAccount;
     } catch (e) {
       if (e.name === "ResourceNotFoundException") {
-        logger.debug({
-          label: loggerLabel,
-          message: `No firewall manager admin account found`,
+        logger.debug("unable to find fms admin account", {
+          error: e,
+          requestId: e.$metadata?.requestId,
         });
         return null;
       } else {
-        logger.error({
-          label: loggerLabel,
-          message: e.message,
+        logger.error("encountered error retrieving fms admin account", {
+          error: e,
+          requestId: e.$metadata?.requestId,
         });
         throw new Error(e.message);
       }

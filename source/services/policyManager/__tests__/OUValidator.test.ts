@@ -16,30 +16,28 @@ const ov = new OUValidator();
  * Test suite for OU Validator class
  */
 describe("===OUValidator===", () => {
-  test("[BDD] invalid ou list", async () => {
-    try {
-      await ov.isValid(ou_not_valid);
-    } catch (e) {
-      expect(e.message).toEqual("no ous found");
-    }
+  test("invalid ou list", async () => {
+    const resp = await ov.isValid(ou_not_valid);
+
+    expect(resp).toBeFalsy();
   });
 
-  test("[BDD] ou list is valid", async () => {
+  test("ou list is valid", async () => {
     const resp = await ov.isValid(ou_valid);
     expect(resp).toEqual(true);
   });
 
-  test("[BDD] ou list is not valid", async () => {
+  test("ou list is not valid", async () => {
     const resp = await ov.isValid([...ou_valid, ...ou_not_valid]);
     expect(resp).toEqual(false);
   });
 
-  test("[BDD] ou is set to delete", () => {
+  test("ou is set to delete", () => {
     const resp = ov.isDelete(ou_delete);
     expect(resp).toEqual(true);
   });
 
-  test("[BDD] ou is not set to delete", () => {
+  test("ou is not set to delete", () => {
     const resp = ov.isDelete(ou_valid);
     expect(resp).toEqual(false);
   });

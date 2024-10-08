@@ -1,0 +1,11 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist/lib",
+    "declaration": false,
+    "noImplicitAny": true,
+    "noEmit": false,
+    "experimentalDecorators": true
+  },
+  "exclude": ["__tests__/**/*"]
+}

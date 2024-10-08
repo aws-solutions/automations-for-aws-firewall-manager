@@ -171,7 +171,11 @@
       "resourceType": "AWS::CloudFront::Distribution",
       "resourceTypeList": null,
       "policyDetails": {
-        "type": "SHIELD_ADVANCED"
+        "type": "SHIELD_ADVANCED",
+        "automaticResponseConfiguration": {
+          "automaticResponseStatus":"ENABLED",
+          "automaticResponseAction":"COUNT"
+        }
       }
     },
     "SHIELD_REGIONAL": {
@@ -184,7 +188,11 @@
         "AWS::EC2::EIP"
       ],
       "policyDetails": {
-        "type": "SHIELD_ADVANCED"
+        "type": "SHIELD_ADVANCED",
+        "automaticResponseConfiguration": {
+          "automaticResponseStatus":"ENABLED",
+          "automaticResponseAction":"COUNT"
+        }
       }
     },
     "DNS_FIREWALL": {

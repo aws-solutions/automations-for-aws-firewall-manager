@@ -22,7 +22,7 @@ assignees: ""
 
 - [ ] Version: [e.g. v2.0.0]
 
-To get the version of the solution, you can look at the description of the created CloudFormation stack. For example, "_(SO0134) - The AWS CloudFormation template for deployment of the Automations for AWS Firewall Manager. Version **v2.0.0**_". You can also find the version from [releases](https://github.com/aws-solutions/aws-firewall-manager-automations-for-aws-organizations/releases)
+To get the version of the solution, you can look at the description of the created CloudFormation stack. For example, "_(SO0134) - The AWS CloudFormation template for deployment of the Automations for AWS Firewall Manager. Version **v2.0.0**_". You can also find the version from [releases](https://github.com/aws-solutions/automations-for-aws-firewall-manager/releases)
 
 - [ ] Region: [e.g. us-east-1]
 - [ ] Was the solution modified from the version published on this repository?

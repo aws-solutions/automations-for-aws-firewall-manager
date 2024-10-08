@@ -9,14 +9,20 @@ import {
   ServiceInputTypes,
   ServiceOutputTypes,
 } from "@aws-sdk/client-fms";
-import { customUserAgent, dataplane } from "../lib/exports";
+import { customUserAgent } from "../lib/exports";
 import { AwsStub, mockClient } from "aws-sdk-client-mock";
+import { SmithyResolvedConfiguration } from "@smithy/smithy-client";
+import { HttpHandlerOptions } from "@smithy/types";
 
 describe("Firewall Manager Admin setup", function () {
   const ADMIN_ACCOUNT_ID = "foo";
 
   let service: FirewallManagerAdminSetup;
-  let firewallManagerClientMock: AwsStub<ServiceInputTypes, ServiceOutputTypes>;
+  let firewallManagerClientMock: AwsStub<
+    ServiceInputTypes,
+    ServiceOutputTypes,
+    SmithyResolvedConfiguration<HttpHandlerOptions>
+  >;
   beforeEach(() => {
     firewallManagerClientMock = mockClient(FMSClient);
     firewallManagerClientMock.on(GetAdminAccountCommand).resolves({
@@ -27,7 +33,7 @@ describe("Firewall Manager Admin setup", function () {
       firewallManagerAdminAccountId: ADMIN_ACCOUNT_ID,
       firewallManagerClient: new FMSClient({
         customUserAgent: customUserAgent,
-        region: dataplane,
+        region: "us-east-1",
         maxAttempts: 3,
       }),
     });
@@ -53,22 +59,15 @@ describe("Firewall Manager Admin setup", function () {
   });
 
   it("should fail if the current account is different from the organisations firewall admin account", async function () {
-    // given
     firewallManagerClientMock.on(GetAdminAccountCommand).resolves({
       AdminAccount: "some-other-account-id",
     });
 
-    // when
-    try {
-      await service.setUpCurrentAccountAsFirewallManagerAdmin();
-      fail("Expected error to be thrown");
-
-      // then
-    } catch (e) {
-      expect(e.message).toEqual(
-        "provided firewall manager admin account does not match with existing firewall manager admin"
-      );
-    }
+    await expect(
+      service.setUpCurrentAccountAsFirewallManagerAdmin()
+    ).rejects.toThrow(
+      /provided firewall manager admin account does not match with existing firewall manager admin/
+    );
   });
 
   it("should succeed if the current account is the firewall admin account", async function () {

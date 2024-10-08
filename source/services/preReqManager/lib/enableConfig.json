@@ -18,19 +18,13 @@
           "Label": {
             "default": "Delivery Channel Configuration"
           },
-          "Parameters": [
-            "DeliveryChannelName",
-            "Frequency"
-          ]
+          "Parameters": ["DeliveryChannelName", "Frequency"]
         },
         {
           "Label": {
             "default": "Delivery Notifications"
           },
-          "Parameters": [
-            "TopicArn",
-            "NotificationEmail"
-          ]
+          "Parameters": ["TopicArn", "NotificationEmail"]
         }
       ],
       "ParameterLabels": {
@@ -63,19 +57,13 @@
       "Type": "String",
       "Default": true,
       "Description": "Indicates whether to record all supported resource types.",
-      "AllowedValues": [
-        true,
-        false
-      ]
+      "AllowedValues": [true, false]
     },
     "IncludeGlobalResourceTypes": {
       "Type": "String",
       "Default": true,
       "Description": "Indicates whether AWS Config records all supported global resource types.",
-      "AllowedValues": [
-        true,
-        false
-      ]
+      "AllowedValues": [true, false]
     },
     "ResourceTypes": {
       "Type": "List<String>",
@@ -91,13 +79,7 @@
       "Type": "String",
       "Default": "24hours",
       "Description": "The frequency with which AWS Config delivers configuration snapshots.",
-      "AllowedValues": [
-        "1hour",
-        "3hours",
-        "6hours",
-        "12hours",
-        "24hours"
-      ]
+      "AllowedValues": ["1hour", "3hours", "6hours", "12hours", "24hours"]
     },
     "TopicArn": {
       "Type": "String",
@@ -206,8 +188,7 @@
         },
         "VersioningConfiguration": {
           "Status": "Enabled"
-        },
-        "AccessControl": "LogDeliveryWrite"
+        }
       },
       "Metadata": {
         "cfn_nag": {
@@ -235,10 +216,10 @@
               "Principal": "*",
               "Resource": [
                 {
-                  "Fn::Sub": "arn:aws:s3:::${ConfigBucket}/*"
+                  "Fn::Sub": "arn:${AWS::Partition}:s3:::${ConfigBucket}/*"
                 },
                 {
-                  "Fn::Sub": "arn:aws:s3:::${ConfigBucket}"
+                  "Fn::Sub": "arn:${AWS::Partition}:s3:::${ConfigBucket}"
                 }
               ],
               "Condition": {
@@ -251,14 +232,12 @@
               "Sid": "AWSConfigBucketPermissionsCheck",
               "Effect": "Allow",
               "Principal": {
-                "Service": [
-                  "config.amazonaws.com"
-                ]
+                "Service": ["config.amazonaws.com"]
               },
               "Action": "s3:GetBucketAcl",
               "Resource": [
                 {
-                  "Fn::Sub": "arn:aws:s3:::${ConfigBucket}"
+                  "Fn::Sub": "arn:${AWS::Partition}:s3:::${ConfigBucket}"
                 }
               ]
             },
@@ -266,14 +245,12 @@
               "Sid": "AWSConfigBucketDelivery",
               "Effect": "Allow",
               "Principal": {
-                "Service": [
-                  "config.amazonaws.com"
-                ]
+                "Service": ["config.amazonaws.com"]
               },
               "Action": "s3:PutObject",
               "Resource": [
                 {
-                  "Fn::Sub": "arn:aws:s3:::${ConfigBucket}/AWSLogs/${AWS::AccountId}/*"
+                  "Fn::Sub": "arn:${AWS::Partition}:s3:::${ConfigBucket}/AWSLogs/${AWS::AccountId}/*"
                 }
               ]
             }
@@ -324,17 +301,13 @@
           "Statement": [
             {
               "Sid": "AWSConfigSNSPolicy",
-              "Action": [
-                "sns:Publish"
-              ],
+              "Action": ["sns:Publish"],
               "Effect": "Allow",
               "Resource": {
                 "Ref": "ConfigTopic"
               },
               "Principal": {
-                "Service": [
-                  "config.amazonaws.com"
-                ]
+                "Service": ["config.amazonaws.com"]
               }
             }
           ]
@@ -363,34 +336,26 @@
             {
               "Effect": "Allow",
               "Principal": {
-                "Service": [
-                  "config.amazonaws.com"
-                ]
+                "Service": ["config.amazonaws.com"]
               },
-              "Action": [
-                "sts:AssumeRole"
-              ]
+              "Action": ["sts:AssumeRole"]
             }
           ]
         },
         "Path": "/",
         "ManagedPolicyArns": [
-          "arn:aws:iam::aws:policy/service-role/AWSConfigRole"
+          {
+            "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWS_ConfigRole"
+          }
         ]
       }
     },
     "ConfigRecorder": {
       "Type": "AWS::Config::ConfigurationRecorder",
-      "DependsOn": [
-        "ConfigBucketPolicy",
-        "ConfigTopicPolicy"
-      ],
+      "DependsOn": ["ConfigBucketPolicy", "ConfigTopicPolicy"],
       "Properties": {
         "RoleARN": {
-          "Fn::GetAtt": [
-            "ConfigRecorderRole",
-            "Arn"
-          ]
+          "Fn::GetAtt": ["ConfigRecorderRole", "Arn"]
         },
         "RecordingGroup": {
           "AllSupported": {
@@ -415,10 +380,7 @@
     },
     "ConfigDeliveryChannel": {
       "Type": "AWS::Config::DeliveryChannel",
-      "DependsOn": [
-        "ConfigBucketPolicy",
-        "ConfigTopicPolicy"
-      ],
+      "DependsOn": ["ConfigBucketPolicy", "ConfigTopicPolicy"],
       "Properties": {
         "Name": {
           "Fn::If": [

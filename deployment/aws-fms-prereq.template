@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134N) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.12",
+  "Description": "(SO0134N) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager. Version v2.1.0",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -43,12 +43,13 @@
   "Mappings": {
     "FMSMap": {
       "Metric": {
-        "SendAnonymousMetric": "Yes",
+        "SendAnonymizedMetric": "Yes",
         "MetricsEndpoint": "https://metrics.awssolutionsbuilder.com/generic"
       },
       "Solution": {
         "SolutionId": "SO0134N",
-        "SolutionVersion": "v2.0.12",
+        "SolutionName": "automations-for-aws-firewall-manager",
+        "SolutionVersion": "v2.1.0",
         "GlobalStackSetName": "FMS-EnableConfig-Global",
         "RegionalStackSetName": "FMS-EnableConfig-Regional",
         "UserAgentPrefix": "AwsSolution"
@@ -56,6 +57,27 @@
     }
   },
   "Resources": {
+    "AFMUtilsLayerAFMUtilsLayerLayerB9CC38B4": {
+      "Type": "AWS::Lambda::LayerVersion",
+      "Properties": {
+        "CompatibleRuntimes": [
+          "nodejs18.x"
+        ],
+        "Content": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip"
+        },
+        "LayerName": "AFM-UtilsLayer"
+      },
+      "Metadata": {
+        "aws:cdk:path": "PreReqStack/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
+        "aws:asset:path": "asset.645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip",
+        "aws:asset:is-bundled": false,
+        "aws:asset:property": "Content"
+      }
+    },
     "FMSHelperFunctionServiceRoleA51F4DD9": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -97,7 +119,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.12/asset852c523ec89e3d754f604d53aa104e2534f9e08400ab5316c2b1190723944b23.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset1ed19d411f0511f6e78cdaba0af5e1b28c60664d5ae88424daaba952ad8d2952.zip"
         },
         "Description": "DO NOT DELETE - FMS helper function",
         "Environment": {
@@ -113,7 +135,7 @@
               "Fn::FindInMap": [
                 "FMSMap",
                 "Metric",
-                "SendAnonymousMetric"
+                "SendAnonymizedMetric"
               ]
             },
             "LOG_LEVEL": "info",
@@ -123,10 +145,43 @@
                 "Solution",
                 "UserAgentPrefix"
               ]
+            },
+            "SOLUTION_NAME": {
+              "Fn::FindInMap": [
+                "FMSMap",
+                "Solution",
+                "SolutionName"
+              ]
+            },
+            "SOLUTION_VERSION": {
+              "Fn::FindInMap": [
+                "FMSMap",
+                "Solution",
+                "SolutionVersion"
+              ]
+            },
+            "SOLUTION_ID": {
+              "Fn::FindInMap": [
+                "FMSMap",
+                "Solution",
+                "SolutionId"
+              ]
+            },
+            "SERVICE_NAME": {
+              "Fn::FindInMap": [
+                "FMSMap",
+                "Solution",
+                "SolutionName"
+              ]
             }
           }
         },
         "Handler": "index.handler",
+        "Layers": [
+          {
+            "Ref": "AFMUtilsLayerAFMUtilsLayerLayerB9CC38B4"
+          }
+        ],
         "MemorySize": 128,
         "Role": {
           "Fn::GetAtt": [
@@ -245,7 +300,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.12/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset3542be390685e0c8353d92ccb5796d343cd93ca946b6b0de798004206a199adc.zip"
         },
         "Description": "AWS CDK resource provider framework - onEvent (PreReqStack/HelperProvider)",
         "Environment": {
@@ -291,59 +346,6 @@
         }
       }
     },
-    "CreateUUID": {
-      "Type": "Custom::CreateUUID",
-      "Properties": {
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "HelperProviderframeworkonEvent1079DE9D",
-            "Arn"
-          ]
-        }
-      },
-      "UpdateReplacePolicy": "Delete",
-      "DeletionPolicy": "Delete",
-      "Metadata": {
-        "aws:cdk:path": "PreReqStack/CreateUUID/Default"
-      }
-    },
-    "LaunchData": {
-      "Type": "Custom::LaunchData",
-      "Properties": {
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "HelperProviderframeworkonEvent1079DE9D",
-            "Arn"
-          ]
-        },
-        "SolutionId": {
-          "Fn::FindInMap": [
-            "FMSMap",
-            "Solution",
-            "SolutionId"
-          ]
-        },
-        "SolutionVersion": {
-          "Fn::FindInMap": [
-            "FMSMap",
-            "Solution",
-            "SolutionVersion"
-          ]
-        },
-        "SolutionUuid": {
-          "Fn::GetAtt": [
-            "CreateUUID",
-            "UUID"
-          ]
-        },
-        "Stack": "PreReqStack"
-      },
-      "UpdateReplacePolicy": "Delete",
-      "DeletionPolicy": "Delete",
-      "Metadata": {
-        "aws:cdk:path": "PreReqStack/LaunchData/Default"
-      }
-    },
     "PreReqManagerFunctionServiceRole3E2704D1": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -378,6 +380,40 @@
         "aws:cdk:path": "PreReqStack/PreReqManagerFunction/ServiceRole/Resource"
       }
     },
+    "PreReqManagerFunctionServiceRoleDefaultPolicy45CD6122": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "PreReqManagerFunctionServiceRoleDefaultPolicy45CD6122",
+        "Roles": [
+          {
+            "Ref": "PreReqManagerFunctionServiceRole3E2704D1"
+          }
+        ]
+      },
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W12",
+              "reason": "Resource * is required for xray permissions"
+            }
+          ]
+        }
+      }
+    },
     "PreReqManagerFunction80D2ED4C": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -385,7 +421,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.12/assetc1493c0dabdb5e354dbb576d636e6e71e749513bcc3a96519b6d0ea28d0861bd.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset09d2df55bf165f35846951f6366b22f705edf6cd16bdbab7e3bb57225e8adad6.zip"
         },
         "Description": "Function to validate and install pre-requisites for the FMS solution",
         "Environment": {
@@ -401,7 +437,7 @@
               "Fn::FindInMap": [
                 "FMSMap",
                 "Metric",
-                "SendAnonymousMetric"
+                "SendAnonymizedMetric"
               ]
             },
             "LOG_LEVEL": "info",
@@ -411,10 +447,25 @@
                 "Solution",
                 "UserAgentPrefix"
               ]
+            },
+            "PARTITION": {
+              "Ref": "AWS::Partition"
+            },
+            "SERVICE_NAME": {
+              "Fn::FindInMap": [
+                "FMSMap",
+                "Solution",
+                "SolutionName"
+              ]
             }
           }
         },
         "Handler": "index.handler",
+        "Layers": [
+          {
+            "Ref": "AFMUtilsLayerAFMUtilsLayerLayerB9CC38B4"
+          }
+        ],
         "MemorySize": 256,
         "Role": {
           "Fn::GetAtt": [
@@ -423,9 +474,13 @@
           ]
         },
         "Runtime": "nodejs18.x",
-        "Timeout": 300
+        "Timeout": 300,
+        "TracingConfig": {
+          "Mode": "Active"
+        }
       },
       "DependsOn": [
+        "PreReqManagerFunctionServiceRoleDefaultPolicy45CD6122",
         "PreReqManagerFunctionServiceRole3E2704D1"
       ],
       "Metadata": {
@@ -463,7 +518,11 @@
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:cloudformation:*:*:*/",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":cloudformation:*:*:*/",
                       {
                         "Fn::FindInMap": [
                           "FMSMap",
@@ -479,7 +538,11 @@
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:cloudformation:*:*:*/",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":cloudformation:*:*:*/",
                       {
                         "Fn::FindInMap": [
                           "FMSMap",
@@ -491,34 +554,182 @@
                     ]
                   ]
                 },
-                "arn:aws:cloudformation:*::type/resource/AWS-IAM-Role",
-                "arn:aws:cloudformation:*::type/resource/AWS-SNS-Topic",
-                "arn:aws:cloudformation:*::type/resource/AWS-S3-Bucket",
-                "arn:aws:cloudformation:*::type/resource/AWS-SNS-TopicPolicy",
-                "arn:aws:cloudformation:*::type/resource/AWS-SNS-Subscription",
-                "arn:aws:cloudformation:*::type/resource/AWS-S3-BucketPolicy",
-                "arn:aws:cloudformation:*::type/resource/AWS-Config-ConfigurationRecorder",
-                "arn:aws:cloudformation:*::type/resource/AWS-Config-DeliveryChannel"
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":cloudformation:*::type/resource/AWS-IAM-Role"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":cloudformation:*::type/resource/AWS-SNS-Topic"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":cloudformation:*::type/resource/AWS-S3-Bucket"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":cloudformation:*::type/resource/AWS-SNS-TopicPolicy"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":cloudformation:*::type/resource/AWS-SNS-Subscription"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":cloudformation:*::type/resource/AWS-S3-BucketPolicy"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":cloudformation:*::type/resource/AWS-Config-ConfigurationRecorder"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":cloudformation:*::type/resource/AWS-Config-DeliveryChannel"
+                    ]
+                  ]
+                }
               ],
-              "Sid": "PreReqWrite01"
+              "Sid": "CloudFormationWrite"
+            },
+            {
+              "Action": "iam:GetRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":iam::",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":role/aws-service-role/stacksets.cloudformation.amazonaws.com/AWSServiceRoleForCloudFormationStackSetsOrgAdmin"
+                  ]
+                ]
+              },
+              "Sid": "GetOrgAdminRole"
             },
             {
               "Action": [
-                "fms:AssociateAdminAccount",
-                "organizations:ListRoots",
-                "organizations:EnableAWSServiceAccess",
-                "organizations:DescribeAccount",
-                "organizations:DescribeOrganization",
-                "organizations:RegisterDelegatedAdministrator",
-                "iam:CreateServiceLinkedRole",
-                "ec2:DescribeRegions",
                 "fms:GetAdminAccount",
-                "cloudformation:CreateStackSet",
-                "ram:EnableSharingWithAwsOrganization"
+                "fms:AssociateAdminAccount"
               ],
               "Effect": "Allow",
               "Resource": "*",
-              "Sid": "PreReqWrite02"
+              "Sid": "FMSAdmin"
+            },
+            {
+              "Action": [
+                "organizations:ListRoots",
+                "organizations:DescribeOrganization",
+                "organizations:DescribeAccount"
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "OrganizationsRead"
+            },
+            {
+              "Action": [
+                "organizations:EnableAWSServiceAccess",
+                "organizations:RegisterDelegatedAdministrator"
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "OrganizationsWrite"
+            },
+            {
+              "Action": "ec2:DescribeRegions",
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "PreReqRead0"
+            },
+            {
+              "Action": [
+                "iam:CreateServiceLinkedRole",
+                "cloudformation:CreateStackSet",
+                "ram:EnableSharingWithAwsOrganization",
+                "cloudformation:ActivateOrganizationsAccess"
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "PreReqWrite0"
+            },
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries"
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "XRayWriteAccess"
             }
           ],
           "Version": "2012-10-17"
@@ -627,7 +838,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.12/asset7382a0addb9f34974a1ea6c6c9b063882af874828f366f5c93b2b7b64db15c94.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset3542be390685e0c8353d92ccb5796d343cd93ca946b6b0de798004206a199adc.zip"
         },
         "Description": "AWS CDK resource provider framework - onEvent (PreReqStack/PreReqProvider)",
         "Environment": {
@@ -721,12 +932,6 @@
             "Solution",
             "SolutionVersion"
           ]
-        },
-        "SolutionUuid": {
-          "Fn::GetAtt": [
-            "CreateUUID",
-            "UUID"
-          ]
         }
       },
       "UpdateReplacePolicy": "Delete",
@@ -734,237 +939,6 @@
       "Metadata": {
         "aws:cdk:path": "PreReqStack/PreReqManagerCR/Default"
       }
-    },
-    "CDKMetadata": {
-      "Type": "AWS::CDK::Metadata",
-      "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/02OwW7CMAyGn4V76lF64QpIu02rygNUJvGQaZNUsQOaqr47Stmmnf7P/m3/3kFd72G7wYdU1g3VyBeYz4p2MKev0GJCT0qpFB84TRyuBh/SzyP6i0OY33OwyjGUgV9eDKOHuYsjlfaqbRzZfq83V1qMND2KkAocihhp4JjtQHpEocV0JDEnS2Z1z4rXkm2zaPR9+jEF2hTv7MqDq/O3VXL/8WfWKWuhUwyOX1+G6Ahu8nav97DbQrO5CXOVclD2BN1Ln2ZsfswhAQAA"
-      },
-      "Metadata": {
-        "aws:cdk:path": "PreReqStack/CDKMetadata/Default"
-      },
-      "Condition": "CDKMetadataAvailable"
-    }
-  },
-  "Outputs": {
-    "UUID": {
-      "Description": "UUID for deployment",
-      "Value": {
-        "Fn::GetAtt": [
-          "CreateUUID",
-          "UUID"
-        ]
-      }
-    }
-  },
-  "Conditions": {
-    "CDKMetadataAvailable": {
-      "Fn::Or": [
-        {
-          "Fn::Or": [
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "af-south-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "ap-east-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "ap-northeast-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "ap-northeast-2"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "ap-south-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "ap-southeast-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "ap-southeast-2"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "ca-central-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "cn-north-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "cn-northwest-1"
-              ]
-            }
-          ]
-        },
-        {
-          "Fn::Or": [
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "eu-central-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "eu-north-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "eu-south-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "eu-west-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "eu-west-2"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "eu-west-3"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "il-central-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "me-central-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "me-south-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "sa-east-1"
-              ]
-            }
-          ]
-        },
-        {
-          "Fn::Or": [
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "us-east-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "us-east-2"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "us-west-1"
-              ]
-            },
-            {
-              "Fn::Equals": [
-                {
-                  "Ref": "AWS::Region"
-                },
-                "us-west-2"
-              ]
-            }
-          ]
-        }
-      ]
     }
   }
 }
