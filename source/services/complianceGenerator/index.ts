@@ -8,32 +8,47 @@
  * @author aws-solutions
  */
 
-import { logger } from "./lib/common/logger";
+import { logger, tracer } from "solutions-utils";
 import { ComplianceGenerator, IMessage } from "./lib/ComplianceGenerator";
+import { Context } from "aws-lambda";
+import type { LambdaInterface } from "@aws-lambda-powertools/commons/types";
 
-export const handler = async (event: {
-  [key: string]: string | string[] | Record<string, unknown>[];
-}) => {
-  logger.debug({ label: "ComplianceGenerator", message: "Loading event..." });
-  logger.debug({
-    label: "ComplianceGenerator",
-    message: `event : ${JSON.stringify(event)}`,
-  });
+class ComplianceGeneratorLambda implements LambdaInterface {
+  @tracer.captureLambdaHandler()
+  @logger.injectLambdaContext()
+  async handler(
+    event: { [key: string]: string | string[] | Record<string, unknown>[] },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _context: Context
+  ): Promise<void> {
+    if (
+      event.Records &&
+      (event.Records[0] as Record<string, unknown>).EventSource === "aws:sns"
+    ) {
+      await this.handleSNSEvent(event);
+    } else if (event.source === "aws.events") {
+      await this.handleCronScheduleEvent();
+    } else {
+      logger.debug("handler received unrecognized event", {
+        event: event,
+      });
+    }
+  }
 
-  // event triggered by sns
-  if (
-    event.Records &&
-    (event.Records[0] as Record<string, unknown>).EventSource === "aws:sns"
-  ) {
+  async handleSNSEvent(event: {
+    [key: string]: string | string[] | Record<string, unknown>[];
+  }): Promise<void> {
     const reportBucket = <string>process.env.FMS_REPORT_BUCKET;
     const _sns = (event.Records[0] as Record<string, unknown>).Sns;
     const message: IMessage = JSON.parse(
       (_sns as Record<string, unknown>).Message as string
     );
-    logger.debug({
-      label: "ComplianceGenerator",
-      message: `message: ${message.region} policyId: ${message.policyId}`,
+
+    logger.info("handler received SNS event", {
+      region: message.region,
+      policyId: message.policyId,
     });
+
     try {
       const compGenerator = new ComplianceGenerator(
         message.policyId,
@@ -42,33 +57,30 @@ export const handler = async (event: {
       );
       const member_accounts = await compGenerator.getMemberAccounts();
       if (member_accounts.length != 0) {
-        const compliance_details = await compGenerator.getComplianceDetails(
-          member_accounts
-        );
+        const compliance_details =
+          await compGenerator.getComplianceDetails(member_accounts);
         await compGenerator.generateComplianceReports(
           compliance_details.accountCompliance_records,
           compliance_details.resourceViolator_records
         );
       } else {
-        logger.warn({
-          label: "ComplianceGenerator",
-          message: `no member accounts found for policy ${message.policyId} in ${message.region}`,
+        logger.warn("no member accounts found for policy", {
+          policyId: message.policyId,
+          region: message.region,
         });
       }
     } catch (e) {
-      logger.warn({
-        label: "ComplianceGenerator",
-        message: `error generating report for ${message.policyId} in ${message.region} ${e}`,
+      logger.error("encountered error while generating report for policy", {
+        error: e,
+        policyId: message.policyId,
+        region: message.region,
       });
     }
-    logger.info({
-      label: "ComplianceGenerator",
-      message: `reports generated for ${message.policyId} in ${message.region}`,
-    });
   }
 
-  // event triggered by cron schedule
-  else if (event.source === "aws.events") {
+  async handleCronScheduleEvent(): Promise<void> {
+    logger.info("handler received event triggered by cron schedule");
+
     const topic_arn = <string>process.env.FMS_TOPIC_ARN;
     const topic_region = <string>process.env.FMS_TOPIC_REGION;
 
@@ -79,9 +91,8 @@ export const handler = async (event: {
         try {
           const policyList = await ComplianceGenerator.listPolicies(region);
           if (policyList.length === 0)
-            logger.warn({
-              label: "ComplianceGenerator",
-              message: `no policies found in ${region}`,
+            logger.info("no policies found in region", {
+              region: region,
             });
           else if (policyList.length > 0)
             await Promise.allSettled(
@@ -94,12 +105,15 @@ export const handler = async (event: {
               })
             );
         } catch (e) {
-          logger.warn({
-            label: "ComplianceGenerator",
-            message: `error publishing sns message in ${region} ${e}`,
+          logger.error("encountered error sending policies to SNS", {
+            error: e,
+            region: region,
           });
         }
       })
     );
   }
-};
+}
+
+const handlerClass = new ComplianceGeneratorLambda();
+export const handler = handlerClass.handler.bind(handlerClass);

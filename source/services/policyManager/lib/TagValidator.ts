@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { logger } from "./common/logger";
+import { logger } from "solutions-utils";
 import { IValidator } from "./exports";
 
 /**
@@ -14,23 +14,13 @@ export class TagValidator implements IValidator {
    * @returns
    */
   isDelete = (tags: string): boolean => {
-    logger.debug({
-      label: "TagValidator/isTagDelete",
-      message: `checking if Tag is set to delete`,
+    const isDelete = tags.toLowerCase() === "delete";
+
+    logger.debug("checked if tag parameter is set to delete", {
+      tagIsDelete: isDelete,
+      tags: tags,
     });
-    if (tags.toLowerCase() === "delete") {
-      logger.debug({
-        label: "TagValidator/isDelete",
-        message: `Tags set to delete`,
-      });
-      return true;
-    } else {
-      logger.debug({
-        label: "TagValidator/isDelete",
-        message: `Tags not set to delete`,
-      });
-      return false;
-    }
+    return isDelete;
   };
 
   /**
@@ -39,16 +29,10 @@ export class TagValidator implements IValidator {
    * @returns
    */
   isValid = async (tags: string): Promise<boolean> => {
-    logger.info({
-      label: "TagValidator/isTagValid",
-      message: `checking if tag is valid`,
-    });
+    let isValid: boolean;
+
     try {
       const _tag = JSON.parse(tags);
-      logger.info({
-        label: "TagValidator/isTagValid",
-        message: `tag: ${JSON.stringify(tags)} `,
-      });
       if (
         _tag.ResourceTags instanceof Array &&
         typeof _tag.ExcludeResourceTags === "boolean"
@@ -65,14 +49,21 @@ export class TagValidator implements IValidator {
           )
             throw new Error("invalid tag");
         });
-        return true;
+        isValid = true;
       } else return false;
     } catch (e) {
-      logger.warn({
-        label: "TagValidator/isValid",
-        message: `${e.message}`,
+      logger.warn("encountered error validating tag parameter", {
+        error: e,
+        tags: tags,
       });
-      return false;
+      isValid = false;
     }
+
+    logger.debug("validated tag parameter", {
+      tagIsValid: isValid,
+      tags: tags,
+    });
+
+    return isValid;
   };
 }

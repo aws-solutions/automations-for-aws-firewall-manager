@@ -3,7 +3,8 @@
 
 import "@aws-cdk/assert/jest";
 import { Stack, App } from "aws-cdk-lib";
-import { DemoStack } from "../lib/demo";
+import { DemoStack } from "../lib/demo.stack";
+import { Template } from "aws-cdk-lib/assertions";
 
 describe("==Policy Stack Tests==", () => {
   const app = new App();
@@ -11,7 +12,8 @@ describe("==Policy Stack Tests==", () => {
 
   describe("Demo stack resources", () => {
     test("snapshot test", () => {
-      expect(demoStack).toMatchSnapshot();
+      const template = Template.fromStack(demoStack);
+      expect(template).toMatchSnapshot();
     });
 
     test("has cloudfront distribution for test", () => {

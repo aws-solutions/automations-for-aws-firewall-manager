@@ -25,60 +25,40 @@ describe("waiter tests for waitUntilDNSFirewallRuleGroupNotShared", () => {
     mock.mockResolvedValue({
       FirewallRuleGroup: { id: "myId", ShareStatus: ShareStatus.NotShared },
     });
-    try {
-      const result = await waitUntilDNSFirewallRuleGroupNotShared(
-        {
-          client,
-          maxWaitTime: 30,
-        },
-        { FirewallRuleGroupId: "my-rule-group" }
-      );
-      expect(result).toEqual({
-        state: "SUCCESS",
-      });
-    } catch (e) {
-      console.log(`negative test ${e}`);
-    }
+    const result = await waitUntilDNSFirewallRuleGroupNotShared(
+      {
+        client,
+        maxWaitTime: 30,
+      },
+      { FirewallRuleGroupId: "my-rule-group" }
+    );
+    expect(result.state).toEqual("SUCCESS");
   });
-  test("failed with waiter timeout error", async () => {    
+  test("failed with waiter timeout error", async () => {
     mock.mockResolvedValue({
       FirewallRuleGroup: { id: "myId", ShareStatus: ShareStatus.SharedByMe },
     });
-    try {
-      await waitUntilDNSFirewallRuleGroupNotShared(
+    await expect(
+      waitUntilDNSFirewallRuleGroupNotShared(
         {
           client,
           maxWaitTime: 30,
         },
         { FirewallRuleGroupId: "my-rule-group" }
-      );
-    } catch (e) {
-      expect(e.name).toEqual("TimeoutError");
-      expect(e.message).toEqual(
-        JSON.stringify({
-          state: "TIMEOUT",
-          reason: "Waiter has timed out",
-        })
-      );
-    }
+      )
+    ).rejects.toThrow(/TIMEOUT/);
     // increasing jest default timeout to allow waiter to err with timeout 60000 ms (60 seconds)
   }, 60000);
   test("failed with API error", async () => {
     mock.mockRejectedValue("AccessDenied");
-    try {
-      await waitUntilDNSFirewallRuleGroupNotShared(
+    await expect(
+      waitUntilDNSFirewallRuleGroupNotShared(
         {
           client,
           maxWaitTime: 15,
         },
         { FirewallRuleGroupId: "my-rule-group" }
-      );
-    } catch (e) {
-      expect(e.message).toEqual(
-        JSON.stringify({
-          result: { state: "FAILURE", reason: "AccessDenied" },
-        })
-      );
-    }
+      )
+    ).rejects.toThrow(/AccessDenied/);
   });
 });

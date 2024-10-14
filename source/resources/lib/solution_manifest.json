@@ -2,6 +2,9 @@
   "solution": {
     "primarySolutionId": "SO0134",
     "secondarySolutionId": "SO0134N",
+    "shieldAutomationsPrereqSolutionId": "SO0134S",
+    "proactiveEventResponseSolutionId": "SO0134P",
+    "shieldAutomationsSolutionId": "SO0134A",
     "demoSolutionId": "SO0134D",
     "solutionVersion": "%%VERSION%%",
     "userAgentPrefix": "AwsSolution",
@@ -16,5 +19,32 @@
     "regionalStackSetName": "FMS-EnableConfig-Regional",
     "prereqPolicy": "FMS-PreReqManager-Policy"
   },
-  "commonResourceStack": { "helperPolicy": "FMS-Helper-Policy" }
+  "shieldAutomationsPrereqStack": {
+    "helperPolicy": "FMS-Shield-Prereq-Helper-Policy",
+    "AWSConfigManagedRole": "service-role/AWSConfigRulesExecutionRole",
+    "configRuleEvalCrossAccountRole": "FMS-Shield-ConfigRuleEvalCrossAccount-Role",
+    "configRuleEvalCrossAccountPolicy": "FMS-Shield-ConfigRuleEvalCrossAccount-Policy",
+    "configRuleRemediateCrossAccountRole": "FMS-Shield-ConfigRuleRemediateCrossAccount-Role",
+    "configRuleRemediateCrossAccountPolicy": "FMS-Shield-ConfigRuleRemediateCrossAccount-Policy"
+  },
+  "shieldAutomationsStack": {
+    "helperPolicy": "FMS-ShieldAutomations-Helper-Policy",
+    "AWSConfigManagedRole": "service-role/AWSConfigRulesExecutionRole",
+    "configRuleEvalPolicy": "FMS-Shield-ConfigRuleEval-Policy",
+    "configRuleRemediatePolicy": "FMS-Shield-ConfigRuleRemediate-Policy",
+    "configRuleEvalExecutionRole": "FMS-Shield-ConfigRuleEvalExecution-Role",
+    "configRuleRemediateExecutionRole": "FMS-Shield-ConfigRuleRemediateExecution-Role",
+    "organizationConfigRule": "FMS-Shield-OrganizationConfigRule",
+    "SNSTopicName": "FMS-ShieldAutomations-Notifications"
+  },
+  "commonResourceStack": { "helperPolicy": "FMS-Helper-Policy" },
+  "policyStack": {
+    "serviceName" :  "FMS-PolicyManager",
+    "SNSTopicName": "FMS-PolicyManager-Notifications"
+  },
+  "complianceStack": { "serviceName": "FMS-ComplianceGenerator" },
+  "proactiveEventResponseStack": {
+    "srtAccessManagedPolicy": "service-role/AWSShieldDRTAccessPolicy",
+    "helperPolicy": "FMS-Shield-ProactiveEventResponse-Helper-Policy"
+  }
 }

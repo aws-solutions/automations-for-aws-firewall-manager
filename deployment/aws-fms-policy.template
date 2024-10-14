@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the aws-firewall-manager-automations-for-aws-organizations. Version v2.0.12",
+  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager. Version v2.1.0",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -9,7 +9,8 @@
             "default": "Policy Configuration"
           },
           "Parameters": [
-            "PolicyIdentifier"
+            "PolicyIdentifier",
+            "EmailAddress"
           ]
         },
         {
@@ -18,8 +19,7 @@
           },
           "Parameters": [
             "PolicyTable",
-            "UUID",
-            "MetricsQueue"
+            "UUID"
           ]
         }
       ],
@@ -27,14 +27,14 @@
         "PolicyTable": {
           "default": "Policy Table"
         },
-        "MetricsQueue": {
-          "default": "Metric Queue"
-        },
         "UUID": {
           "default": "UUID"
         },
         "PolicyIdentifier": {
           "default": "Policy Identifier"
+        },
+        "EmailAddress": {
+          "default": "SNS Topic Email Address"
         }
       }
     }
@@ -48,1227 +48,45 @@
       "Type": "String",
       "Description": "UUID for primary stack deployment"
     },
-    "MetricsQueue": {
-      "Type": "String",
-      "Description": "Metrics queue for solution anonymized metrics"
-    },
     "PolicyIdentifier": {
       "Type": "String",
       "Description": "A unique string identifier for the policies"
+    },
+    "EmailAddress": {
+      "Type": "String",
+      "Description": "Email address to receive notifications regarding problems deploying Firewall Manager policies."
     }
   },
   "Mappings": {
     "PolicyStackMap": {
       "Metric": {
-        "SendAnonymousMetric": "Yes"
+        "SendAnonymizedMetric": "Yes",
+        "MetricsEndpoint": "https://metrics.awssolutionsbuilder.com/generic"
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.0.12",
+        "SolutionVersion": "v2.1.0",
         "UserAgentPrefix": "AwsSolution"
-      }
-    }
-  },
-  "Resources": {
-    "FMSOUs9CEEEC1C": {
-      "Type": "AWS::SSM::Parameter",
-      "Properties": {
-        "Description": "FMS parameter store for OUs",
-        "Name": {
-          "Fn::Join": [
-            "",
-            [
-              "/FMS/",
-              {
-                "Ref": "PolicyIdentifier"
-              },
-              "/OUs"
-            ]
-          ]
-        },
-        "Type": "StringList",
-        "Value": "NOP"
       },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/FMSOUs/Resource"
-      }
-    },
-    "FMSTags216E0D22": {
-      "Type": "AWS::SSM::Parameter",
-      "Properties": {
-        "Description": "fms parameter for fms tags",
-        "Name": {
-          "Fn::Join": [
-            "",
-            [
-              "/FMS/",
-              {
-                "Ref": "PolicyIdentifier"
-              },
-              "/Tags"
-            ]
-          ]
-        },
-        "Type": "String",
-        "Value": "NOP"
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/FMSTags/Resource"
-      }
-    },
-    "FMSRegions39DF213B": {
-      "Type": "AWS::SSM::Parameter",
-      "Properties": {
-        "Description": "fms parameter for fms regions",
-        "Name": {
-          "Fn::Join": [
-            "",
-            [
-              "/FMS/",
-              {
-                "Ref": "PolicyIdentifier"
-              },
-              "/Regions"
-            ]
-          ]
-        },
-        "Type": "StringList",
-        "Value": "NOP"
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/FMSRegions/Resource"
-      }
-    },
-    "AccessLogsBucket83982689": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "AES256"
-              }
-            }
-          ]
-        },
-        "LifecycleConfiguration": {
-          "Rules": [
-            {
-              "ExpirationInDays": 730,
-              "Status": "Enabled",
-              "Transitions": [
-                {
-                  "StorageClass": "STANDARD_IA",
-                  "TransitionInDays": 30
-                },
-                {
-                  "StorageClass": "GLACIER",
-                  "TransitionInDays": 90
-                }
-              ]
-            }
-          ]
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true
-        },
-        "VersioningConfiguration": {
-          "Status": "Enabled"
-        }
-      },
-      "UpdateReplacePolicy": "Retain",
-      "DeletionPolicy": "Retain",
-      "Metadata": {
-        "cfn_nag": {
-          "rules_to_suppress": [
-            {
-              "id": "W35",
-              "reason": "access logging disabled, its a logging bucket"
-            },
-            {
-              "id": "W51",
-              "reason": "permission given for log delivery"
-            }
-          ]
-        }
-      }
-    },
-    "AccessLogsBucketPolicy7F77476F": {
-      "Type": "AWS::S3::BucketPolicy",
-      "Properties": {
-        "Bucket": {
-          "Ref": "AccessLogsBucket83982689"
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false"
-                }
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*"
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "AccessLogsBucket83982689",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "AccessLogsBucket83982689",
-                          "Arn"
-                        ]
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ]
-            },
-            {
-              "Action": "s3:PutObject",
-              "Condition": {
-                "ArnLike": {
-                  "aws:SourceArn": {
-                    "Fn::GetAtt": [
-                      "ManifestBucket46C412A5",
-                      "Arn"
-                    ]
-                  }
-                },
-                "StringEquals": {
-                  "aws:SourceAccount": {
-                    "Ref": "AWS::AccountId"
-                  }
-                }
-              },
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "logging.s3.amazonaws.com"
-              },
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Fn::GetAtt": [
-                        "AccessLogsBucket83982689",
-                        "Arn"
-                      ]
-                    },
-                    "/*"
-                  ]
-                ]
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        }
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AccessLogsBucket/Policy/Resource"
-      }
-    },
-    "ManifestBucket46C412A5": {
-      "Type": "AWS::S3::Bucket",
-      "Properties": {
-        "BucketEncryption": {
-          "ServerSideEncryptionConfiguration": [
-            {
-              "ServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "AES256"
-              }
-            }
-          ]
-        },
-        "LoggingConfiguration": {
-          "DestinationBucketName": {
-            "Ref": "AccessLogsBucket83982689"
-          }
-        },
-        "PublicAccessBlockConfiguration": {
-          "BlockPublicAcls": true,
-          "BlockPublicPolicy": true,
-          "IgnorePublicAcls": true,
-          "RestrictPublicBuckets": true
-        },
-        "VersioningConfiguration": {
-          "Status": "Enabled"
-        }
-      },
-      "UpdateReplacePolicy": "Retain",
-      "DeletionPolicy": "Retain",
-      "Metadata": {
-        "cfn_nag": {
-          "rules_to_suppress": [
-            {
-              "id": "W51",
-              "reason": "permission given to lambda to get policy manifest"
-            }
-          ]
-        }
-      }
-    },
-    "ManifestBucketPolicy82948026": {
-      "Type": "AWS::S3::BucketPolicy",
-      "Properties": {
-        "Bucket": {
-          "Ref": "ManifestBucket46C412A5"
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false"
-                }
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*"
-              },
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "ManifestBucket46C412A5",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "ManifestBucket46C412A5",
-                          "Arn"
-                        ]
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ]
-            }
-          ],
-          "Version": "2012-10-17"
-        }
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/ManifestBucket/Policy/Resource"
-      }
-    },
-    "CopyManifest652A9A13": {
-      "Type": "Custom::AWS",
-      "Properties": {
-        "ServiceToken": {
-          "Fn::GetAtt": [
-            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
-            "Arn"
-          ]
-        },
-        "Create": {
-          "Fn::Join": [
-            "",
-            [
-              "{\"service\":\"S3\",\"action\":\"copyObject\",\"parameters\":{\"Bucket\":\"",
-              {
-                "Ref": "ManifestBucket46C412A5"
-              },
-              "\",\"CopySource\":\"solutions-",
-              {
-                "Ref": "AWS::Region"
-              },
-              "/aws-firewall-manager-automations-for-aws-organizations/v2.0.12/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1726667591175\"}}"
-            ]
-          ]
-        },
-        "InstallLatestAwsSdk": false
-      },
-      "DependsOn": [
-        "CopyManifestCustomResourcePolicy37D7914D"
-      ],
-      "UpdateReplacePolicy": "Delete",
-      "DeletionPolicy": "Delete",
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CopyManifest/Resource/Default"
-      }
-    },
-    "CopyManifestCustomResourcePolicy37D7914D": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:s3:::solutions-",
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    "/*"
-                  ]
-                ]
-              },
-              "Sid": "S3Get"
-            },
-            {
-              "Action": "s3:PutObject",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Fn::GetAtt": [
-                        "ManifestBucket46C412A5",
-                        "Arn"
-                      ]
-                    },
-                    "/*"
-                  ]
-                ]
-              },
-              "Sid": "S3Put"
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "PolicyName": "CopyManifestCustomResourcePolicy37D7914D",
-        "Roles": [
-          {
-            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
-          }
-        ]
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CopyManifest/CustomResourcePolicy/Resource"
-      }
-    },
-    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-              ]
-            ]
-          }
-        ]
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource"
-      }
-    },
-    "AWS679f53fac002430cb0da5b7982bd22872D164C4C": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "solutions-${AWS::Region}"
-          },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.12/asset17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544.zip"
-        },
-        "Handler": "index.handler",
-        "Role": {
-          "Fn::GetAtt": [
-            "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
-            "Arn"
-          ]
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 120
-      },
-      "DependsOn": [
-        "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
-      ],
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AWS679f53fac002430cb0da5b7982bd2287/Resource",
-        "aws:asset:path": "asset.17c16a3854838fd3ff4bda08146122a6701f33b9c86ae17f415ad0dc47a97544",
-        "aws:asset:is-bundled": false,
-        "aws:asset:property": "Code"
-      }
-    },
-    "DLQ581697C4": {
-      "Type": "AWS::SQS::Queue",
-      "Properties": {
-        "KmsMasterKeyId": "alias/aws/sqs"
-      },
-      "UpdateReplacePolicy": "Delete",
-      "DeletionPolicy": "Delete",
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/DLQ/Resource"
-      }
-    },
-    "QueuePolicyBEFD7452": {
-      "Type": "AWS::SQS::QueuePolicy",
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sqs:*",
-              "Condition": {
-                "Bool": {
-                  "aws:SecureTransport": "false"
-                }
-              },
-              "Effect": "Deny",
-              "Principal": {
-                "AWS": "*"
-              },
-              "Sid": "AllowPublishThroughSSLOnly"
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "Queues": [
-          {
-            "Ref": "DLQ581697C4"
-          }
-        ]
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/QueuePolicy/Resource"
-      }
-    },
-    "PolicyManagerServiceRoleC35CBD54": {
-      "Type": "AWS::IAM::Role",
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "lambda.amazonaws.com"
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                "arn:",
-                {
-                  "Ref": "AWS::Partition"
-                },
-                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-              ]
-            ]
-          }
-        ]
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManager/ServiceRole/Resource"
-      }
-    },
-    "PolicyManagerServiceRoleDefaultPolicy373BF1EC": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sqs:SendMessage",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "DLQ581697C4",
-                  "Arn"
-                ]
-              }
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "PolicyName": "PolicyManagerServiceRoleDefaultPolicy373BF1EC",
-        "Roles": [
-          {
-            "Ref": "PolicyManagerServiceRoleC35CBD54"
-          }
-        ]
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManager/ServiceRole/DefaultPolicy/Resource"
-      }
-    },
-    "PolicyManager16647975": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Fn::Sub": "solutions-${AWS::Region}"
-          },
-          "S3Key": "aws-firewall-manager-automations-for-aws-organizations/v2.0.12/assete5e0316b7ef3322348ddd910b961960885583e89d3b555a46c7e33fb581e12bd.zip"
-        },
-        "DeadLetterConfig": {
-          "TargetArn": {
-            "Fn::GetAtt": [
-              "DLQ581697C4",
-              "Arn"
-            ]
-          }
-        },
-        "Description": {
-          "Fn::Join": [
-            "",
-            [
-              {
-                "Fn::FindInMap": [
-                  "PolicyStackMap",
-                  "Solution",
-                  "SolutionId"
-                ]
-              },
-              " - Function to create/update/delete FMS security policies"
-            ]
-          ]
-        },
-        "Environment": {
-          "Variables": {
-            "FMS_OU": {
-              "Ref": "FMSOUs9CEEEC1C"
-            },
-            "FMS_TAG": {
-              "Ref": "FMSTags216E0D22"
-            },
-            "FMS_REGION": {
-              "Ref": "FMSRegions39DF213B"
-            },
-            "FMS_TABLE": {
-              "Ref": "PolicyTable"
-            },
-            "POLICY_MANIFEST": {
-              "Fn::Join": [
-                "",
-                [
-                  {
-                    "Ref": "ManifestBucket46C412A5"
-                  },
-                  "|policy_manifest.json"
-                ]
-              ]
-            },
-            "POLICY_IDENTIFIER": {
-              "Ref": "PolicyIdentifier"
-            },
-            "SEND_METRIC": {
-              "Fn::FindInMap": [
-                "PolicyStackMap",
-                "Metric",
-                "SendAnonymousMetric"
-              ]
-            },
-            "LOG_LEVEL": "info",
-            "SOLUTION_ID": {
-              "Fn::FindInMap": [
-                "PolicyStackMap",
-                "Solution",
-                "SolutionId"
-              ]
-            },
-            "SOLUTION_VERSION": {
-              "Fn::FindInMap": [
-                "PolicyStackMap",
-                "Solution",
-                "SolutionVersion"
-              ]
-            },
-            "MAX_ATTEMPTS": "10",
-            "UUID": {
-              "Ref": "UUID"
-            },
-            "METRICS_QUEUE": {
-              "Fn::Join": [
-                "",
-                [
-                  "https://sqs.",
-                  {
-                    "Ref": "AWS::Region"
-                  },
-                  ".amazonaws.com/",
-                  {
-                    "Ref": "AWS::AccountId"
-                  },
-                  "/",
-                  {
-                    "Ref": "MetricsQueue"
-                  }
-                ]
-              ]
-            },
-            "USER_AGENT_PREFIX": {
-              "Fn::FindInMap": [
-                "PolicyStackMap",
-                "Solution",
-                "UserAgentPrefix"
-              ]
-            }
-          }
-        },
-        "Handler": "index.handler",
-        "MemorySize": 512,
-        "Role": {
-          "Fn::GetAtt": [
-            "PolicyManagerServiceRoleC35CBD54",
-            "Arn"
-          ]
-        },
-        "Runtime": "nodejs18.x",
-        "Timeout": 900
-      },
-      "DependsOn": [
-        "PolicyManagerServiceRoleDefaultPolicy373BF1EC",
-        "PolicyManagerServiceRoleC35CBD54"
-      ],
-      "Metadata": {
-        "cfn_nag": {
-          "rules_to_suppress": [
-            {
-              "id": "W58",
-              "reason": "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole"
-            },
-            {
-              "id": "W89",
-              "reason": "Not a valid use case for Lambda functions to be deployed inside a VPC"
-            },
-            {
-              "id": "W92",
-              "reason": "Lambda ReservedConcurrentExecutions not needed"
-            }
-          ]
-        }
-      }
-    },
-    "PolicyManagerEventInvokeConfig535D4AF9": {
-      "Type": "AWS::Lambda::EventInvokeConfig",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "PolicyManager16647975"
-        },
-        "MaximumEventAgeInSeconds": 900,
-        "MaximumRetryAttempts": 0,
-        "Qualifier": "$LATEST"
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManager/EventInvokeConfig/Resource"
-      }
-    },
-    "PolicyManagerAwsEventsLambdaInvokePermission14D2321A4": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "Action": "lambda:InvokeFunction",
-        "FunctionName": {
-          "Fn::GetAtt": [
-            "PolicyManager16647975",
-            "Arn"
-          ]
-        },
-        "Principal": "events.amazonaws.com",
-        "SourceArn": {
-          "Fn::GetAtt": [
-            "EventsRuleLambdaEventsRule0A996B52",
-            "Arn"
-          ]
-        }
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManager/AwsEventsLambdaInvokePermission-1"
-      }
-    },
-    "EventsRuleLambdaEventsRule0A996B52": {
-      "Type": "AWS::Events::Rule",
-      "Properties": {
-        "EventPattern": {
-          "source": [
-            "aws.ssm"
-          ],
-          "detail-type": [
-            "Parameter Store Change"
-          ],
-          "resources": [
-            {
-              "Fn::Join": [
-                "",
-                [
-                  "arn:",
-                  {
-                    "Ref": "AWS::Partition"
-                  },
-                  ":ssm:",
-                  {
-                    "Ref": "AWS::Region"
-                  },
-                  ":",
-                  {
-                    "Ref": "AWS::AccountId"
-                  },
-                  ":parameter",
-                  {
-                    "Ref": "FMSOUs9CEEEC1C"
-                  }
-                ]
-              ]
-            },
-            {
-              "Fn::Join": [
-                "",
-                [
-                  "arn:",
-                  {
-                    "Ref": "AWS::Partition"
-                  },
-                  ":ssm:",
-                  {
-                    "Ref": "AWS::Region"
-                  },
-                  ":",
-                  {
-                    "Ref": "AWS::AccountId"
-                  },
-                  ":parameter",
-                  {
-                    "Ref": "FMSTags216E0D22"
-                  }
-                ]
-              ]
-            },
-            {
-              "Fn::Join": [
-                "",
-                [
-                  "arn:",
-                  {
-                    "Ref": "AWS::Partition"
-                  },
-                  ":ssm:",
-                  {
-                    "Ref": "AWS::Region"
-                  },
-                  ":",
-                  {
-                    "Ref": "AWS::AccountId"
-                  },
-                  ":parameter",
-                  {
-                    "Ref": "FMSRegions39DF213B"
-                  }
-                ]
-              ]
-            }
-          ]
-        },
-        "State": "ENABLED",
-        "Targets": [
-          {
-            "Arn": {
-              "Fn::GetAtt": [
-                "PolicyManager16647975",
-                "Arn"
-              ]
-            },
-            "Id": "Target0"
-          }
-        ]
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/EventsRuleLambda/EventsRule/Resource"
-      }
-    },
-    "PolicyMangerLogGroupE410035C": {
-      "Type": "AWS::Logs::LogGroup",
-      "Properties": {
-        "LogGroupName": {
-          "Fn::Join": [
-            "",
-            [
-              "/aws/lambda/",
-              {
-                "Ref": "PolicyManager16647975"
-              }
-            ]
-          ]
-        },
-        "RetentionInDays": 3653
-      },
-      "UpdateReplacePolicy": "Delete",
-      "DeletionPolicy": "Delete",
-      "Metadata": {
-        "cfn_nag": {
-          "rules_to_suppress": [
-            {
-              "id": "W84",
-              "reason": "Using service default encryption https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/data-protection.html"
-            }
-          ]
-        }
-      }
-    },
-    "LambdaIAMFMSPolicyRead3CBC9BF1": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "ec2:DescribeRegions",
-              "Effect": "Allow",
-              "Resource": "*",
-              "Sid": "EC2Read0"
-            },
-            {
-              "Action": "ssm:GetParameter",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":ssm:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":parameter",
-                      {
-                        "Ref": "FMSRegions39DF213B"
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":ssm:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":parameter",
-                      {
-                        "Ref": "FMSOUs9CEEEC1C"
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":ssm:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":parameter",
-                      {
-                        "Ref": "FMSTags216E0D22"
-                      }
-                    ]
-                  ]
-                }
-              ],
-              "Sid": "SSMRead05"
-            },
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "ManifestBucket46C412A5",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::GetAtt": [
-                          "ManifestBucket46C412A5",
-                          "Arn"
-                        ]
-                      },
-                      "/*"
-                    ]
-                  ]
-                }
-              ],
-              "Sid": "S3Read06"
-            },
-            {
-              "Action": [
-                "route53resolver:ListFirewallDomainLists",
-                "route53resolver:ListFirewallRuleGroups",
-                "ram:ListResources"
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-              "Sid": "DNSRAMRead10"
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "PolicyName": "LambdaIAMFMSPolicyRead3CBC9BF1",
-        "Roles": [
-          {
-            "Ref": "PolicyManagerServiceRoleC35CBD54"
-          }
-        ]
-      },
-      "Metadata": {
-        "cfn_nag": {
-          "rules_to_suppress": [
-            {
-              "id": "W12",
-              "reason": "* needed for [ec2:DescribeRegions, route53resolver:ListFirewallDomainLists, route53resolver:ListFirewallRuleGroups, ram:ListResources], does no support resource level permissions"
-            }
-          ]
-        }
-      }
-    },
-    "LambdaIAMFMSPolicyWrite3D1AAE35": {
-      "Type": "AWS::IAM::Policy",
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:aws:dynamodb:",
-                    {
-                      "Ref": "AWS::Region"
-                    },
-                    ":",
-                    {
-                      "Ref": "AWS::AccountId"
-                    },
-                    ":table/",
-                    {
-                      "Ref": "PolicyTable"
-                    }
-                  ]
-                ]
-              },
-              "Sid": "DDBWrite01"
-            },
-            {
-              "Action": [
-                "fms:PutPolicy",
-                "fms:DeletePolicy"
-              ],
-              "Effect": "Allow",
-              "Resource": "arn:aws:fms:*:*:policy/*",
-              "Sid": "FMSWrite021"
-            },
-            {
-              "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-                "logs:CreateLogGroup"
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::GetAtt": [
-                  "PolicyMangerLogGroupE410035C",
-                  "Arn"
-                ]
-              },
-              "Sid": "CloudWatchLogsWrite03"
-            },
-            {
-              "Action": "sqs:SendMessage",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::GetAtt": [
-                    "DLQ581697C4",
-                    "Arn"
-                  ]
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:sqs:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId"
-                      },
-                      ":",
-                      {
-                        "Ref": "MetricsQueue"
-                      }
-                    ]
-                  ]
-                }
-              ],
-              "Sid": "SQSWrite04"
-            },
-            {
-              "Action": [
-                "wafv2:*",
-                "shield:GetSubscriptionState"
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-              "Sid": "WAFWrite07"
-            },
-            {
-              "Action": [
-                "route53resolver:CreateFirewallRule",
-                "route53resolver:CreateFirewallRuleGroup",
-                "route53resolver:DeleteFirewallRuleGroup",
-                "route53resolver:ListFirewallRules",
-                "route53resolver:DeleteFirewallRule",
-                "route53resolver:GetFirewallRuleGroup"
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-              "Sid": "DNSWrite08"
-            },
-            {
-              "Action": "ram:DeleteResourceShare",
-              "Condition": {
-                "StringEquals": {
-                  "aws:ResourceTag/FMManaged": "true"
-                }
-              },
-              "Effect": "Allow",
-              "Resource": "*",
-              "Sid": "RAMWrite09"
-            }
-          ],
-          "Version": "2012-10-17"
-        },
-        "PolicyName": "LambdaIAMFMSPolicyWrite3D1AAE35",
-        "Roles": [
-          {
-            "Ref": "PolicyManagerServiceRoleC35CBD54"
-          }
-        ]
-      },
-      "Metadata": {
-        "cfn_nag": {
-          "rules_to_suppress": [
-            {
-              "id": "W12",
-              "reason": "* resource used for fms and route53resolver actions, resources are created/deleted as part of solution"
-            },
-            {
-              "id": "F4",
-              "reason": "Read & Write permissions needed to create WAFv2 policies"
-            }
-          ]
-        },
-        "guard": {
-          "SuppressedRules": [
-            "IAM_POLICY_NON_COMPLIANT_ARN"
-          ],
-          "Reason": "DTAS guard rule incorrectly marks ARNs with wildcard (*) in region/account section as invalid"
-        }
-      }
-    },
-    "CDKMetadata": {
-      "Type": "AWS::CDK::Metadata",
-      "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/22SwW7bMAyGnyV3mU2aS3dra3TDgGxLk94DRaYNNTaZiVSCQfC7F7K9eBt2Ef//E0GQou4hrVYPsFzYqxSuOhWtP0L6jqJY7dW6kylr2tpgO1QM2Xyz57OnxtirHJJIB2mvwVOz8aJ/Jc5mTLj53sga0nN0J9ScOKkxbLn17teMJz+aZyvYm9Z2x8pC2ntqWlSmz5GceiZzE2U9w5cLkn6lC5+wZKp9k2//C7cYOi/imXrjbQdpbmZSO24x2xzzGAcrgirwlIORnwLpNWIcckYxnHOdP2xvMDchkHZxqhpz1ZYbgbTh5kvgeM78t+5746Iod4eAwjE4FHi6Sjmw3YTMv7amm76Jod+92iZvsqzpR9RzHJZRMlVehydYf4Ll4jF/DOE2ZiaFYxIN0anc5YthgmPwVYPFtJaXGb3xZmC9Ia4Q3uXusnqA+yWsF+/ifREiqe8QdmP8AGMVR/WMAgAA"
-      },
-      "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CDKMetadata/Default"
-      },
-      "Condition": "CDKMetadataAvailable"
-    }
-  },
-  "Outputs": {
-    "PolicyManifestBucket": {
-      "Description": "S3 Bucket with policy manifest file",
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            "s3://",
-            {
-              "Ref": "ManifestBucket46C412A5"
-            }
-          ]
-        ]
+      "PolicyManager": {
+        "ServiceName": "FMS-PolicyManager",
+        "SNSTopicName": "FMS-PolicyManager-Notifications"
       }
     }
   },
   "Conditions": {
+    "emailAddressExists": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "EmailAddress"
+            },
+            ""
+          ]
+        }
+      ]
+    },
     "CDKMetadataAvailable": {
       "Fn::Or": [
         {
@@ -1476,6 +294,1604 @@
           ]
         }
       ]
+    }
+  },
+  "Resources": {
+    "AFMUtilsLayerAFMUtilsLayerLayerB9CC38B4": {
+      "Type": "AWS::Lambda::LayerVersion",
+      "Properties": {
+        "CompatibleRuntimes": [
+          "nodejs18.x"
+        ],
+        "Content": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip"
+        },
+        "LayerName": "AFM-UtilsLayer"
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
+        "aws:asset:path": "asset.645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip",
+        "aws:asset:is-bundled": false,
+        "aws:asset:property": "Content"
+      }
+    },
+    "FMSOUs9CEEEC1C": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Description": "FMS parameter store for OUs",
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              "/FMS/",
+              {
+                "Ref": "PolicyIdentifier"
+              },
+              "/OUs"
+            ]
+          ]
+        },
+        "Type": "StringList",
+        "Value": "NOP"
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/FMSOUs/Resource"
+      }
+    },
+    "FMSTags216E0D22": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Description": "fms parameter for fms tags",
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              "/FMS/",
+              {
+                "Ref": "PolicyIdentifier"
+              },
+              "/Tags"
+            ]
+          ]
+        },
+        "Type": "String",
+        "Value": "NOP"
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/FMSTags/Resource"
+      }
+    },
+    "FMSRegions39DF213B": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Description": "fms parameter for fms regions",
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              "/FMS/",
+              {
+                "Ref": "PolicyIdentifier"
+              },
+              "/Regions"
+            ]
+          ]
+        },
+        "Type": "StringList",
+        "Value": "NOP"
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/FMSRegions/Resource"
+      }
+    },
+    "AccessLogsBucket83982689": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "ExpirationInDays": 730,
+              "Status": "Enabled",
+              "Transitions": [
+                {
+                  "StorageClass": "STANDARD_IA",
+                  "TransitionInDays": 30
+                },
+                {
+                  "StorageClass": "GLACIER",
+                  "TransitionInDays": 90
+                }
+              ]
+            }
+          ]
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        }
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W35",
+              "reason": "access logging disabled, its a logging bucket"
+            },
+            {
+              "id": "W51",
+              "reason": "permission given for log delivery"
+            }
+          ]
+        },
+        "guard": {
+          "SuppressedRules": [
+            "S3_BUCKET_NO_PUBLIC_RW_ACL"
+          ],
+          "Reason": "Public RW access is disabled by default"
+        }
+      }
+    },
+    "AccessLogsBucketPolicy7F77476F": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "AccessLogsBucket83982689"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "AccessLogsBucket83982689",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "AccessLogsBucket83982689",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Action": "s3:PutObject",
+              "Condition": {
+                "ArnLike": {
+                  "aws:SourceArn": {
+                    "Fn::GetAtt": [
+                      "ManifestBucket46C412A5",
+                      "Arn"
+                    ]
+                  }
+                },
+                "StringEquals": {
+                  "aws:SourceAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "logging.s3.amazonaws.com"
+              },
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "AccessLogsBucket83982689",
+                        "Arn"
+                      ]
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AccessLogsBucket/Policy/Resource"
+      }
+    },
+    "ManifestBucket46C412A5": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "AccessLogsBucket83982689"
+          }
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        }
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W51",
+              "reason": "permission given to lambda to get policy manifest"
+            }
+          ]
+        },
+        "guard": {
+          "SuppressedRules": [
+            "S3_BUCKET_NO_PUBLIC_RW_ACL"
+          ],
+          "Reason": "Public RW access is disabled by default"
+        }
+      }
+    },
+    "ManifestBucketPolicy82948026": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ManifestBucket46C412A5"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ManifestBucket46C412A5",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ManifestBucket46C412A5",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/ManifestBucket/Policy/Resource"
+      }
+    },
+    "ManifestBucketNotifications10E973BE": {
+      "Type": "Custom::S3BucketNotifications",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691",
+            "Arn"
+          ]
+        },
+        "BucketName": {
+          "Ref": "ManifestBucket46C412A5"
+        },
+        "NotificationConfiguration": {
+          "EventBridgeConfiguration": {}
+        },
+        "Managed": true
+      },
+      "DependsOn": [
+        "ManifestBucketPolicy82948026"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/ManifestBucket/Notifications/Resource"
+      }
+    },
+    "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/Resource"
+      }
+    },
+    "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:PutBucketNotification",
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36",
+        "Roles": [
+          {
+            "Ref": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/DefaultPolicy/Resource"
+      }
+    },
+    "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Description": "AWS CloudFormation handler for \"Custom::S3BucketNotifications\" resources (@aws-cdk/aws-s3)",
+        "Code": {
+          "ZipFile": "import boto3  # type: ignore\nimport json\nimport logging\nimport urllib.request\n\ns3 = boto3.client(\"s3\")\n\nEVENTBRIDGE_CONFIGURATION = 'EventBridgeConfiguration'\nCONFIGURATION_TYPES = [\"TopicConfigurations\", \"QueueConfigurations\", \"LambdaFunctionConfigurations\"]\n\ndef handler(event: dict, context):\n  response_status = \"SUCCESS\"\n  error_message = \"\"\n  try:\n    props = event[\"ResourceProperties\"]\n    notification_configuration = props[\"NotificationConfiguration\"]\n    managed = props.get('Managed', 'true').lower() == 'true'\n    stack_id = event['StackId']\n    old = event.get(\"OldResourceProperties\", {}).get(\"NotificationConfiguration\", {})\n    if managed:\n      config = handle_managed(event[\"RequestType\"], notification_configuration)\n    else:\n      config = handle_unmanaged(props[\"BucketName\"], stack_id, event[\"RequestType\"], notification_configuration, old)\n    s3.put_bucket_notification_configuration(Bucket=props[\"BucketName\"], NotificationConfiguration=config)\n  except Exception as e:\n    logging.exception(\"Failed to put bucket notification configuration\")\n    response_status = \"FAILED\"\n    error_message = f\"Error: {str(e)}. \"\n  finally:\n    submit_response(event, context, response_status, error_message)\n\ndef handle_managed(request_type, notification_configuration):\n  if request_type == 'Delete':\n    return {}\n  return notification_configuration\n\ndef handle_unmanaged(bucket, stack_id, request_type, notification_configuration, old):\n  def with_id(n):\n    n['Id'] = f\"{stack_id}-{hash(json.dumps(n, sort_keys=True))}\"\n    return n\n\n  external_notifications = {}\n  existing_notifications = s3.get_bucket_notification_configuration(Bucket=bucket)\n  for t in CONFIGURATION_TYPES:\n    if request_type == 'Update':\n        ids = [with_id(n) for n in old.get(t, [])]\n        old_incoming_ids = [n['Id'] for n in ids]\n        external_notifications[t] = [n for n in existing_notifications.get(t, []) if not n['Id'] in old_incoming_ids]\n    elif request_type == 'Delete':\n        external_notifications[t] = [n for n in existing_notifications.get(t, []) if not n['Id'].startswith(f\"{stack_id}-\")]\n    elif request_type == 'Create':\n        external_notifications[t] = [n for n in existing_notifications.get(t, [])]\n  if EVENTBRIDGE_CONFIGURATION in existing_notifications:\n    external_notifications[EVENTBRIDGE_CONFIGURATION] = existing_notifications[EVENTBRIDGE_CONFIGURATION]\n\n  if request_type == 'Delete':\n    return external_notifications\n\n  notifications = {}\n  for t in CONFIGURATION_TYPES:\n    external = external_notifications.get(t, [])\n    incoming = [with_id(n) for n in notification_configuration.get(t, [])]\n    notifications[t] = external + incoming\n\n  if EVENTBRIDGE_CONFIGURATION in notification_configuration:\n    notifications[EVENTBRIDGE_CONFIGURATION] = notification_configuration[EVENTBRIDGE_CONFIGURATION]\n  elif EVENTBRIDGE_CONFIGURATION in external_notifications:\n    notifications[EVENTBRIDGE_CONFIGURATION] = external_notifications[EVENTBRIDGE_CONFIGURATION]\n\n  return notifications\n\ndef submit_response(event: dict, context, response_status: str, error_message: str):\n  response_body = json.dumps(\n    {\n      \"Status\": response_status,\n      \"Reason\": f\"{error_message}See the details in CloudWatch Log Stream: {context.log_stream_name}\",\n      \"PhysicalResourceId\": event.get(\"PhysicalResourceId\") or event[\"LogicalResourceId\"],\n      \"StackId\": event[\"StackId\"],\n      \"RequestId\": event[\"RequestId\"],\n      \"LogicalResourceId\": event[\"LogicalResourceId\"],\n      \"NoEcho\": False,\n    }\n  ).encode(\"utf-8\")\n  headers = {\"content-type\": \"\", \"content-length\": str(len(response_body))}\n  try:\n    req = urllib.request.Request(url=event[\"ResponseURL\"], headers=headers, data=response_body, method=\"PUT\")\n    with urllib.request.urlopen(req) as response:\n      print(response.read().decode(\"utf-8\"))\n    print(\"Status code: \" + response.reason)\n  except Exception as e:\n      print(\"send(..) failed executing request.urlopen(..): \" + str(e))\n"
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC",
+            "Arn"
+          ]
+        },
+        "Runtime": "python3.11",
+        "Timeout": 300
+      },
+      "DependsOn": [
+        "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleDefaultPolicy2CF63D36",
+        "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Resource"
+      }
+    },
+    "CopyManifest652A9A13": {
+      "Type": "Custom::AWS",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "Arn"
+          ]
+        },
+        "Create": {
+          "Fn::Join": [
+            "",
+            [
+              "{\"service\":\"S3\",\"action\":\"copyObject\",\"parameters\":{\"Bucket\":\"",
+              {
+                "Ref": "ManifestBucket46C412A5"
+              },
+              "\",\"CopySource\":\"solutions-",
+              {
+                "Ref": "AWS::Region"
+              },
+              "/automations-for-aws-firewall-manager/v2.1.0/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1728402214962\"},\"logApiResponseData\":true}"
+            ]
+          ]
+        },
+        "InstallLatestAwsSdk": false
+      },
+      "DependsOn": [
+        "CopyManifestCustomResourcePolicy37D7914D"
+      ],
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CopyManifest/Resource/Default"
+      }
+    },
+    "CopyManifestCustomResourcePolicy37D7914D": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":s3:::solutions-",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "/*"
+                  ]
+                ]
+              },
+              "Sid": "S3Get"
+            },
+            {
+              "Action": "s3:PutObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Fn::GetAtt": [
+                        "ManifestBucket46C412A5",
+                        "Arn"
+                      ]
+                    },
+                    "/*"
+                  ]
+                ]
+              },
+              "Sid": "S3Put"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "CopyManifestCustomResourcePolicy37D7914D",
+        "Roles": [
+          {
+            "Ref": "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CopyManifest/CustomResourcePolicy/Resource"
+      }
+    },
+    "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AWS679f53fac002430cb0da5b7982bd2287/ServiceRole/Resource"
+      }
+    },
+    "AWS679f53fac002430cb0da5b7982bd22872D164C4C": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4.zip"
+        },
+        "Handler": "index.handler",
+        "Role": {
+          "Fn::GetAtt": [
+            "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 120
+      },
+      "DependsOn": [
+        "AWS679f53fac002430cb0da5b7982bd2287ServiceRoleC1EA0FF2"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AWS679f53fac002430cb0da5b7982bd2287/Resource",
+        "aws:asset:path": "asset.97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4",
+        "aws:asset:is-bundled": false,
+        "aws:asset:property": "Code"
+      }
+    },
+    "DLQ581697C4": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "KmsMasterKeyId": "alias/aws/sqs"
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/DLQ/Resource"
+      }
+    },
+    "QueuePolicyBEFD7452": {
+      "Type": "AWS::SQS::QueuePolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Sid": "AllowPublishThroughSSLOnly"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Queues": [
+          {
+            "Ref": "DLQ581697C4"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/QueuePolicy/Resource"
+      }
+    },
+    "PolicyManagerTopicF9775E18": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "DisplayName": "FMS Policy Manager Topic",
+        "KmsMasterKeyId": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":kms:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":alias/aws/sns"
+            ]
+          ]
+        },
+        "TopicName": {
+          "Fn::FindInMap": [
+            "PolicyStackMap",
+            "PolicyManager",
+            "SNSTopicName"
+          ]
+        },
+        "TracingConfig": "Active"
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManagerTopic/Resource"
+      }
+    },
+    "PolicyManagerTopicTokenSubscription15601D352": {
+      "Type": "AWS::SNS::Subscription",
+      "Properties": {
+        "Endpoint": {
+          "Ref": "EmailAddress"
+        },
+        "Protocol": "email",
+        "TopicArn": {
+          "Ref": "PolicyManagerTopicF9775E18"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManagerTopic/TokenSubscription:1/Resource"
+      },
+      "Condition": "emailAddressExists"
+    },
+    "PolicyManagerServiceRoleC35CBD54": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManager/ServiceRole/Resource"
+      }
+    },
+    "PolicyManagerServiceRoleDefaultPolicy373BF1EC": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "DLQ581697C4",
+                  "Arn"
+                ]
+              }
+            },
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "PolicyManagerServiceRoleDefaultPolicy373BF1EC",
+        "Roles": [
+          {
+            "Ref": "PolicyManagerServiceRoleC35CBD54"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManager/ServiceRole/DefaultPolicy/Resource"
+      }
+    },
+    "PolicyManager16647975": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset1371dd8d359d3577356c5bc1315c52c31fec101b757c893a9406955e7c4a9261.zip"
+        },
+        "DeadLetterConfig": {
+          "TargetArn": {
+            "Fn::GetAtt": [
+              "DLQ581697C4",
+              "Arn"
+            ]
+          }
+        },
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::FindInMap": [
+                  "PolicyStackMap",
+                  "Solution",
+                  "SolutionId"
+                ]
+              },
+              " - Function to create/update/delete FMS security policies"
+            ]
+          ]
+        },
+        "Environment": {
+          "Variables": {
+            "FMS_OU": {
+              "Ref": "FMSOUs9CEEEC1C"
+            },
+            "FMS_TAG": {
+              "Ref": "FMSTags216E0D22"
+            },
+            "FMS_REGION": {
+              "Ref": "FMSRegions39DF213B"
+            },
+            "SSM_PARAM_PREFIX": {
+              "Fn::Join": [
+                "",
+                [
+                  "/FMS/",
+                  {
+                    "Ref": "PolicyIdentifier"
+                  }
+                ]
+              ]
+            },
+            "FMS_TABLE": {
+              "Ref": "PolicyTable"
+            },
+            "POLICY_MANIFEST": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "ManifestBucket46C412A5"
+                  },
+                  "|policy_manifest.json"
+                ]
+              ]
+            },
+            "POLICY_IDENTIFIER": {
+              "Ref": "PolicyIdentifier"
+            },
+            "SEND_METRIC": {
+              "Fn::FindInMap": [
+                "PolicyStackMap",
+                "Metric",
+                "SendAnonymizedMetric"
+              ]
+            },
+            "LOG_LEVEL": "info",
+            "SOLUTION_ID": {
+              "Fn::FindInMap": [
+                "PolicyStackMap",
+                "Solution",
+                "SolutionId"
+              ]
+            },
+            "SOLUTION_VERSION": {
+              "Fn::FindInMap": [
+                "PolicyStackMap",
+                "Solution",
+                "SolutionVersion"
+              ]
+            },
+            "SERVICE_NAME": {
+              "Fn::FindInMap": [
+                "PolicyStackMap",
+                "PolicyManager",
+                "ServiceName"
+              ]
+            },
+            "MAX_ATTEMPTS": "10",
+            "UUID": {
+              "Ref": "UUID"
+            },
+            "METRICS_ENDPOINT": {
+              "Fn::FindInMap": [
+                "PolicyStackMap",
+                "Metric",
+                "MetricsEndpoint"
+              ]
+            },
+            "USER_AGENT_PREFIX": {
+              "Fn::FindInMap": [
+                "PolicyStackMap",
+                "Solution",
+                "UserAgentPrefix"
+              ]
+            },
+            "PARTITION": {
+              "Ref": "AWS::Partition"
+            },
+            "TOPIC_ARN": {
+              "Ref": "PolicyManagerTopicF9775E18"
+            }
+          }
+        },
+        "Handler": "index.handler",
+        "Layers": [
+          {
+            "Ref": "AFMUtilsLayerAFMUtilsLayerLayerB9CC38B4"
+          }
+        ],
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "PolicyManagerServiceRoleC35CBD54",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 900,
+        "TracingConfig": {
+          "Mode": "Active"
+        }
+      },
+      "DependsOn": [
+        "PolicyManagerServiceRoleDefaultPolicy373BF1EC",
+        "PolicyManagerServiceRoleC35CBD54"
+      ],
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W58",
+              "reason": "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole"
+            },
+            {
+              "id": "W89",
+              "reason": "Not a valid use case for Lambda functions to be deployed inside a VPC"
+            },
+            {
+              "id": "W92",
+              "reason": "Lambda ReservedConcurrentExecutions not needed"
+            }
+          ]
+        }
+      }
+    },
+    "PolicyManagerEventInvokeConfig535D4AF9": {
+      "Type": "AWS::Lambda::EventInvokeConfig",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "PolicyManager16647975"
+        },
+        "MaximumEventAgeInSeconds": 900,
+        "MaximumRetryAttempts": 0,
+        "Qualifier": "$LATEST"
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManager/EventInvokeConfig/Resource"
+      }
+    },
+    "PolicyManagerAwsEventsLambdaInvokePermission14D2321A4": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "PolicyManager16647975",
+            "Arn"
+          ]
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "EventsRuleLambdaEventsRule0A996B52",
+            "Arn"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManager/AwsEventsLambdaInvokePermission-1"
+      }
+    },
+    "PolicyManagerAwsEventsLambdaInvokePermission2686B3168": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "PolicyManager16647975",
+            "Arn"
+          ]
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": {
+          "Fn::GetAtt": [
+            "EventsRuleS3LambdaEventsRuleA05C21B8",
+            "Arn"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManager/AwsEventsLambdaInvokePermission-2"
+      }
+    },
+    "EventsRuleLambdaEventsRule0A996B52": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "EventPattern": {
+          "source": [
+            "aws.ssm"
+          ],
+          "detail-type": [
+            "Parameter Store Change"
+          ],
+          "resources": [
+            {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":ssm:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":parameter",
+                  {
+                    "Ref": "FMSOUs9CEEEC1C"
+                  }
+                ]
+              ]
+            },
+            {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":ssm:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":parameter",
+                  {
+                    "Ref": "FMSTags216E0D22"
+                  }
+                ]
+              ]
+            },
+            {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":ssm:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":parameter",
+                  {
+                    "Ref": "FMSRegions39DF213B"
+                  }
+                ]
+              ]
+            }
+          ]
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "PolicyManager16647975",
+                "Arn"
+              ]
+            },
+            "Id": "Target0"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/EventsRuleLambda/EventsRule/Resource"
+      }
+    },
+    "EventsRuleS3LambdaEventsRuleA05C21B8": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "EventPattern": {
+          "detail-type": [
+            "Object Created"
+          ],
+          "source": [
+            "aws.s3"
+          ],
+          "resources": [
+            {
+              "Fn::GetAtt": [
+                "ManifestBucket46C412A5",
+                "Arn"
+              ]
+            }
+          ],
+          "detail": {
+            "bucket": {
+              "name": [
+                {
+                  "Ref": "ManifestBucket46C412A5"
+                }
+              ]
+            },
+            "object": {
+              "key": [
+                "policy_manifest.json"
+              ]
+            }
+          }
+        },
+        "State": "ENABLED",
+        "Targets": [
+          {
+            "Arn": {
+              "Fn::GetAtt": [
+                "PolicyManager16647975",
+                "Arn"
+              ]
+            },
+            "Id": "Target0"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/EventsRuleS3Lambda/EventsRule/Resource"
+      }
+    },
+    "PolicyMangerLogGroupE410035C": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "PolicyManager16647975"
+              }
+            ]
+          ]
+        },
+        "RetentionInDays": 3653
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W84",
+              "reason": "Using service default encryption https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/data-protection.html"
+            }
+          ]
+        }
+      }
+    },
+    "LambdaIAMFMSPolicyRead3CBC9BF1": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ec2:DescribeRegions",
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "EC2Read0"
+            },
+            {
+              "Action": "ssm:GetParametersByPath",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":ssm:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":parameter/FMS/",
+                    {
+                      "Ref": "PolicyIdentifier"
+                    },
+                    "*"
+                  ]
+                ]
+              },
+              "Sid": "SSMRead05"
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ManifestBucket46C412A5",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ManifestBucket46C412A5",
+                          "Arn"
+                        ]
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ],
+              "Sid": "S3Read06"
+            },
+            {
+              "Action": [
+                "route53resolver:ListFirewallDomainLists",
+                "route53resolver:ListFirewallRuleGroups",
+                "ram:ListResources"
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "DNSRAMRead10"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "LambdaIAMFMSPolicyRead3CBC9BF1",
+        "Roles": [
+          {
+            "Ref": "PolicyManagerServiceRoleC35CBD54"
+          }
+        ]
+      },
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W12",
+              "reason": "* needed for [ec2:DescribeRegions, route53resolver:ListFirewallDomainLists, route53resolver:ListFirewallRuleGroups, ram:ListResources], does no support resource level permissions"
+            }
+          ]
+        }
+      }
+    },
+    "LambdaIAMFMSPolicyWrite3D1AAE35": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":dynamodb:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":table/",
+                    {
+                      "Ref": "PolicyTable"
+                    }
+                  ]
+                ]
+              },
+              "Sid": "DDBWrite01"
+            },
+            {
+              "Action": [
+                "fms:PutPolicy",
+                "fms:GetPolicy",
+                "fms:DeletePolicy"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":fms:*:*:policy/*"
+                  ]
+                ]
+              },
+              "Sid": "FMSWrite021"
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "PolicyMangerLogGroupE410035C",
+                  "Arn"
+                ]
+              },
+              "Sid": "CloudWatchLogsWrite03"
+            },
+            {
+              "Action": [
+                "wafv2:*",
+                "shield:GetSubscriptionState"
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "WAFWrite07"
+            },
+            {
+              "Action": "route53resolver:ListFirewallRules",
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "DNSList08"
+            },
+            {
+              "Action": "ram:DeleteResourceShare",
+              "Condition": {
+                "StringEquals": {
+                  "aws:ResourceTag/FMManaged": "true"
+                }
+              },
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "RAMWrite09"
+            },
+            {
+              "Action": [
+                "route53resolver:CreateFirewallRule",
+                "route53resolver:CreateFirewallRuleGroup",
+                "route53resolver:DeleteFirewallRuleGroup",
+                "route53resolver:DeleteFirewallRule",
+                "route53resolver:GetFirewallRuleGroup"
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":route53resolver:*:",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":firewall-domain-list/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":route53resolver:*:",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":firewall-rule-group/*"
+                    ]
+                  ]
+                }
+              ],
+              "Sid": "DNSWFirewall11"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "LambdaIAMFMSPolicyWrite3D1AAE35",
+        "Roles": [
+          {
+            "Ref": "PolicyManagerServiceRoleC35CBD54"
+          }
+        ]
+      },
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W12",
+              "reason": "* resource used for fms and route53resolver actions, resources are created/deleted as part of solution"
+            },
+            {
+              "id": "F4",
+              "reason": "Read & Write permissions needed to create WAFv2 policies"
+            }
+          ]
+        },
+        "guard": {
+          "SuppressedRules": [
+            "IAM_POLICY_NON_COMPLIANT_ARN"
+          ],
+          "Reason": "DTAS guard rule incorrectly marks ARNs with wildcard (*) in region/account section as invalid"
+        }
+      }
+    },
+    "PolicyManagerIAMPolicy5EC075C6": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries"
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "XRayWriteAccess"
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "PolicyManagerTopicF9775E18"
+              },
+              "Sid": "SNSWrite"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "PolicyManagerIAMPolicy5EC075C6",
+        "Roles": [
+          {
+            "Ref": "PolicyManagerServiceRoleC35CBD54"
+          }
+        ]
+      },
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W12",
+              "reason": "Resource * is required for function to write traces to X-Ray"
+            }
+          ]
+        }
+      }
+    },
+    "PolicyManagerErrorQueryFEAE9494": {
+      "Type": "AWS::Logs::QueryDefinition",
+      "Properties": {
+        "LogGroupNames": [
+          {
+            "Ref": "PolicyMangerLogGroupE410035C"
+          }
+        ],
+        "Name": "FMS-Policy_Manager_Errors",
+        "QueryString": "fields @timestamp, @level\n| filter level = \"ERROR\"\n| sort @timestamp desc"
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManagerErrorQuery/Resource"
+      }
+    },
+    "PolicyManagerSuccessQuery253C9857": {
+      "Type": "AWS::Logs::QueryDefinition",
+      "Properties": {
+        "LogGroupNames": [
+          {
+            "Ref": "PolicyMangerLogGroupE410035C"
+          }
+        ],
+        "Name": "FMS-Policy_Manager_Success",
+        "QueryString": "fields @timestamp, @message\n| filter message like \"successfully put policy\"\n| sort @timestamp desc"
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManagerSuccessQuery/Resource"
+      }
+    },
+    "PolicyManagerCreateFailureQuery8ED1B6AA": {
+      "Type": "AWS::Logs::QueryDefinition",
+      "Properties": {
+        "LogGroupNames": [
+          {
+            "Ref": "PolicyMangerLogGroupE410035C"
+          }
+        ],
+        "Name": "FMS-Policy_Manager_Create_Failure",
+        "QueryString": "fields @timestamp, @message\n| filter message like \"encountered error putting policy\"\n| sort @timestamp desc"
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/PolicyManagerCreateFailureQuery/Resource"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/21SwW7bMAz9ltxlNW122G5rvW4YkG1pXOwaKDJtsLEpT5QSBIL+fZCc2G3Ri/ne4xMp0byT4fbTUi4X6sSFrg9Fh3sZfgM7qCun9EGUDW2UVT04sIn8UsOA1CZYGqrRoSGhTrwLner3tZJhrc5g/4LllCkbesMrpLYDZ+i7J53PTqBsZvHxCOR+0tEcoDTUYO73obgB2yOn2lHwaqeYwbG8T0HwSoYHrw/gHhSDGGE6dEFj2JgO9XmWRx4Fcy9D5SxSu0Z2b6Ywk9Ew8ShQ9TJsTQfJl+PcYCr9j2V48uCzaQT5O1tf0SiYWIZnM6BOqRFUfs/a4nCd3WseBaRZsQxbf7mI7yCKzrQsw9q0P6zxQ/45V/zkwZ6/QYOE14rvpBhFHmvlVHvZgC2w8VaDmID27Ey/sxfO8v7EZdYmy3va0B/vBu+iWH2Ry8XXtIpsOp96cqENsbNeO75JifyuvcW6heKycI+z9GzWWYuCTA3yhW+Ot5/l3VKuFi+MWFhPDnuQ2zH+B1bFFR/+AgAA"
+      },
+      "Metadata": {
+        "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CDKMetadata/Default"
+      },
+      "Condition": "CDKMetadataAvailable"
+    }
+  },
+  "Outputs": {
+    "PolicyManifestBucket": {
+      "Description": "S3 Bucket with policy manifest file",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "s3://",
+            {
+              "Ref": "ManifestBucket46C412A5"
+            }
+          ]
+        ]
+      }
+    },
+    "PolicyManagerSNSTopic": {
+      "Description": "SNS Topic for Policy Manager notifications",
+      "Value": {
+        "Fn::GetAtt": [
+          "PolicyManagerTopicF9775E18",
+          "TopicName"
+        ]
+      }
+    },
+    "PolicyManagerErrorQuery": {
+      "Description": "Log Insights query for policy manager function errors",
+      "Value": {
+        "Fn::GetAtt": [
+          "PolicyManagerErrorQueryFEAE9494",
+          "QueryDefinitionId"
+        ]
+      }
+    },
+    "PolicyManagerSuccessQuery": {
+      "Description": "Log Insights query for policy create successes",
+      "Value": {
+        "Fn::GetAtt": [
+          "PolicyManagerSuccessQuery253C9857",
+          "QueryDefinitionId"
+        ]
+      }
+    },
+    "PolicyManagerFailureQuery": {
+      "Description": "Log Insights query for policy create failures",
+      "Value": {
+        "Fn::GetAtt": [
+          "PolicyManagerCreateFailureQuery8ED1B6AA",
+          "QueryDefinitionId"
+        ]
+      }
     }
   }
 }

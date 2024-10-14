@@ -7,6 +7,7 @@
 global-s3-assets
 regional-s3-assets
 open-source
+/deployment/setenv.sh
 
 # Generated ouputs
 dist

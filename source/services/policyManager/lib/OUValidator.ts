@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import { logger } from "./common/logger";
+import { logger } from "solutions-utils";
 import { IValidator } from "./exports";
 
 /**
@@ -14,23 +14,13 @@ export class OUValidator implements IValidator {
    * @returns
    */
   isDelete(ous: string[]): boolean {
-    logger.debug({
-      label: "OUValidator/isOUDelete",
-      message: `checking if OU is set to delete`,
+    const isDelete = ous.length === 1 && ous[0].toLowerCase() === "delete";
+
+    logger.debug("checked if ou parameter is delete", {
+      ouIsDelete: isDelete,
+      ous: ous,
     });
-    if (ous.length === 1 && ous[0].toLowerCase() === "delete") {
-      logger.debug({
-        label: "OUValidator/isDelete",
-        message: `OU set to delete`,
-      });
-      return true;
-    } else {
-      logger.debug({
-        label: "OUValidator/isDelete",
-        message: `OU not set to delete`,
-      });
-      return false;
-    }
+    return isDelete;
   }
 
   /**
@@ -38,29 +28,29 @@ export class OUValidator implements IValidator {
    * @param {string[]} ous
    * @returns
    */
-  isValid = async (ous: string[]): Promise<boolean> => {
-    logger.debug({
-      label: "OUValidator/isValid",
-      message: `checking if OUs are valid`,
-    });
+  async isValid(ous: string[]): Promise<boolean> {
     const regex = "^ou-([0-9a-z]{4,32})-([0-9a-z]{8,32})$";
+    let isValid: boolean;
+
     try {
       await Promise.all(
         ous.map((ou) => {
-          logger.debug({
-            label: "OUValidator/isValid",
-            message: `validating OU Id ${ou}`,
-          });
           if (!ou.match(regex)) throw new Error("invalid OU Id provided");
         })
       );
-      return true;
+      isValid = true;
     } catch (e) {
-      logger.warn({
-        label: "OUValidator/isValid",
-        message: `${e.message}`,
+      logger.warn("encountered error validating OU parameter", {
+        error: e,
+        ous: ous,
       });
-      return false;
+      isValid = false;
     }
-  };
+
+    logger.debug("validated ou parameter", {
+      ouIsValid: isValid,
+      ous: ous,
+    });
+    return isValid;
+  }
 }

@@ -7,17 +7,21 @@ import {
   EnableAWSServiceAccessCommand,
   ListRootsCommand,
   ListRootsCommandOutput,
+  OrganizationFeatureSet,
   OrganizationsClient,
 } from "@aws-sdk/client-organizations";
 import {
+  ActivateOrganizationsAccessCommand,
+  Capability,
   CloudFormationClient,
   CreateStackInstancesCommand,
   CreateStackSetCommand,
   DeleteStackInstancesCommand,
+  PermissionModels,
 } from "@aws-sdk/client-cloudformation";
 import enableConfigTemplate from "./enableConfig.json";
-import { logger } from "./common/logger";
-import { customUserAgent, dataplane } from "./exports";
+import { logger, tracer } from "solutions-utils";
+import { customUserAgent } from "./exports";
 import {
   EnableSharingWithAwsOrganizationCommand,
   RAMClient,
@@ -32,6 +36,10 @@ export interface IPreReq {
    * @description Deployment region for the stack
    */
   region: string;
+  /**
+   * @description Deployment dataplane for the stack
+   */
+  dataplane: string;
   /**
    * @description Name of stack set to enable config for global resources
    */
@@ -53,6 +61,8 @@ export class PreReqManager {
   readonly globalStackSetName: string;
   readonly regionalStackSetName: string;
   readonly organizationsClient: OrganizationsClient;
+  readonly cloudFormationClient: CloudFormationClient;
+  readonly dataplane: string;
 
   /**
    * @constructor
@@ -63,12 +73,21 @@ export class PreReqManager {
     this.region = props.region;
     this.globalStackSetName = props.globalStackSetName;
     this.regionalStackSetName = props.regionalStackSetName;
+    this.dataplane = props.dataplane;
 
-    this.organizationsClient = new OrganizationsClient({
-      region: dataplane,
-      customUserAgent: customUserAgent,
-      maxAttempts: 12,
-    });
+    this.organizationsClient = tracer.captureAWSv3Client(
+      new OrganizationsClient({
+        region: this.dataplane,
+        customUserAgent: customUserAgent,
+        maxAttempts: 12,
+      })
+    );
+
+    this.cloudFormationClient = tracer.captureAWSv3Client(
+      new CloudFormationClient({
+        customUserAgent: customUserAgent,
+      })
+    );
   }
 
   /**
@@ -76,21 +95,18 @@ export class PreReqManager {
    * @returns
    */
   getRegions = async (): Promise<string[]> => {
-    logger.debug({
-      label: "PreRegManager/getRegions",
-      message: `getting EC2 regions`,
-    });
-    const ec2 = new EC2Client({
-      customUserAgent: customUserAgent,
-    });
+    const ec2 = tracer.captureAWSv3Client(
+      new EC2Client({
+        customUserAgent: customUserAgent,
+      })
+    );
     const _r = await ec2.send(
       new DescribeRegionsCommand({ AllRegions: false })
     );
 
     if (!_r.Regions || _r.Regions.length === 0) {
-      logger.error({
-        label: "PreRegManager/getRegions",
-        message: `failed to describe regions`,
+      logger.error("failed to describe EC2 regions", {
+        requestId: _r.$metadata?.requestId,
       });
       throw new Error("failed to describe regions");
     }
@@ -100,10 +116,11 @@ export class PreReqManager {
     }).map((region) => {
       return region.RegionName as string;
     });
-    logger.debug({
-      label: "PreRegManager/getRegions",
-      message: `fetched EC2 regions: ${regions}`,
+
+    logger.debug("fetched EC2 regions", {
+      regions: regions,
     });
+
     return regions;
   };
 
@@ -111,10 +128,6 @@ export class PreReqManager {
    * @description enable trusted access for aws services
    */
   enableTrustedAccess = async (): Promise<void> => {
-    logger.debug({
-      label: "PreRegManager/enableTrustedAccess",
-      message: `enabling trusted access for FMS, RAM and StackSets`,
-    });
     try {
       // enable trusted access for fms
       await this.organizationsClient.send(
@@ -124,10 +137,8 @@ export class PreReqManager {
       );
 
       // enable trusted access for stack sets
-      await this.organizationsClient.send(
-        new EnableAWSServiceAccessCommand({
-          ServicePrincipal: "member.org.stacksets.cloudformation.amazonaws.com",
-        })
+      await this.cloudFormationClient.send(
+        new ActivateOrganizationsAccessCommand({})
       );
 
       // enable trusted access for resource access manager
@@ -137,21 +148,22 @@ export class PreReqManager {
         })
       );
 
-      const ram = new RAMClient({
-        region: dataplane,
-        customUserAgent: customUserAgent,
-        maxAttempts: 3,
-      });
+      const ram = tracer.captureAWSv3Client(
+        new RAMClient({
+          region: this.dataplane,
+          customUserAgent: customUserAgent,
+          maxAttempts: 3,
+        })
+      );
       await ram.send(new EnableSharingWithAwsOrganizationCommand({}));
 
-      logger.info({
-        label: "PreRegManager/enableTrustedAccess",
-        message: `trusted access was successfully enabled for Organization services that are needed by the solution (FMS, RAM & StackSets)`,
-      });
+      logger.info(
+        "enabled trusted access for Organization services that are needed by the solution (FMS, RAM, StackSets)"
+      );
     } catch (e) {
-      logger.error({
-        label: "PreRegManager/enableTrustedAccess",
-        message: e.message,
+      logger.error("encountered error enabling trusted access", {
+        error: e,
+        requestId: e.$metadata?.requestId,
       });
       throw new Error(e.message);
     }
@@ -161,25 +173,18 @@ export class PreReqManager {
    * @description throw error if the current account is not the organization management account
    */
   throwIfNotOrgManagementAccount = async (): Promise<void> => {
-    const loggerLabel = "PreRegManager/throwIfNotOrgManagementAccount";
-    logger.debug({
-      label: loggerLabel,
-      message: `initiating organization management check`,
-    });
-
     let response;
     try {
       response = await this.organizationsClient.send(
         new DescribeOrganizationCommand({})
       );
-      logger.debug({
-        label: loggerLabel,
-        message: `organization management check: ${response}`,
+      logger.debug("described organization", {
+        organizationId: response.Organization?.Id,
       });
     } catch (e) {
-      logger.error({
-        label: loggerLabel,
-        message: `organization management check error: ${e.message}`,
+      logger.error("encountered error describing organization", {
+        error: e,
+        requestId: e.$metadata?.requestId,
       });
       throw new Error(e.message);
     }
@@ -190,16 +195,16 @@ export class PreReqManager {
     ) {
       const _m =
         "The template must be deployed in Organization Management account";
-      logger.error({
-        label: loggerLabel,
-        message: `organization management check error: ${_m}`,
+      logger.error(_m, {
+        currentAccount: this.accountId,
+        managementAccountId: response.Organization.MasterAccountId,
       });
       throw new Error(_m);
     }
 
-    logger.info({
-      label: loggerLabel,
-      message: `organization management check success`,
+    logger.info("validated organization management account", {
+      organizationId: response.Organization?.Id,
+      organizationManagementAccount: response.Organization?.MasterAccountId,
     });
   };
 
@@ -207,41 +212,37 @@ export class PreReqManager {
    * @description throw error unless the organization full features is enabled
    */
   throwIfOrgLacksFullFeatures = async (): Promise<void> => {
-    const loggerLabel = "PreRegManager/throwIfOrgLacksFullFeatures";
-    logger.debug({
-      label: loggerLabel,
-      message: `initiating organization feature check`,
-    });
-
     let response;
     try {
       response = await this.organizationsClient.send(
         new DescribeOrganizationCommand({})
       );
-      logger.debug({
-        label: loggerLabel,
-        message: `organization feature check: ${JSON.stringify(response)}`,
+      logger.debug("described organization", {
+        organizationId: response.Organization?.Id,
       });
     } catch (e) {
-      logger.error({
-        label: loggerLabel,
-        message: `organization feature check error: ${e.message}`,
+      logger.error("encountered error describing organization", {
+        error: e,
+        requestId: e.$metadata?.requestId,
       });
       throw new Error(`${e.message}`);
     }
 
-    if (response.Organization && response.Organization.FeatureSet !== "ALL") {
-      const _m = "Organization must be set with full-features";
-      logger.error({
-        label: loggerLabel,
-        message: `organization feature check error: ${_m}`,
+    if (
+      response.Organization &&
+      response.Organization.FeatureSet !== OrganizationFeatureSet.ALL
+    ) {
+      const _m = "Organization must be set with all-features";
+      logger.error(_m, {
+        organizationId: response.Organization.Id,
+        organizationFeatureSet: response.Organization.FeatureSet,
       });
       throw new Error(_m);
     }
 
-    logger.info({
-      label: loggerLabel,
-      message: `organization feature pre-req success`,
+    logger.info("validated organization all-features", {
+      organizationId: response.Organization?.Id,
+      organizationFeatureSet: response.Organization?.FeatureSet,
     });
   };
 
@@ -249,21 +250,21 @@ export class PreReqManager {
    * @description enable Config in all accounts
    */
   enableConfig = async (): Promise<void> => {
-    logger.debug({
-      label: "PreRegManager/enableConfig",
-      message: `initiating aws config check`,
-    });
-
-    const cloudformation = new CloudFormationClient({
-      customUserAgent: customUserAgent,
-    });
+    const cloudformation = tracer.captureAWSv3Client(
+      new CloudFormationClient({
+        customUserAgent: customUserAgent,
+      })
+    );
     const params = {
       StackSetName: "NOP",
       AutoDeployment: {
         Enabled: true,
         RetainStacksOnAccountRemoval: false,
       },
-      Capabilities: ["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM"],
+      Capabilities: [
+        Capability.CAPABILITY_IAM,
+        Capability.CAPABILITY_NAMED_IAM,
+      ],
       Description: "stack set to enable Config in all member accounts",
       Parameters: [
         {
@@ -291,7 +292,7 @@ export class PreReqManager {
           ParameterValue: "<New Topic>",
         },
       ],
-      PermissionModel: "SERVICE_MANAGED",
+      PermissionModel: PermissionModels.SERVICE_MANAGED,
       TemplateBody: JSON.stringify(enableConfigTemplate),
     };
     try {
@@ -306,19 +307,27 @@ export class PreReqManager {
       await cloudformation
         .send(new CreateStackSetCommand(globalParams))
         .then(() => {
-          logger.info({
-            label: "PreReqManager/enableConfig",
-            message: `stack set created for ${params.StackSetName}`,
+          logger.info("created global stack set", {
+            stackSetName: params.StackSetName,
           });
         })
-        .catch((e: { name: string; message: string | undefined }) => {
-          if (e.name === "NameAlreadyExistsException") {
-            logger.warn({
-              label: "PreReqManager/enableConfig",
-              message: `${params.StackSetName} stack set already exists`,
-            });
-          } else throw new Error(e.message);
-        });
+        .catch(
+          (e: {
+            name: string;
+            message: string | undefined;
+            $metadata: any;
+          }) => {
+            if (e.name === "NameAlreadyExistsException") {
+              logger.warn(
+                `global stack set ${params.StackSetName} already exists`,
+                {
+                  stackSetName: params.StackSetName,
+                  requestId: e.$metadata?.requestId,
+                }
+              );
+            } else throw new Error(e.message);
+          }
+        );
 
       // regional stack set params
       params.StackSetName = this.regionalStackSetName;
@@ -326,36 +335,38 @@ export class PreReqManager {
       regionalParams.Parameters.push({
         ParameterKey: "ResourceTypes",
         ParameterValue:
-          "AWS::EC2::SecurityGroup,AWS::EC2::Instance,AWS::EC2::NetworkInterface,AWS::EC2::EIP,AWS::ElasticLoadBalancing::LoadBalancer,AWS::ElasticLoadBalancingV2::LoadBalancer,AWS::ApiGateway::Stage,AWS::ShieldRegional::Protection,AWS::WAFRegional::WebACL,AWS::WAFv2::WebACL",
+          "AWS::EC2::SecurityGroup,AWS::EC2::Instance,AWS::EC2::NetworkInterface,AWS::EC2::EIP,AWS::ElasticLoadBalancing::LoadBalancer,AWS::ElasticLoadBalancingV2::LoadBalancer,AWS::ApiGateway::Stage,AWS::ShieldRegional::Protection,AWS::WAFRegional::WebACL,AWS::WAFv2::WebACL,AWS::EC2::VPC",
       });
       await cloudformation
         .send(new CreateStackSetCommand(regionalParams))
         .then(() => {
-          logger.info({
-            label: "PreReqManager/enableConfig",
-            message: `regional stack set created for ${params.StackSetName}`,
+          logger.info("created regional stack set", {
+            stackSetName: params.StackSetName,
+            regionalParams: regionalParams,
           });
         })
         .catch((e: { name: string; message: string | undefined }) => {
           if (e.name === "NameAlreadyExistsException") {
-            logger.warn({
-              label: "PreReqManager/enableConfig",
-              message: `${params.StackSetName} regional stack set already exists`,
-            });
+            logger.warn(
+              `regional stack set ${params.StackSetName} already exists`,
+              {
+                stackSetName: params.StackSetName,
+                regionalParams: regionalParams,
+              }
+            );
           } else throw new Error(e.message);
         });
 
       const roots = await this.getOrgRoot();
 
-      logger.debug({
-        label: "PreRegManager/enableConfig",
-        message: `Organization root list: ${JSON.stringify(roots)}`,
+      logger.debug("retrieved Organization root list", {
+        organizationRoots: roots,
       });
 
       // create stack instances for global resources
-      await cloudformation.send(
+      const createGlobalInstancesResp = await cloudformation.send(
         new CreateStackInstancesCommand({
-          Regions: ["us-east-1"],
+          Regions: [this.dataplane],
           StackSetName: this.globalStackSetName,
           DeploymentTargets: {
             OrganizationalUnitIds: roots,
@@ -368,12 +379,12 @@ export class PreReqManager {
       );
 
       // create stack instances for regional resources
-      const _r = (await this.getRegions()).filter((r) => {
-        return r != "us-east-1";
+      const regions = (await this.getRegions()).filter((region) => {
+        return region !== this.dataplane;
       });
-      await cloudformation.send(
+      const createRegionalInstancesResp = await cloudformation.send(
         new CreateStackInstancesCommand({
-          Regions: _r,
+          Regions: regions,
           StackSetName: this.regionalStackSetName,
           DeploymentTargets: {
             OrganizationalUnitIds: roots,
@@ -384,15 +395,18 @@ export class PreReqManager {
           },
         })
       );
-      logger.info({
-        label: "PreRegManager/enableConfig",
-        message: `Config stack set instances create initiated, please see in Config console for latest status`,
+      logger.info("initiated Config stack set creation", {
+        globalInstancesOperationId: createGlobalInstancesResp.OperationId,
+        regionalInstancesOperationId: createRegionalInstancesResp.OperationId,
       });
     } catch (e) {
-      logger.error({
-        label: "PreRegManager/enableConfig",
-        message: e.message,
-      });
+      logger.error(
+        "encountered error creating stack set instances for enabling config",
+        {
+          error: e,
+          requestId: e.$metadata?.requestId,
+        }
+      );
       throw new Error("failed to create stack set instances");
     }
   };
@@ -401,14 +415,11 @@ export class PreReqManager {
    * @description delete global and regional stack instances
    */
   deleteConfig = async (): Promise<void> => {
-    const loggerLabel = "PreReqManager/deleteConfig";
-    logger.debug({
-      label: loggerLabel,
-      message: `initiating aws config delete`,
-    });
-    const cloudformation = new CloudFormationClient({
-      customUserAgent: customUserAgent,
-    });
+    const cloudformation = tracer.captureAWSv3Client(
+      new CloudFormationClient({
+        customUserAgent: customUserAgent,
+      })
+    );
     try {
       const roots = await this.getOrgRoot();
 
@@ -417,7 +428,7 @@ export class PreReqManager {
         .send(
           new DeleteStackInstancesCommand({
             StackSetName: this.globalStackSetName,
-            Regions: ["us-east-1"],
+            Regions: [this.dataplane],
             RetainStacks: false,
             DeploymentTargets: {
               OrganizationalUnitIds: roots,
@@ -429,29 +440,27 @@ export class PreReqManager {
           })
         )
         .then(() => {
-          logger.info({
-            label: loggerLabel,
-            message: `delete initiated on ${this.globalStackSetName} stack set instances`,
+          logger.info("initiated delete on global stack set instances", {
+            globalStackSetName: this.globalStackSetName,
           });
         })
         .catch((e) => {
-          logger.warn({
-            label: "PreReqManager/deleteConfig",
-            message: `delete failed on ${
-              this.globalStackSetName
-            } stack set instances: ${JSON.stringify(e)}`,
+          logger.warn("failed to delete global stack set", {
+            error: e,
+            globalStackSetName: this.globalStackSetName,
+            requestId: e.$metadata?.requestId,
           });
         });
 
       // delete regional stack set instances
-      const _r = (await this.getRegions()).filter((r) => {
-        return r != "us-east-1";
+      const regions = (await this.getRegions()).filter((region) => {
+        return region !== this.dataplane;
       });
       await cloudformation
         .send(
           new DeleteStackInstancesCommand({
             StackSetName: this.regionalStackSetName,
-            Regions: _r,
+            Regions: regions,
             RetainStacks: false,
             DeploymentTargets: {
               OrganizationalUnitIds: roots,
@@ -463,27 +472,25 @@ export class PreReqManager {
           })
         )
         .then(() => {
-          logger.info({
-            label: "PreReqManager/deleteConfig",
-            message: `delete initiated on ${this.regionalStackSetName} stack set instances`,
+          logger.info("initiated delete on regional stack set instances", {
+            regionalStackSetName: this.regionalStackSetName,
           });
         })
         .catch((e) => {
-          logger.warn({
-            label: "PreReqManager/deleteConfig",
-            message: `delete failed on ${
-              this.regionalStackSetName
-            } stack set instances: ${JSON.stringify(e)}`,
+          logger.warn("failed to delete regional stack set", {
+            error: e,
+            regionalStackSetName: this.regionalStackSetName,
+            requestId: e.$metadata?.requestId,
           });
         });
-      logger.info({
-        label: "PreRegManager/deleteConfig",
-        message: `delete config stack set instances initiated, please see in Config console for latest status`,
+      logger.info("initiated delete on Config stack set instances", {
+        globalStackSetName: this.globalStackSetName,
+        regionalStackSetName: this.regionalStackSetName,
       });
     } catch (e) {
-      logger.warn({
-        label: "PreRegManager/deleteConfig",
-        message: `${JSON.stringify(e)}`,
+      logger.error("encountered error deleting config stack set instances", {
+        error: e,
+        requestId: e.$metadata?.requestId,
       });
       throw new Error("failed to delete stack set instances");
     }
@@ -497,16 +504,11 @@ export class PreReqManager {
       const _ro: ListRootsCommandOutput = await this.organizationsClient.send(
         new ListRootsCommand({})
       );
-      logger.debug({
-        label: "PreRegManager/enableConfig",
-        message: `organization root list: ${JSON.stringify(_ro)}`,
-      });
 
       if (!_ro || !_ro.Roots) {
         const _m = "error fetching organization details";
-        logger.error({
-          label: "PreRegManager/enableConfig",
-          message: `${_m}`,
+        logger.error("unable to retrieve organization details", {
+          requestId: _ro.$metadata?.requestId,
         });
         throw new Error(_m);
       }
@@ -514,15 +516,16 @@ export class PreReqManager {
       const roots = _ro.Roots.map((root) => {
         return root.Id as string;
       });
-      logger.debug({
-        label: "PreRegManager/getOrgRoot",
-        message: `organization roots: ${roots}`,
+
+      logger.debug("retrieved organization roots", {
+        roots: roots,
       });
+
       return roots;
     } catch (e) {
-      logger.error({
-        label: "PreRegManager/getOrgRoot",
-        message: `error in getting Organization root: ${JSON.stringify(e)}`,
+      logger.error("encountered error getting organization root", {
+        error: e,
+        requestId: e.$metadata?.requestId,
       });
       throw new Error(e);
     }

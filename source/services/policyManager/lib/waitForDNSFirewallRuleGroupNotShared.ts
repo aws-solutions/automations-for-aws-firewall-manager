@@ -14,7 +14,7 @@ import {
   WaiterState,
   checkExceptions,
   createWaiter,
-} from "@aws-sdk/util-waiter";
+} from "@smithy/util-waiter";
 
 const checkState = async (
   client: Route53ResolverClient,

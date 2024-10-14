@@ -4,15 +4,17 @@
 import { CfnTemplate } from "../model/CfnTemplate";
 
 export function updateLambdaS3References(template: CfnTemplate) {
-  const lambdaFunctionNames = getResourceNamesOfType(
-    template,
-    "AWS::Lambda::Function"
-  );
+  const lambdaFunctionNames = getResourceNamesOfType(template, [
+    "AWS::Lambda::Function",
+    "AWS::Lambda::LayerVersion",
+  ]);
 
   lambdaFunctionNames.forEach((lambdaFunction) => {
     const fn = template.Resources[lambdaFunction];
 
-    const assetProperty = fn.Properties.Code;
+    const assetProperty = fn.Properties.Code
+      ? fn.Properties.Code
+      : fn.Properties.Content;
 
     if (assetProperty.hasOwnProperty("S3Bucket")) {
       // Set the S3 key reference
@@ -27,10 +29,10 @@ export function updateLambdaS3References(template: CfnTemplate) {
 
 function getResourceNamesOfType(
   template: CfnTemplate,
-  resourceType: string
+  resourceTypes: string[]
 ): string[] {
   const resources = template.Resources || {};
-  return Object.keys(resources).filter(
-    (key) => resources[key].Type === resourceType
+  return Object.keys(resources).filter((key) =>
+    resourceTypes.includes(resources[key].Type)
   );
 }

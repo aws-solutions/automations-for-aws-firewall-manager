@@ -6,12 +6,16 @@
     "docs": "./node_modules/typedoc/bin/typedoc --out docs --name \"Automations for AWS Firewall Manager\"",
     "lint": "./node_modules/eslint/bin/eslint.js . --ext .ts",
     "prettier-format": "./node_modules/prettier/bin-prettier.js --config .prettierrc.yml '**/*.ts' --write",
+    "build:utilsLayer": "cd source/services/utilsLayer && npm run build:all",
     "build:helper": "cd source/services/helper && npm run build:all",
     "build:policyManager": "cd source/services/policyManager && npm run build:all",
     "build:prereqManager": "cd source/services/preReqManager && npm run build:all",
-    "build:metricsManager": "cd source/services/metricsManager && npm run build:all",
     "build:complianceGenerator": "cd source/services/complianceGenerator && npm run build:all",
-    "build": "npm run build:helper && npm run build:policyManager && npm run build:prereqManager && npm run build:metricsManager && npm run build:complianceGenerator",
+    "build:configEvalManager": "cd source/services/shieldAutomations/configEvalManager && npm run build:all",
+    "build:configRemediateManager": "cd source/services/shieldAutomations/configRemediateManager && npm run build:all",
+    "build:shieldLayer": "cd source/services/shieldAutomations/shieldLayer && npm run build:all",
+    "build:shield": "npm run build:configEvalManager && npm run build:configRemediateManager && npm run build:shieldLayer",
+    "build": "npm run build:utilsLayer && npm run build:helper && npm run build:policyManager && npm run build:prereqManager && npm run && npm run build:complianceGenerator && npm run build:shield",
     "test": "cd ./deployment && chmod +x run-unit-tests.sh && ./run-unit-tests.sh"
   },
   "author": {

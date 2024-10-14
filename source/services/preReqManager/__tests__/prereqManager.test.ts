@@ -7,11 +7,13 @@ import {
   DescribeOrganizationCommand,
   EnableAWSServiceAccessCommand,
   ListRootsCommand,
+  OrganizationFeatureSet,
   OrganizationsClient,
 } from "@aws-sdk/client-organizations";
 import { RAMClient } from "@aws-sdk/client-ram";
 import { FMSClient, GetAdminAccountCommand } from "@aws-sdk/client-fms";
 import {
+  ActivateOrganizationsAccessCommand,
   CloudFormationClient,
   CreateStackInstancesCommand,
   CreateStackSetCommand,
@@ -30,6 +32,7 @@ const ec2Client = mockClient(EC2Client);
 const iPreReq: IPreReq = {
   accountId: "bar",
   region: "baz",
+  dataplane: "us-east-1",
   globalStackSetName: "quz",
   regionalStackSetName: "quz-baz",
 };
@@ -51,19 +54,19 @@ describe("[enableConfig]", () => {
   beforeEach(() => {
     cloudFormationClientMock.reset();
   });
+
   afterEach(() => {
     cloudFormationClientMock.reset();
   });
-  test("[TDD] fails cfstack name already exists error", async () => {
+
+  test("fails cfstack name already exists error", async () => {
     const ee: Error = new Error("NameAlreadyExistsException");
     ee.name = "NameAlreadyExistsException";
     cloudFormationClientMock.on(CreateStackSetCommand).rejects(ee);
     const _pm: PreReqManager = new PreReqManager(iPreReq);
-    try {
-      await _pm.enableConfig();
-    } catch (e) {
-      expect(e.message).toEqual("failed to create stack set instances");
-    }
+    await expect(_pm.enableConfig()).rejects.toThrow(
+      /failed to create stack set instances/
+    );
   });
 });
 
@@ -126,7 +129,12 @@ describe("PreReqManager", function () {
       });
       expect(
         organizationsClientMock.commandCalls(EnableAWSServiceAccessCommand)
-      ).toHaveLength(3);
+      ).toHaveLength(2);
+      expect(
+        cloudFormationClientMock.commandCalls(
+          ActivateOrganizationsAccessCommand
+        )
+      ).toHaveLength(1);
     });
 
     it("enables config when flag is 'Yes'", async function () {
@@ -148,7 +156,12 @@ describe("PreReqManager", function () {
       });
       expect(
         organizationsClientMock.commandCalls(EnableAWSServiceAccessCommand)
-      ).toHaveLength(3);
+      ).toHaveLength(2);
+      expect(
+        cloudFormationClientMock.commandCalls(
+          ActivateOrganizationsAccessCommand
+        )
+      ).toHaveLength(1);
       expect(
         cloudFormationClientMock.commandCalls(CreateStackSetCommand)
       ).toHaveLength(2);
@@ -162,7 +175,7 @@ describe("PreReqManager", function () {
       const organizationsClientMock = mockClient(OrganizationsClient);
       organizationsClientMock.on(DescribeOrganizationCommand).resolves({
         Organization: {
-          FeatureSet: "whatever",
+          FeatureSet: OrganizationFeatureSet.CONSOLIDATED_BILLING,
           MasterAccountId: MASTER_ACCOUNT_ID,
         },
       });
@@ -173,7 +186,7 @@ describe("PreReqManager", function () {
       // then
       expect(response.Status).toEqual("FAILED");
       expect(response.Reason).toEqual(
-        "Organization must be set with full-features"
+        "Organization must be set with all-features"
       );
     });
 
@@ -271,7 +284,12 @@ describe("PreReqManager", function () {
       });
       expect(
         organizationsClientMock.commandCalls(EnableAWSServiceAccessCommand)
-      ).toHaveLength(3);
+      ).toHaveLength(2);
+      expect(
+        cloudFormationClientMock.commandCalls(
+          ActivateOrganizationsAccessCommand
+        )
+      ).toHaveLength(1);
       expect(
         cloudFormationClientMock.commandCalls(DeleteStackInstancesCommand) // When "EnableConfig" is not "Yes", an Update should delete config
       ).toHaveLength(2);
@@ -297,7 +315,12 @@ describe("PreReqManager", function () {
       });
       expect(
         organizationsClientMock.commandCalls(EnableAWSServiceAccessCommand)
-      ).toHaveLength(3);
+      ).toHaveLength(2);
+      expect(
+        cloudFormationClientMock.commandCalls(
+          ActivateOrganizationsAccessCommand
+        )
+      ).toHaveLength(1);
       expect(
         cloudFormationClientMock.commandCalls(CreateStackSetCommand)
       ).toHaveLength(2);
@@ -311,7 +334,7 @@ describe("PreReqManager", function () {
       const organizationsClientMock = mockClient(OrganizationsClient);
       organizationsClientMock.on(DescribeOrganizationCommand).resolves({
         Organization: {
-          FeatureSet: "whatever",
+          FeatureSet: OrganizationFeatureSet.CONSOLIDATED_BILLING,
           MasterAccountId: MASTER_ACCOUNT_ID,
         },
       });
@@ -322,7 +345,7 @@ describe("PreReqManager", function () {
       // then
       expect(response.Status).toEqual("FAILED");
       expect(response.Reason).toEqual(
-        "Organization must be set with full-features"
+        "Organization must be set with all-features"
       );
     });
 

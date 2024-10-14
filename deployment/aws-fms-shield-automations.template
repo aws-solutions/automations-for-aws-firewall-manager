@@ -1,0 +1,2008 @@
+{
+  "Description": "(SO0134A) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager. Version v2.1.0",
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Label": {
+            "default": "Do you want to receive notifications after deployment?"
+          },
+          "Parameters": [
+            "EmailAddress"
+          ]
+        },
+        {
+          "Label": {
+            "default": "Do you want to exclude any accounts from automated Health-based detection?"
+          },
+          "Parameters": [
+            "ExcludedAccounts"
+          ]
+        },
+        {
+          "Label": {
+            "default": "CloudWatch metric configurations for Elastic IPs"
+          },
+          "Parameters": [
+            "EIPCPUUtilizationMetricThreshold",
+            "EIPCPUUtilizationMetricStat",
+            "EIPNetworkInMetricThreshold",
+            "EIPNetworkInMetricStat"
+          ]
+        },
+        {
+          "Label": {
+            "default": "CloudWatch metric configurations for Network Load Balancers"
+          },
+          "Parameters": [
+            "NLBActiveFlowCountMetricThreshold",
+            "NLBActiveFlowCountMetricStat",
+            "NLBNewFlowCountMetricThreshold",
+            "NLBNewFlowCountMetricStat"
+          ]
+        },
+        {
+          "Label": {
+            "default": "CloudWatch metric configurations for Elastic Load Balancers"
+          },
+          "Parameters": [
+            "ELB4xxMetricThreshold",
+            "ELB4xxMetricStat",
+            "ELB5xxMetricThreshold",
+            "ELB5xxMetricStat"
+          ]
+        },
+        {
+          "Label": {
+            "default": "CloudWatch metric configurations for CloudFront Distributions"
+          },
+          "Parameters": [
+            "CF4xxMetricThreshold",
+            "CF4xxMetricStat",
+            "CF5xxMetricThreshold",
+            "CF5xxMetricStat"
+          ]
+        }
+      ],
+      "ParameterLabels": {
+        "EmailAddress": {
+          "default": "Email Address"
+        },
+        "ExcludedAccounts": {
+          "default": "Excluded Accounts"
+        },
+        "EIPCPUUtilizationMetricThreshold": {
+          "default": "CPUUtilization Metric Threshold"
+        },
+        "EIPCPUUtilizationMetricStat": {
+          "default": "CPUUtilization Metric Statistic"
+        },
+        "EIPNetworkInMetricThreshold": {
+          "default": "NetworkIn Metric Threshold"
+        },
+        "EIPNetworkInMetricStat": {
+          "default": "NetworkIn Metric Statistic"
+        },
+        "NLBActiveFlowCountMetricThreshold": {
+          "default": "ActiveFlowCount Metric Threshold"
+        },
+        "NLBActiveFlowCountMetricStat": {
+          "default": "ActiveFlowCount Metric Statistic"
+        },
+        "NLBNewFlowCountMetricThreshold": {
+          "default": "NewFlowCount Metric Threshold"
+        },
+        "NLBNewFlowCountMetricStat": {
+          "default": "NewFlowCount Metric Statistic"
+        },
+        "ELB4xxMetricThreshold": {
+          "default": "HTTPCode_ELB_4XX_Count Metric Threshold"
+        },
+        "ELB4xxMetricStat": {
+          "default": "HTTPCode_ELB_4XX_Count Metric Statistic"
+        },
+        "ELB5xxMetricThreshold": {
+          "default": "HTTPCode_ELB_5XX_Count Metric Threshold"
+        },
+        "ELB5xxMetricStat": {
+          "default": "HTTPCode_ELB_5XX_Count Metric Statistic"
+        },
+        "CF4xxMetricThreshold": {
+          "default": "4xxErrorRate Metric Threshold"
+        },
+        "CF4xxMetricStat": {
+          "default": "4xxErrorRate Metric Statistic"
+        },
+        "CF5xxMetricThreshold": {
+          "default": "5xxErrorRate Metric Threshold"
+        },
+        "CF5xxMetricStat": {
+          "default": "5xxErrorRate Metric Statistic"
+        }
+      }
+    }
+  },
+  "Parameters": {
+    "EmailAddress": {
+      "Type": "String",
+      "Default": "",
+      "AllowedPattern": "^(?:\\S+@\\S+\\.\\S+)?$",
+      "ConstraintDescription": "Email Address is invalid. Please ensure it is of the form example@example.com",
+      "Description": "Email address to receive notifications regarding problems that cannot be resolved without manual intervention (e.g., service limits reached).",
+      "MaxLength": 150
+    },
+    "ExcludedAccounts": {
+      "Type": "CommaDelimitedList",
+      "Default": "",
+      "Description": "List of AWS accounts in your Organization to exclude from automated Health-based detection. Add your Organization Management Account ID unless you have deployed the Shield Automations Prerequisite stack in your Management Account and wish to enable Health-based detection there."
+    },
+    "EIPCPUUtilizationMetricThreshold": {
+      "Type": "Number",
+      "Default": 85,
+      "Description": "The CPUUtilization metric threshold (as a percentage) used to evaluate the health of EC2 instances associated with an Elastic IP.",
+      "MaxValue": 100,
+      "MinValue": 1
+    },
+    "EIPCPUUtilizationMetricStat": {
+      "Type": "String",
+      "Default": "Average",
+      "AllowedValues": [
+        "Average",
+        "Minimum",
+        "Maximum"
+      ],
+      "Description": "The CPUUtilization metric statistic used to evaluate the health of EC2 instances associated with an Elastic IP."
+    },
+    "EIPNetworkInMetricThreshold": {
+      "Type": "Number",
+      "Default": 1000,
+      "Description": "The NetworkIn metric threshold (in Bytes) used to evaluate the health of EC2 instances associated with an Elastic IP.",
+      "MinValue": 0
+    },
+    "EIPNetworkInMetricStat": {
+      "Type": "String",
+      "Default": "Sum",
+      "AllowedValues": [
+        "Sum",
+        "Average",
+        "Minimum",
+        "Maximum"
+      ],
+      "Description": "The CPUUtilization metric statistic used to evaluate the health of EC2 instances associated with an Elastic IP."
+    },
+    "NLBActiveFlowCountMetricThreshold": {
+      "Type": "Number",
+      "Default": 1000,
+      "Description": "The ActiveFlowCount metric threshold used to evaluate the health of Network Load Balancers associated with an Elastic IP.",
+      "MinValue": 1
+    },
+    "NLBActiveFlowCountMetricStat": {
+      "Type": "String",
+      "Default": "Average",
+      "AllowedValues": [
+        "Average",
+        "Minimum",
+        "Maximum"
+      ],
+      "Description": "The ActiveFlowCount metric statistic used to evaluate the health of Network Load Balancers associated with an Elastic IP."
+    },
+    "NLBNewFlowCountMetricThreshold": {
+      "Type": "Number",
+      "Default": 1000,
+      "Description": "The NewFlowCount metric threshold used to evaluate the health of Network Load Balancers associated with an Elastic IP.",
+      "MinValue": 1
+    },
+    "NLBNewFlowCountMetricStat": {
+      "Type": "String",
+      "Default": "Sum",
+      "AllowedValues": [
+        "Sum",
+        "Minimum",
+        "Maximum"
+      ],
+      "Description": "The NewFlowCount metric statistic used to evaluate the health of Network Load Balancers associated with an Elastic IP."
+    },
+    "ELB4xxMetricThreshold": {
+      "Type": "Number",
+      "Default": 1000,
+      "Description": "The HTTPCode_ELB_4XX_Count metric threshold used to evaluate the health of Elastic Load Balancers.",
+      "MinValue": 1
+    },
+    "ELB4xxMetricStat": {
+      "Type": "String",
+      "Default": "Sum",
+      "AllowedValues": [
+        "Sum",
+        "Average",
+        "Minimum",
+        "Maximum"
+      ],
+      "Description": "The HTTPCode_ELB_4XX_Count metric statistic used to evaluate the health of Elastic Load Balancers."
+    },
+    "ELB5xxMetricThreshold": {
+      "Type": "Number",
+      "Default": 1000,
+      "Description": "The HTTPCode_ELB_5XX_Count metric threshold used to evaluate the health of Elastic Load Balancers.",
+      "MinValue": 1
+    },
+    "ELB5xxMetricStat": {
+      "Type": "String",
+      "Default": "Sum",
+      "AllowedValues": [
+        "Sum",
+        "Average",
+        "Minimum",
+        "Maximum"
+      ],
+      "Description": "The HTTPCode_ELB_5XX_Count metric statistic used to evaluate the health of Elastic Load Balancers."
+    },
+    "CF4xxMetricThreshold": {
+      "Type": "Number",
+      "Default": 0.05,
+      "Description": "The 4xxErrorRate metric threshold (as a percentage) used to evaluate the health of CloudFront Distributions.",
+      "MinValue": 0
+    },
+    "CF4xxMetricStat": {
+      "Type": "String",
+      "Default": "Average",
+      "AllowedValues": [
+        "Average",
+        "Minimum",
+        "Maximum"
+      ],
+      "Description": "The 4xxErrorRate metric statistic used to evaluate the health of CloudFront Distributions."
+    },
+    "CF5xxMetricThreshold": {
+      "Type": "Number",
+      "Default": 0.05,
+      "Description": "The 5xxErrorRate metric threshold (as a percentage) used to evaluate the health of CloudFront Distributions.",
+      "MinValue": 0
+    },
+    "CF5xxMetricStat": {
+      "Type": "String",
+      "Default": "Average",
+      "AllowedValues": [
+        "Average",
+        "Minimum",
+        "Maximum"
+      ],
+      "Description": "The 5xxErrorRate metric statistic used to evaluate the health of CloudFront Distributions."
+    }
+  },
+  "Mappings": {
+    "ShieldAutomationsStackMap": {
+      "Metric": {
+        "SendAnonymizedMetric": "Yes",
+        "MetricsEndpoint": "https://metrics.awssolutionsbuilder.com/generic"
+      },
+      "Solution": {
+        "SolutionId": "SO0134A",
+        "SolutionName": "automations-for-aws-firewall-manager",
+        "SolutionVersion": "v2.1.0",
+        "UserAgentPrefix": "AwsSolution"
+      },
+      "ShieldAutomationsStack": {
+        "ConfigRuleEvalPolicy": "FMS-Shield-ConfigRuleEval-Policy",
+        "ConfigRuleRemediatePolicy": "FMS-Shield-ConfigRuleRemediate-Policy",
+        "OrganizationConfigRule": "FMS-Shield-OrganizationConfigRule",
+        "ConfigEvalCrossAccountRole": "FMS-Shield-ConfigRuleEvalCrossAccount-Role",
+        "ConfigRemediateCrossAccountRole": "FMS-Shield-ConfigRuleRemediateCrossAccount-Role",
+        "SNSTopicName": "FMS-ShieldAutomations-Notifications"
+      }
+    }
+  },
+  "Conditions": {
+    "emailAddressExists": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "EmailAddress"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "excludedAccountsExists": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Fn::Join": [
+                "",
+                {
+                  "Ref": "ExcludedAccounts"
+                }
+              ]
+            },
+            ""
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "AFMUtilsLayerAFMUtilsLayerLayerB9CC38B4": {
+      "Type": "AWS::Lambda::LayerVersion",
+      "Properties": {
+        "CompatibleRuntimes": [
+          "nodejs18.x"
+        ],
+        "Content": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip"
+        },
+        "LayerName": "AFM-UtilsLayer"
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
+        "aws:asset:path": "asset.645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip",
+        "aws:asset:is-bundled": false,
+        "aws:asset:property": "Content"
+      }
+    },
+    "ShieldAutomationsHelperServiceRole318980FD": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/ShieldAutomationsHelper/ServiceRole/Resource"
+      }
+    },
+    "ShieldAutomationsHelperE8AF1B1E": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset1ed19d411f0511f6e78cdaba0af5e1b28c60664d5ae88424daaba952ad8d2952.zip"
+        },
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::FindInMap": [
+                  "ShieldAutomationsStackMap",
+                  "Solution",
+                  "SolutionId"
+                ]
+              },
+              " - Function to help with FMS solution installation (DO NOT DELETE)"
+            ]
+          ]
+        },
+        "Environment": {
+          "Variables": {
+            "METRICS_ENDPOINT": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Metric",
+                "MetricsEndpoint"
+              ]
+            },
+            "SEND_METRIC": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Metric",
+                "SendAnonymizedMetric"
+              ]
+            },
+            "LOG_LEVEL": "info",
+            "USER_AGENT_PREFIX": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "UserAgentPrefix"
+              ]
+            },
+            "SOLUTION_NAME": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionName"
+              ]
+            },
+            "SOLUTION_VERSION": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionVersion"
+              ]
+            },
+            "SOLUTION_ID": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionId"
+              ]
+            },
+            "SERVICE_NAME": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionName"
+              ]
+            }
+          }
+        },
+        "Handler": "index.handler",
+        "Layers": [
+          {
+            "Ref": "AFMUtilsLayerAFMUtilsLayerLayerB9CC38B4"
+          }
+        ],
+        "MemorySize": 512,
+        "Role": {
+          "Fn::GetAtt": [
+            "ShieldAutomationsHelperServiceRole318980FD",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x"
+      },
+      "DependsOn": [
+        "ShieldAutomationsHelperServiceRole318980FD"
+      ],
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W58",
+              "reason": "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole"
+            },
+            {
+              "id": "W89",
+              "reason": "Not a valid use case for Lambda functions to be deployed inside a VPC"
+            },
+            {
+              "id": "W92",
+              "reason": "Lambda ReservedConcurrentExecutions not needed"
+            }
+          ]
+        }
+      }
+    },
+    "HelperPolicy0FF3AEE0": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "shield:GetSubscriptionState",
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "ShieldRead"
+            },
+            {
+              "Action": "organizations:DescribeOrganization",
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "OrgRead"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "FMS-ShieldAutomations-Helper-Policy",
+        "Roles": [
+          {
+            "Ref": "ShieldAutomationsHelperServiceRole318980FD"
+          }
+        ]
+      },
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W12",
+              "reason": "Resource * is required for IAM actions that do not support resource level permissions"
+            }
+          ]
+        }
+      }
+    },
+    "HelperProviderframeworkonEventServiceRole1962DD43": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/HelperProvider/framework-onEvent/ServiceRole/Resource"
+      }
+    },
+    "HelperProviderframeworkonEventServiceRoleDefaultPolicy7C54367B": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "lambda:InvokeFunction",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ShieldAutomationsHelperE8AF1B1E",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::GetAtt": [
+                          "ShieldAutomationsHelperE8AF1B1E",
+                          "Arn"
+                        ]
+                      },
+                      ":*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "HelperProviderframeworkonEventServiceRoleDefaultPolicy7C54367B",
+        "Roles": [
+          {
+            "Ref": "HelperProviderframeworkonEventServiceRole1962DD43"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/HelperProvider/framework-onEvent/ServiceRole/DefaultPolicy/Resource"
+      }
+    },
+    "HelperProviderframeworkonEvent1079DE9D": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset3542be390685e0c8353d92ccb5796d343cd93ca946b6b0de798004206a199adc.zip"
+        },
+        "Description": "AWS CDK resource provider framework - onEvent (ShieldAutomationsStack/HelperProvider)",
+        "Environment": {
+          "Variables": {
+            "USER_ON_EVENT_FUNCTION_ARN": {
+              "Fn::GetAtt": [
+                "ShieldAutomationsHelperE8AF1B1E",
+                "Arn"
+              ]
+            }
+          }
+        },
+        "Handler": "framework.onEvent",
+        "Role": {
+          "Fn::GetAtt": [
+            "HelperProviderframeworkonEventServiceRole1962DD43",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 900
+      },
+      "DependsOn": [
+        "HelperProviderframeworkonEventServiceRoleDefaultPolicy7C54367B",
+        "HelperProviderframeworkonEventServiceRole1962DD43"
+      ],
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W58",
+              "reason": "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole"
+            },
+            {
+              "id": "W89",
+              "reason": "Not a valid use case for Lambda functions to be deployed inside a VPC"
+            },
+            {
+              "id": "W92",
+              "reason": "Lambda ReservedConcurrentExecutions not needed"
+            }
+          ]
+        }
+      }
+    },
+    "ShieldSubscriptionCheck": {
+      "Type": "Custom::ShieldSubscriptionCheck",
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "HelperProviderframeworkonEvent1079DE9D",
+            "Arn"
+          ]
+        },
+        "Stack": "ShieldAutomationsStack",
+        "Account": {
+          "Ref": "AWS::AccountId"
+        },
+        "Region": {
+          "Ref": "AWS::Region"
+        }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/ShieldSubscriptionCheck/Default"
+      }
+    },
+    "ShieldAutomationsTopic5237ADAC": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "DisplayName": "FMS-Shield-Automations Topic",
+        "KmsMasterKeyId": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":kms:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":alias/aws/sns"
+            ]
+          ]
+        },
+        "TopicName": {
+          "Fn::FindInMap": [
+            "ShieldAutomationsStackMap",
+            "ShieldAutomationsStack",
+            "SNSTopicName"
+          ]
+        },
+        "TracingConfig": "Active"
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/ShieldAutomationsTopic/Resource"
+      }
+    },
+    "ShieldAutomationsTopicTokenSubscription161E6AEC8": {
+      "Type": "AWS::SNS::Subscription",
+      "Properties": {
+        "Endpoint": {
+          "Ref": "EmailAddress"
+        },
+        "Protocol": "email",
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::GetAtt": [
+              "ShieldAutomationsSNSDLQ6FA1B7A4",
+              "Arn"
+            ]
+          }
+        },
+        "TopicArn": {
+          "Ref": "ShieldAutomationsTopic5237ADAC"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/ShieldAutomationsTopic/TokenSubscription:1/Resource"
+      },
+      "Condition": "emailAddressExists"
+    },
+    "ShieldAutomationsSNSDLQ6FA1B7A4": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "MessageRetentionPeriod": 1209600,
+        "QueueName": "ShieldAutomations-SNS-DLQ",
+        "SqsManagedSseEnabled": true
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W48",
+              "reason": "Queue is encrypted using SQS Managed keys"
+            }
+          ]
+        }
+      }
+    },
+    "ShieldAutomationsSNSDLQPolicy21B5218D": {
+      "Type": "AWS::SQS::QueuePolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "ShieldAutomationsSNSDLQ6FA1B7A4",
+                  "Arn"
+                ]
+              }
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Condition": {
+                "ArnEquals": {
+                  "aws:SourceArn": {
+                    "Ref": "ShieldAutomationsTopic5237ADAC"
+                  }
+                }
+              },
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "sns.amazonaws.com"
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "ShieldAutomationsSNSDLQ6FA1B7A4",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Queues": [
+          {
+            "Ref": "ShieldAutomationsSNSDLQ6FA1B7A4"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/ShieldAutomationsSNSDLQ/Policy/Resource"
+      }
+    },
+    "FMSShieldAutomationsQueue07F2F447": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "ContentBasedDeduplication": true,
+        "FifoQueue": true,
+        "QueueName": "FMS-Shield-Remediate-Queue.fifo",
+        "SqsManagedSseEnabled": true,
+        "VisibilityTimeout": 5400
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W48",
+              "reason": "Queue is encrypted using SQS Managed keys"
+            }
+          ]
+        }
+      }
+    },
+    "FMSShieldAutomationsQueuePolicy12960A6B": {
+      "Type": "AWS::SQS::QueuePolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sqs:*",
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              },
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "FMSShieldAutomationsQueue07F2F447",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Queues": [
+          {
+            "Ref": "FMSShieldAutomationsQueue07F2F447"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/FMS-ShieldAutomations-Queue/Policy/Resource"
+      }
+    },
+    "FMSShieldAutomationsLayerFMSShieldAutomationsLayerLayer555169F9": {
+      "Type": "AWS::Lambda::LayerVersion",
+      "Properties": {
+        "CompatibleRuntimes": [
+          "nodejs18.x"
+        ],
+        "Content": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset203ea12c0b4535ba6b773d0309f4594316879ff8bff8ef0a5510447bf7076e5a.zip"
+        },
+        "LayerName": "FMS-ShieldAutomations-Layer"
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/FMS-ShieldAutomations-Layer/FMS-ShieldAutomations-Layer-Layer/Resource",
+        "aws:asset:path": "asset.203ea12c0b4535ba6b773d0309f4594316879ff8bff8ef0a5510447bf7076e5a.zip",
+        "aws:asset:is-bundled": false,
+        "aws:asset:property": "Content"
+      }
+    },
+    "FMSShieldAutomationsConfigRuleEvalServiceRole70D18D18": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSConfigRulesExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/FMS-ShieldAutomations-ConfigRuleEval/ServiceRole/Resource"
+      }
+    },
+    "FMSShieldAutomationsConfigRuleEvalServiceRoleDefaultPolicy744CB683": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "FMSShieldAutomationsConfigRuleEvalServiceRoleDefaultPolicy744CB683",
+        "Roles": [
+          {
+            "Ref": "FMSShieldAutomationsConfigRuleEvalServiceRole70D18D18"
+          }
+        ]
+      },
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W12",
+              "reason": "Resource * is required for xray permissions"
+            }
+          ]
+        }
+      }
+    },
+    "FMSShieldAutomationsConfigRuleEval569236A0": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/assetdcc896e86d169eb08d166ca243e9d3ef48f2fc701c5f23702f050b6afa945c2e.zip"
+        },
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::FindInMap": [
+                  "ShieldAutomationsStackMap",
+                  "Solution",
+                  "SolutionId"
+                ]
+              },
+              " - Function to handle custom evaluation for Organization Config Rule"
+            ]
+          ]
+        },
+        "Environment": {
+          "Variables": {
+            "LOG_LEVEL": "info",
+            "SOLUTION_NAME": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionName"
+              ]
+            },
+            "SOLUTION_VERSION": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionVersion"
+              ]
+            },
+            "SOLUTION_ID": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionId"
+              ]
+            },
+            "CROSS_ACCOUNT_ROLE": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "ShieldAutomationsStack",
+                "ConfigEvalCrossAccountRole"
+              ]
+            },
+            "TOPIC_ARN": {
+              "Ref": "ShieldAutomationsTopic5237ADAC"
+            },
+            "REMEDIATION_QUEUE": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://sqs.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".amazonaws.com/",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  "/",
+                  {
+                    "Fn::GetAtt": [
+                      "FMSShieldAutomationsQueue07F2F447",
+                      "QueueName"
+                    ]
+                  }
+                ]
+              ]
+            },
+            "EIP_METRIC_CONFIG": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "EIPCPUUtilizationMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "EIPCPUUtilizationMetricStat"
+                  },
+                  ",",
+                  {
+                    "Ref": "EIPNetworkInMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "EIPNetworkInMetricStat"
+                  }
+                ]
+              ]
+            },
+            "NLB_METRIC_CONFIG": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "NLBActiveFlowCountMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "NLBActiveFlowCountMetricStat"
+                  },
+                  ",",
+                  {
+                    "Ref": "NLBNewFlowCountMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "NLBNewFlowCountMetricStat"
+                  }
+                ]
+              ]
+            },
+            "ELB_METRIC_CONFIG": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "ELB4xxMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "ELB4xxMetricStat"
+                  },
+                  ",",
+                  {
+                    "Ref": "ELB5xxMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "ELB5xxMetricStat"
+                  }
+                ]
+              ]
+            },
+            "CF_METRIC_CONFIG": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "CF4xxMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "CF4xxMetricStat"
+                  },
+                  ",",
+                  {
+                    "Ref": "CF5xxMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "CF5xxMetricStat"
+                  }
+                ]
+              ]
+            },
+            "PARTITION": {
+              "Ref": "AWS::Partition"
+            },
+            "SERVICE_NAME": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionName"
+              ]
+            },
+            "METRICS_ENDPOINT": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Metric",
+                "MetricsEndpoint"
+              ]
+            }
+          }
+        },
+        "Handler": "index.handler",
+        "Layers": [
+          {
+            "Ref": "FMSShieldAutomationsLayerFMSShieldAutomationsLayerLayer555169F9"
+          },
+          {
+            "Ref": "AFMUtilsLayerAFMUtilsLayerLayerB9CC38B4"
+          }
+        ],
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "FMSShieldAutomationsConfigRuleEvalServiceRole70D18D18",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 900,
+        "TracingConfig": {
+          "Mode": "Active"
+        }
+      },
+      "DependsOn": [
+        "FMSShieldAutomationsConfigRuleEvalServiceRoleDefaultPolicy744CB683",
+        "FMSShieldAutomationsConfigRuleEvalServiceRole70D18D18"
+      ],
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W58",
+              "reason": "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole"
+            },
+            {
+              "id": "W89",
+              "reason": "Not a valid use case for Lambda functions to be deployed inside a VPC"
+            },
+            {
+              "id": "W92",
+              "reason": "Lambda ReservedConcurrentExecutions not needed"
+            }
+          ]
+        }
+      }
+    },
+    "FMSShieldAutomationsConfigRuleEvalInvokectWrouK8UBH6gnyK2fQdFfIftiCEoGJ7mhyLPAYA6AF34D2": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "FMSShieldAutomationsConfigRuleEval569236A0",
+            "Arn"
+          ]
+        },
+        "Principal": "config.amazonaws.com"
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/FMS-ShieldAutomations-ConfigRuleEval/InvokectWrouK8U+BH6gnyK2fQ--dFfIfti--CEoGJ7m+hyLPAY="
+      }
+    },
+    "ConfigRuleEvalLogGroup13547643": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "FMSShieldAutomationsConfigRuleEval569236A0"
+              }
+            ]
+          ]
+        },
+        "RetentionInDays": 7
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W84",
+              "reason": "Using service default encryption https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/data-protection.html"
+            }
+          ]
+        }
+      }
+    },
+    "FMSShieldConfigRuleEvalPolicyD4922AFD": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":iam::*:role/FMS-Shield-ConfigRuleEvalCrossAccount-Role"
+                  ]
+                ]
+              },
+              "Sid": "STSAssume"
+            },
+            {
+              "Action": "sqs:SendMessage",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "FMSShieldAutomationsQueue07F2F447",
+                  "Arn"
+                ]
+              },
+              "Sid": "SQSWrite"
+            },
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries"
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "XRayWriteAccess"
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "ConfigRuleEvalLogGroup13547643",
+                  "Arn"
+                ]
+              },
+              "Sid": "CloudWatchLogsWriteEval"
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "ShieldAutomationsTopic5237ADAC"
+              },
+              "Sid": "SNSWrite"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": {
+          "Fn::FindInMap": [
+            "ShieldAutomationsStackMap",
+            "ShieldAutomationsStack",
+            "ConfigRuleEvalPolicy"
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "FMSShieldAutomationsConfigRuleEvalServiceRole70D18D18"
+          }
+        ]
+      },
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W12",
+              "reason": "Resource * is required for IAM actions that do not support resource level permissions"
+            }
+          ]
+        }
+      }
+    },
+    "FMSShieldAutomationsConfigRuleRemediateServiceRole783403FA": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/FMS-ShieldAutomations-ConfigRuleRemediate/ServiceRole/Resource"
+      }
+    },
+    "FMSShieldAutomationsConfigRuleRemediateServiceRoleDefaultPolicy289C443E": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords"
+              ],
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "sqs:ReceiveMessage",
+                "sqs:ChangeMessageVisibility",
+                "sqs:GetQueueUrl",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "FMSShieldAutomationsQueue07F2F447",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "FMSShieldAutomationsConfigRuleRemediateServiceRoleDefaultPolicy289C443E",
+        "Roles": [
+          {
+            "Ref": "FMSShieldAutomationsConfigRuleRemediateServiceRole783403FA"
+          }
+        ]
+      },
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W12",
+              "reason": "Resource * is required for xray permissions"
+            }
+          ]
+        }
+      }
+    },
+    "FMSShieldAutomationsConfigRuleRemediate36A3D319": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Fn::Sub": "solutions-${AWS::Region}"
+          },
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset23c0a8f279c3fda7e8ffccf1483a2867dfdce6bce4115ff4e602b992512b981a.zip"
+        },
+        "Description": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Fn::FindInMap": [
+                  "ShieldAutomationsStackMap",
+                  "Solution",
+                  "SolutionId"
+                ]
+              },
+              " - Function to handle custom remediation for Organization Config Rule"
+            ]
+          ]
+        },
+        "Environment": {
+          "Variables": {
+            "LOG_LEVEL": "info",
+            "SOLUTION_NAME": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionName"
+              ]
+            },
+            "SOLUTION_VERSION": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionVersion"
+              ]
+            },
+            "SOLUTION_ID": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionId"
+              ]
+            },
+            "CROSS_ACCOUNT_ROLE": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "ShieldAutomationsStack",
+                "ConfigRemediateCrossAccountRole"
+              ]
+            },
+            "TOPIC_ARN": {
+              "Ref": "ShieldAutomationsTopic5237ADAC"
+            },
+            "EIP_METRIC_CONFIG": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "EIPCPUUtilizationMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "EIPCPUUtilizationMetricStat"
+                  },
+                  ",",
+                  {
+                    "Ref": "EIPNetworkInMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "EIPNetworkInMetricStat"
+                  }
+                ]
+              ]
+            },
+            "NLB_METRIC_CONFIG": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "NLBActiveFlowCountMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "NLBActiveFlowCountMetricStat"
+                  },
+                  ",",
+                  {
+                    "Ref": "NLBNewFlowCountMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "NLBNewFlowCountMetricStat"
+                  }
+                ]
+              ]
+            },
+            "ELB_METRIC_CONFIG": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "ELB4xxMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "ELB4xxMetricStat"
+                  },
+                  ",",
+                  {
+                    "Ref": "ELB5xxMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "ELB5xxMetricStat"
+                  }
+                ]
+              ]
+            },
+            "CF_METRIC_CONFIG": {
+              "Fn::Join": [
+                "",
+                [
+                  {
+                    "Ref": "CF4xxMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "CF4xxMetricStat"
+                  },
+                  ",",
+                  {
+                    "Ref": "CF5xxMetricThreshold"
+                  },
+                  ",",
+                  {
+                    "Ref": "CF5xxMetricStat"
+                  }
+                ]
+              ]
+            },
+            "PARTITION": {
+              "Ref": "AWS::Partition"
+            },
+            "SERVICE_NAME": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Solution",
+                "SolutionName"
+              ]
+            },
+            "METRICS_ENDPOINT": {
+              "Fn::FindInMap": [
+                "ShieldAutomationsStackMap",
+                "Metric",
+                "MetricsEndpoint"
+              ]
+            }
+          }
+        },
+        "Handler": "index.handler",
+        "Layers": [
+          {
+            "Ref": "FMSShieldAutomationsLayerFMSShieldAutomationsLayerLayer555169F9"
+          },
+          {
+            "Ref": "AFMUtilsLayerAFMUtilsLayerLayerB9CC38B4"
+          }
+        ],
+        "MemorySize": 1024,
+        "Role": {
+          "Fn::GetAtt": [
+            "FMSShieldAutomationsConfigRuleRemediateServiceRole783403FA",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs18.x",
+        "Timeout": 900,
+        "TracingConfig": {
+          "Mode": "Active"
+        }
+      },
+      "DependsOn": [
+        "FMSShieldAutomationsConfigRuleRemediateServiceRoleDefaultPolicy289C443E",
+        "FMSShieldAutomationsConfigRuleRemediateServiceRole783403FA"
+      ],
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W58",
+              "reason": "CloudWatch logs write permissions added with managed role AWSLambdaBasicExecutionRole"
+            },
+            {
+              "id": "W89",
+              "reason": "Not a valid use case for Lambda functions to be deployed inside a VPC"
+            },
+            {
+              "id": "W92",
+              "reason": "Lambda ReservedConcurrentExecutions not needed"
+            }
+          ]
+        }
+      }
+    },
+    "FMSShieldAutomationsConfigRuleRemediateSqsEventSourceShieldAutomationsStackFMSShieldAutomationsQueueDA53F873EF1BA71D": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "BatchSize": 1,
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "FMSShieldAutomationsQueue07F2F447",
+            "Arn"
+          ]
+        },
+        "FunctionName": {
+          "Ref": "FMSShieldAutomationsConfigRuleRemediate36A3D319"
+        },
+        "FunctionResponseTypes": [
+          "ReportBatchItemFailures"
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/FMS-ShieldAutomations-ConfigRuleRemediate/SqsEventSource:ShieldAutomationsStackFMSShieldAutomationsQueueDA53F873/Resource"
+      }
+    },
+    "ConfigRuleRemediateLogGroup72B3E8C1": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "",
+            [
+              "/aws/lambda/",
+              {
+                "Ref": "FMSShieldAutomationsConfigRuleRemediate36A3D319"
+              }
+            ]
+          ]
+        },
+        "RetentionInDays": 7
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W84",
+              "reason": "Using service default encryption https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/data-protection.html"
+            }
+          ]
+        }
+      }
+    },
+    "FMSShieldConfigRuleRemediatePolicyC8545419": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":iam::*:role/FMS-Shield-ConfigRuleRemediateCrossAccount-Role"
+                  ]
+                ]
+              },
+              "Sid": "STSAssume"
+            },
+            {
+              "Action": [
+                "xray:PutTraceSegments",
+                "xray:PutTelemetryRecords",
+                "xray:GetSamplingRules",
+                "xray:GetSamplingTargets",
+                "xray:GetSamplingStatisticSummaries"
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+              "Sid": "XRayWriteAccess"
+            },
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:CreateLogGroup"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "ConfigRuleRemediateLogGroup72B3E8C1",
+                  "Arn"
+                ]
+              },
+              "Sid": "CloudWatchLogsWriteRemediate"
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "ShieldAutomationsTopic5237ADAC"
+              },
+              "Sid": "SNSWrite"
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": {
+          "Fn::FindInMap": [
+            "ShieldAutomationsStackMap",
+            "ShieldAutomationsStack",
+            "ConfigRuleRemediatePolicy"
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "FMSShieldAutomationsConfigRuleRemediateServiceRole783403FA"
+          }
+        ]
+      },
+      "Metadata": {
+        "cfn_nag": {
+          "rules_to_suppress": [
+            {
+              "id": "W12",
+              "reason": "Resource * is required for IAM actions that do not support resource level permissions"
+            }
+          ]
+        }
+      }
+    },
+    "FMSShieldAutomationsConfigRule": {
+      "Type": "AWS::Config::OrganizationConfigRule",
+      "Properties": {
+        "ExcludedAccounts": {
+          "Fn::If": [
+            "excludedAccountsExists",
+            {
+              "Ref": "ExcludedAccounts"
+            },
+            {
+              "Ref": "AWS::NoValue"
+            }
+          ]
+        },
+        "OrganizationConfigRuleName": {
+          "Fn::FindInMap": [
+            "ShieldAutomationsStackMap",
+            "ShieldAutomationsStack",
+            "OrganizationConfigRule"
+          ]
+        },
+        "OrganizationCustomRuleMetadata": {
+          "Description": {
+            "Fn::Join": [
+              "",
+              [
+                {
+                  "Fn::FindInMap": [
+                    "ShieldAutomationsStackMap",
+                    "Solution",
+                    "SolutionId"
+                  ]
+                },
+                " - Organization Config Rule to handle creation of Route53 health checks"
+              ]
+            ]
+          },
+          "LambdaFunctionArn": {
+            "Fn::GetAtt": [
+              "FMSShieldAutomationsConfigRuleEval569236A0",
+              "Arn"
+            ]
+          },
+          "MaximumExecutionFrequency": "TwentyFour_Hours",
+          "OrganizationConfigRuleTriggerTypes": [
+            "ConfigurationItemChangeNotification",
+            "ScheduledNotification"
+          ],
+          "ResourceTypesScope": [
+            "AWS::Shield::Protection",
+            "AWS::ShieldRegional::Protection"
+          ]
+        }
+      },
+      "DependsOn": [
+        "FMSShieldAutomationsConfigRuleEvalInvokectWrouK8UBH6gnyK2fQdFfIftiCEoGJ7mhyLPAYA6AF34D2",
+        "FMSShieldAutomationsConfigRuleEval569236A0",
+        "FMSShieldAutomationsConfigRuleEvalServiceRoleDefaultPolicy744CB683",
+        "FMSShieldAutomationsConfigRuleEvalServiceRole70D18D18",
+        "FMSShieldAutomationsConfigRuleRemediate36A3D319",
+        "FMSShieldAutomationsConfigRuleRemediateServiceRoleDefaultPolicy289C443E",
+        "FMSShieldAutomationsConfigRuleRemediateServiceRole783403FA",
+        "FMSShieldAutomationsConfigRuleRemediateSqsEventSourceShieldAutomationsStackFMSShieldAutomationsQueueDA53F873EF1BA71D"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/FMS-ShieldAutomations-ConfigRule"
+      }
+    },
+    "ConfigRuleEvalErrorQuery0BE30C9A": {
+      "Type": "AWS::Logs::QueryDefinition",
+      "Properties": {
+        "LogGroupNames": [
+          {
+            "Ref": "ConfigRuleEvalLogGroup13547643"
+          }
+        ],
+        "Name": "FMS-Shield_ConfigRuleEval_Error_Query",
+        "QueryString": "fields @timestamp, @level\n| filter level = \"ERROR\"\n| sort @timestamp desc"
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/ConfigRuleEvalErrorQuery/Resource"
+      }
+    },
+    "ConfigRuleRemediateErrorQuery87D0C290": {
+      "Type": "AWS::Logs::QueryDefinition",
+      "Properties": {
+        "LogGroupNames": [
+          {
+            "Ref": "ConfigRuleRemediateLogGroup72B3E8C1"
+          }
+        ],
+        "Name": "FMS-Shield_ConfigRuleRemediate_Error_Query",
+        "QueryString": "fields @timestamp, @level\n| filter level = \"ERROR\"\n| sort @timestamp desc"
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/ConfigRuleRemediateErrorQuery/Resource"
+      }
+    },
+    "HealthCheckCreateSuccessQuery00001C64": {
+      "Type": "AWS::Logs::QueryDefinition",
+      "Properties": {
+        "LogGroupNames": [
+          {
+            "Ref": "ConfigRuleRemediateLogGroup72B3E8C1"
+          }
+        ],
+        "Name": "FMS-Shield_Health_Check_Create_Success_Query",
+        "QueryString": "fields @timestamp, @message\n| filter message like \"Created Route53 Health Check\" \n| sort @timestamp desc"
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/HealthCheckCreateSuccessQuery/Resource"
+      }
+    },
+    "RemediationSuccessQuery69498C97": {
+      "Type": "AWS::Logs::QueryDefinition",
+      "Properties": {
+        "LogGroupNames": [
+          {
+            "Ref": "ConfigRuleRemediateLogGroup72B3E8C1"
+          }
+        ],
+        "Name": "FMS-Shield_Remediation_Success_Query",
+        "QueryString": "fields @timestamp, @message\n| filter message like \"Remediation successful for Shield Protection\"\n| sort @timestamp desc"
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/RemediationSuccessQuery/Resource"
+      }
+    },
+    "AssociateHealthCheckSuccessQueryEB192EDB": {
+      "Type": "AWS::Logs::QueryDefinition",
+      "Properties": {
+        "LogGroupNames": [
+          {
+            "Ref": "ConfigRuleRemediateLogGroup72B3E8C1"
+          }
+        ],
+        "Name": "FMS-Shield_Associate_Health_Check_Success_Query",
+        "QueryString": "fields @timestamp, @message\n| filter message like \"Associated calculated Health Check\"\n| sort @timestamp desc"
+      },
+      "Metadata": {
+        "aws:cdk:path": "ShieldAutomationsStack/AssociateHealthCheckSuccessQuery/Resource"
+      }
+    }
+  },
+  "Outputs": {
+    "ShieldAutomationsSNSTopic": {
+      "Description": "SNS Topic for Shield Automations notifications",
+      "Value": {
+        "Fn::GetAtt": [
+          "ShieldAutomationsTopic5237ADAC",
+          "TopicName"
+        ]
+      }
+    },
+    "OrganizationConfigRule": {
+      "Description": "OrgConfigRule for health-based detection automations",
+      "Value": {
+        "Fn::FindInMap": [
+          "ShieldAutomationsStackMap",
+          "ShieldAutomationsStack",
+          "OrganizationConfigRule"
+        ]
+      }
+    },
+    "ConfigRuleEvalLambdaFunction": {
+      "Description": "Lambda function used by the Organization Config Rule for evaluation",
+      "Value": {
+        "Ref": "FMSShieldAutomationsConfigRuleEval569236A0"
+      }
+    },
+    "ConfigRuleRemediateLambdaFunction": {
+      "Description": "Lambda function used to create Route53 health checks",
+      "Value": {
+        "Ref": "FMSShieldAutomationsConfigRuleRemediate36A3D319"
+      }
+    },
+    "ConfigRuleEvalFunctionErrorQuery": {
+      "Description": "Log Insights Query for ConfigRuleEval function errors",
+      "Value": {
+        "Fn::GetAtt": [
+          "ConfigRuleEvalErrorQuery0BE30C9A",
+          "QueryDefinitionId"
+        ]
+      }
+    },
+    "ConfigRuleRemediateFunctionErrorQuery": {
+      "Description": "Log Insights Query for ConfigRuleRemediate function errors",
+      "Value": {
+        "Fn::GetAtt": [
+          "ConfigRuleRemediateErrorQuery87D0C290",
+          "QueryDefinitionId"
+        ]
+      }
+    },
+    "HealthCheckCreateSuccessQuery": {
+      "Description": "Log Insights Query for Health Check Create Success events",
+      "Value": {
+        "Fn::GetAtt": [
+          "HealthCheckCreateSuccessQuery00001C64",
+          "QueryDefinitionId"
+        ]
+      }
+    },
+    "RemediateSuccessQuery": {
+      "Description": "Log Insights Query for successful remediation of Shield Protections.",
+      "Value": {
+        "Fn::GetAtt": [
+          "RemediationSuccessQuery69498C97",
+          "QueryDefinitionId"
+        ]
+      }
+    },
+    "AssociateHealthCheckSuccessQuery": {
+      "Description": "Log Insights Query for successful associations between Health Checks and Shield Protections.",
+      "Value": {
+        "Fn::GetAtt": [
+          "AssociateHealthCheckSuccessQueryEB192EDB",
+          "QueryDefinitionId"
+        ]
+      }
+    }
+  }
+}

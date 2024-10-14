@@ -44,10 +44,7 @@ module.exports = {
   verbose: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: [
-    "**.ts",
-    "!./__tests__/*",
-  ],
+  collectCoverageFrom: ["**.ts", "!./__tests__/*"],
 
   // A list of paths to modules that run some code to configure or set up the testing environment
   setupFiles: ["./jest.setup.js", "./jestSetEnvVars.js"],
@@ -56,4 +53,8 @@ module.exports = {
 
   // This option allows the use of a custom results processor.
   testResultsProcessor: "jest-sonar-reporter",
+
+  moduleNameMapper: {
+    "solutions-utils": "<rootDir>/../utilsLayer",
+  },
 };

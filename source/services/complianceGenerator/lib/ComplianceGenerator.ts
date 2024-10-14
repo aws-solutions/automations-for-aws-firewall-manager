@@ -13,13 +13,15 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { PublishCommand, SNSClient } from "@aws-sdk/client-sns";
 import { createObjectCsvWriter } from "csv-writer";
 import fs from "fs";
-import { logger, serviceLogger } from "./common/logger";
-import { Metrics } from "./common/metrics";
-import { RETRY_MODES } from "@aws-sdk/util-retry";
+import { logger, tracer, sendAnonymizedMetric } from "solutions-utils";
+import { RETRY_MODES } from "@smithy/util-retry";
 import { UserAgent, UserAgentPair } from "@aws-sdk/types";
 
-const userAgentPair : UserAgentPair = [`${process.env.USER_AGENT_PREFIX}/${process.env.SOLUTION_ID}`, `${process.env.SOLUTION_VERSION}`]
-export const customUserAgent : UserAgent = [userAgentPair];
+const userAgentPair: UserAgentPair = [
+  `${process.env.USER_AGENT_PREFIX}/${process.env.SOLUTION_ID}`,
+  `${process.env.SOLUTION_VERSION}`,
+];
+export const customUserAgent: UserAgent = [userAgentPair];
 
 export interface IMessage {
   /**
@@ -66,15 +68,12 @@ export class ComplianceGenerator {
    * @param {string} region aws region policy is created
    */
   getMemberAccounts = async (): Promise<string[]> => {
-    logger.debug({
-      label: "ComplianceGenerator/getMemberAccounts",
-      message: `getting member accounts for ${this.policyId}`,
-    });
-    const fms = new FMSClient({
-      region: this.region,
-      customUserAgent: customUserAgent,
-      logger: serviceLogger,
-    });
+    const fms = tracer.captureAWSv3Client(
+      new FMSClient({
+        region: this.region,
+        customUserAgent: customUserAgent,
+      })
+    );
     const paginatorConfig = {
       client: fms,
       pageSize: 25,
@@ -94,6 +93,11 @@ export class ComplianceGenerator {
         memberAccounts.push(...members);
       }
     }
+
+    logger.info("retrieved member accounts for policy", {
+      policyId: this.policyId,
+      memberAccounts: memberAccounts,
+    });
     return memberAccounts;
   };
 
@@ -107,17 +111,14 @@ export class ComplianceGenerator {
     accountCompliance_records: { [key: string]: string }[];
     resourceViolator_records: { [key: string]: string }[];
   }> => {
-    logger.debug({
-      label: "ComplianceGenerator/getComplianceDetails",
-      message: `getting compliance details on member accounts`,
-    });
-    const fms = new FMSClient({
-      region: this.region,
-      customUserAgent: customUserAgent,
-      logger: serviceLogger,
-      maxAttempts: +(process.env.MAX_ATTEMPTS as string), // to avoid throttling exceptions
-      retryMode: RETRY_MODES.STANDARD,
-    });
+    const fms = tracer.captureAWSv3Client(
+      new FMSClient({
+        region: this.region,
+        customUserAgent: customUserAgent,
+        maxAttempts: +(process.env.MAX_ATTEMPTS as string), // to avoid throttling exceptions
+        retryMode: RETRY_MODES.STANDARD,
+      })
+    );
     const accountCompliance_records: { [key: string]: string }[] = [];
     const resourceViolator_records: { [key: string]: string }[] = [];
 
@@ -167,13 +168,22 @@ export class ComplianceGenerator {
             });
           }
         } catch (e) {
-          logger.error({
-            label: "ComplianceGenerator/getComplianceDetails",
-            message: e,
-          });
+          logger.error(
+            "encountered error retrieving compliance details for member accounts",
+            {
+              error: e,
+              memberAccounts: memberAccounts,
+              requestId: e.$metadata?.requestId,
+            }
+          );
         }
       })
     );
+
+    logger.info("retrieved compliance details for member accounts", {
+      memberAccounts: memberAccounts,
+    });
+
     return {
       accountCompliance_records,
       resourceViolator_records,
@@ -190,10 +200,6 @@ export class ComplianceGenerator {
     resource_violator_records: { [key: string]: string }[]
   ): Promise<void> => {
     try {
-      logger.debug({
-        label: "ComplianceGenerator/generateComplianceReports",
-        message: `generating compliance reports`,
-      });
       // using date object to create S3 file key
       const date = new Date();
       const _date = date.toISOString();
@@ -252,7 +258,7 @@ export class ComplianceGenerator {
       if (
         process.env.SEND_METRIC === "Yes" &&
         process.env.UUID &&
-        process.env.METRICS_QUEUE
+        process.env.METRICS_ENDPOINT
       ) {
         const metric = {
           Solution: <string>process.env.SOLUTION_ID,
@@ -267,12 +273,13 @@ export class ComplianceGenerator {
             Version: <string>process.env.SOLUTION_VERSION,
           },
         };
-        await Metrics.sendAnonymousMetric(process.env.METRICS_QUEUE, metric);
+        await sendAnonymizedMetric(metric);
       }
     } catch (e) {
-      logger.error({
-        label: "ComplianceGenerator/generateComplianceReports",
-        message: e,
+      logger.error("encountered error generating compliance reports", {
+        error: e,
+        policyId: this.policyId,
+        region: this.region,
       });
     }
   };
@@ -288,20 +295,26 @@ export class ComplianceGenerator {
     Body: Buffer
   ): Promise<void> => {
     try {
-      logger.debug({
-        label: "ComplianceGenerator/uploadToS3",
-        message: `uploading report to ${Bucket}`,
-      });
-      const s3 = new S3Client({
-        customUserAgent: customUserAgent,
-        logger: serviceLogger,
-      });
+      const s3 = tracer.captureAWSv3Client(
+        new S3Client({
+          customUserAgent: customUserAgent,
+        })
+      );
       await s3.send(new PutObjectCommand({ Bucket, Key, Body }));
-    } catch (e) {
-      logger.error({
-        label: "ComplianceGenerator/uploadToS3",
-        message: `${JSON.stringify(e)}`,
+
+      logger.debug("uploaded compliance report to s3 bucket", {
+        region: this.region,
+        bucket: Bucket,
       });
+    } catch (e) {
+      logger.error(
+        "encountered error uploading compliance report to s3 bucket",
+        {
+          error: e,
+          bucket: Bucket,
+          requestId: e.$metadata?.requestId,
+        }
+      );
       throw new Error("upload failed");
     }
   };
@@ -311,35 +324,36 @@ export class ComplianceGenerator {
    * @returns
    */
   static getRegions = async (): Promise<string[]> => {
-    logger.debug({
-      label: "ComplianceGenerator/getRegions",
-      message: `getting ec2 regions`,
-    });
     try {
-      const ec2 = new EC2Client({
-        customUserAgent: customUserAgent,
-        logger: serviceLogger,
-      });
+      const ec2 = tracer.captureAWSv3Client(
+        new EC2Client({
+          customUserAgent: customUserAgent,
+        })
+      );
 
-      const _r = await ec2.send(
+      const describeRegionsCommandResponse = await ec2.send(
         new DescribeRegionsCommand({ AllRegions: true })
       );
 
-      if (!_r.Regions) throw new Error("failed to describe regions");
-      const regions = <string[]>_r.Regions.filter((region) => {
-        return region.RegionName !== "ap-northeast-3";
-      }).map((region) => {
+      if (!describeRegionsCommandResponse.Regions)
+        throw new Error("failed to describe regions");
+      const regions = <string[]>describeRegionsCommandResponse.Regions.filter(
+        (region) => {
+          return region.RegionName !== "ap-northeast-3";
+        }
+      ).map((region) => {
         return region.RegionName;
       });
-      logger.debug({
-        label: "ComplianceGenerator/getRegions",
-        message: `${JSON.stringify({ regions: regions })}`,
+
+      logger.debug("retrieved EC2 regions", {
+        regions: regions,
       });
+
       return regions;
     } catch (e) {
-      logger.error({
-        label: "ComplianceGenerator/getRegions",
-        message: JSON.stringify(e),
+      logger.error("encountered error retrieving EC2 regions", {
+        error: e,
+        requestId: e.$metadata?.requestId,
       });
       throw new Error("error fetching regions");
     }
@@ -351,17 +365,14 @@ export class ComplianceGenerator {
    * @returns
    */
   static listPolicies = async (region: string): Promise<string[]> => {
-    logger.debug({
-      label: "ComplianceGenerator/listPolicies",
-      message: `listing policies in ${region}`,
-    });
     const policies: string[] = [];
     try {
-      const fms = new FMSClient({
-        region,
-        customUserAgent: customUserAgent,
-        logger: serviceLogger,
-      });
+      const fms = tracer.captureAWSv3Client(
+        new FMSClient({
+          region,
+          customUserAgent: customUserAgent,
+        })
+      );
       const paginatorConfig = {
         client: fms,
         pageSize: 25,
@@ -373,10 +384,15 @@ export class ComplianceGenerator {
         );
         policies.push(..._policies);
       }
+
+      logger.info("successfully listed policies in region", {
+        region: region,
+      });
     } catch (e) {
-      logger.error({
-        label: "ComplianceGenerator/listPolicies",
-        message: `error listing policies in ${region}: ${e}`,
+      logger.error("encountered error listing policies in region", {
+        error: e,
+        region: region,
+        requestId: e.$metadata?.requestId,
       });
     }
     return policies;
@@ -393,23 +409,31 @@ export class ComplianceGenerator {
     Message: IMessage,
     TopicArn: string
   ): Promise<void> => {
-    logger.debug({
-      label: "ComplianceGenerator/sendSNS",
-      message: `sending sns message in ${Message.region} for policyId: ${Message.policyId}`,
-    });
     try {
-      const sns = new SNSClient({
-        region,
-        customUserAgent: customUserAgent,
-        logger: serviceLogger,
-      });
-      await sns.send(
+      const sns = tracer.captureAWSv3Client(
+        new SNSClient({
+          region,
+          customUserAgent: customUserAgent,
+        })
+      );
+
+      const publishCommandResponse = await sns.send(
         new PublishCommand({ Message: JSON.stringify(Message), TopicArn })
       );
+
+      logger.info("successfully published message to SNS Topic", {
+        region: Message.region,
+        policyId: Message.policyId,
+        topicArn: TopicArn,
+        messageId: publishCommandResponse.MessageId,
+      });
     } catch (e) {
-      logger.error({
-        label: "ComplianceGenerator/sendSNS",
-        message: e,
+      logger.error("encountered error publishing message to SNS Topic", {
+        error: e,
+        region: Message.region,
+        policyId: Message.policyId,
+        topicArn: TopicArn,
+        requestId: e.$metadata?.requestId,
       });
     }
   };
