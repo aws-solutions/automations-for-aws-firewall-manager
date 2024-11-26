@@ -1,6 +1,6 @@
 {
   "name": "shield-automations-config-rule-remediate-manager",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "microservice to handle remediation for the Shield Automations Organization Config Rule",
   "main": "index.js",
   "scripts": {

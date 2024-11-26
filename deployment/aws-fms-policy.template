@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager. Version v2.1.0",
+  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager. Version v2.1.1",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -65,7 +65,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.1.0",
+        "SolutionVersion": "v2.1.1",
         "UserAgentPrefix": "AwsSolution"
       },
       "PolicyManager": {
@@ -307,13 +307,13 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/assetc965a81477226dc8ad191791e3f5719ab4fea400b7f1197de8016f0765c68b4f.zip"
         },
         "LayerName": "AFM-UtilsLayer"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
-        "aws:asset:path": "asset.645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip",
+        "aws:asset:path": "asset.c965a81477226dc8ad191791e3f5719ab4fea400b7f1197de8016f0765c68b4f.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -760,7 +760,7 @@
               {
                 "Ref": "AWS::Region"
               },
-              "/automations-for-aws-firewall-manager/v2.1.0/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1728402214962\"},\"logApiResponseData\":true}"
+              "/automations-for-aws-firewall-manager/v2.1.1/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1732588519861\"},\"logApiResponseData\":true}"
             ]
           ]
         },
@@ -875,7 +875,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/asset97f30e67419a1676a2215492723e5add1aa491caf0cbe2dd878fc4fab0468cd4.zip"
         },
         "Handler": "index.handler",
         "Role": {
@@ -1070,7 +1070,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset1371dd8d359d3577356c5bc1315c52c31fec101b757c893a9406955e7c4a9261.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/assetf91af2212d14e3f9d6376511d6c31f975d421193831cd9fd25e75990590c8cbb.zip"
         },
         "DeadLetterConfig": {
           "TargetArn": {
