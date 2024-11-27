@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134A) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager. Version v2.1.0",
+  "Description": "(SO0134A) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager. Version v2.1.1",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -279,7 +279,7 @@
       "Solution": {
         "SolutionId": "SO0134A",
         "SolutionName": "automations-for-aws-firewall-manager",
-        "SolutionVersion": "v2.1.0",
+        "SolutionVersion": "v2.1.1",
         "UserAgentPrefix": "AwsSolution"
       },
       "ShieldAutomationsStack": {
@@ -334,13 +334,13 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/assetc965a81477226dc8ad191791e3f5719ab4fea400b7f1197de8016f0765c68b4f.zip"
         },
         "LayerName": "AFM-UtilsLayer"
       },
       "Metadata": {
         "aws:cdk:path": "ShieldAutomationsStack/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
-        "aws:asset:path": "asset.645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip",
+        "aws:asset:path": "asset.c965a81477226dc8ad191791e3f5719ab4fea400b7f1197de8016f0765c68b4f.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -386,7 +386,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset1ed19d411f0511f6e78cdaba0af5e1b28c60664d5ae88424daaba952ad8d2952.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/assete7cb5e2dea0686ba3f722f727f4b423ddd2bfac37dabf17c6c04f94a970a9553.zip"
         },
         "Description": {
           "Fn::Join": [
@@ -618,7 +618,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset3542be390685e0c8353d92ccb5796d343cd93ca946b6b0de798004206a199adc.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/asset3542be390685e0c8353d92ccb5796d343cd93ca946b6b0de798004206a199adc.zip"
         },
         "Description": "AWS CDK resource provider framework - onEvent (ShieldAutomationsStack/HelperProvider)",
         "Environment": {
@@ -892,13 +892,13 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset203ea12c0b4535ba6b773d0309f4594316879ff8bff8ef0a5510447bf7076e5a.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/assetfb0a2aa30f3a56c5fedad36c61894feafc8cf6fa1f13bd2d5e9d1ad487fe3a56.zip"
         },
         "LayerName": "FMS-ShieldAutomations-Layer"
       },
       "Metadata": {
         "aws:cdk:path": "ShieldAutomationsStack/FMS-ShieldAutomations-Layer/FMS-ShieldAutomations-Layer-Layer/Resource",
-        "aws:asset:path": "asset.203ea12c0b4535ba6b773d0309f4594316879ff8bff8ef0a5510447bf7076e5a.zip",
+        "aws:asset:path": "asset.fb0a2aa30f3a56c5fedad36c61894feafc8cf6fa1f13bd2d5e9d1ad487fe3a56.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -990,7 +990,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/assetdcc896e86d169eb08d166ca243e9d3ef48f2fc701c5f23702f050b6afa945c2e.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/asset4499ac50ce2497745fd2152149e07ecaa4c76f66d048470bd1d742bc25b91dc1.zip"
         },
         "Description": {
           "Fn::Join": [
@@ -1446,7 +1446,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset23c0a8f279c3fda7e8ffccf1483a2867dfdce6bce4115ff4e602b992512b981a.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/asset8465f6c7280c0425096dd4ad4dc46a7747cdcc01b30dd2cdf2d9b978cceccff6.zip"
         },
         "Description": {
           "Fn::Join": [

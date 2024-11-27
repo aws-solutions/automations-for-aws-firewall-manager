@@ -37,7 +37,7 @@ With the release of v2.1.0, AWS Shield Advanced customers have the option to dep
 
 The default deployment of solution pre-packaged template deploys following infrastructure in your account. The architecture can be grouped into two separate workflows: **Policy manager** and **Compliance report generator**.
 
-<img src="architecture.pdf" width="600" height="350">
+<img src="./architecture.png" width="600" height="350">
 
 **Policy Manager**: The component is responsible for CRUD operations on the Firewall Manager security policies.
 
@@ -47,7 +47,7 @@ The default deployment of solution pre-packaged template deploys following infra
 
 If you are an AWS Shield Advanced subscriber and choose to deploy the `aws-fms-shield-automations` CloudFormation template, the following resources will be automatically created in your deployment account.
 
-<img src="./shield-architecture.png" width="600" height="338">
+<img src="shield-automations-architecture.png" width="600" height="338">
 
 **Policy Manager**: Deployed by the Primary solution stack. This component is responsible for CRUD operations on the Firewall Manager security policies.
 

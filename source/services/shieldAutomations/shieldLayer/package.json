@@ -1,6 +1,6 @@
 {
   "name": "shield-automations-layer",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Lambda layer used to validate Shield resources",
   "main": "ShieldHandler.js",
   "scripts": {

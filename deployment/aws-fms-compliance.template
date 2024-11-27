@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager compliance reporter resources. Version v2.1.0",
+  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager compliance reporter resources. Version v2.1.1",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -34,7 +34,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.1.0",
+        "SolutionVersion": "v2.1.1",
         "UserAgentPrefix": "AwsSolution"
       },
       "Compliance": {
@@ -53,13 +53,13 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/asset645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/assetc965a81477226dc8ad191791e3f5719ab4fea400b7f1197de8016f0765c68b4f.zip"
         },
         "LayerName": "AFM-UtilsLayer"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
-        "aws:asset:path": "asset.645e48137124194ac7fe230538be6da8f9f43ec7279262e6125db4628b35f4bf.zip",
+        "aws:asset:path": "asset.c965a81477226dc8ad191791e3f5719ab4fea400b7f1197de8016f0765c68b4f.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -494,7 +494,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.0/assetffef4eabe37b41395dd2b67d0a9bc744c8349c98fd5551e6c3c9cfaed7b192ae.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/asset7e132bb3e75b685b9582edb61790c7e0e5f6c82d1e1c6d7d57fad08d0f0f7843.zip"
         },
         "DeadLetterConfig": {
           "TargetArn": {
