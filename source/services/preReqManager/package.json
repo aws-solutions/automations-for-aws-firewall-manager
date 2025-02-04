@@ -1,6 +1,6 @@
 {
   "name": "pre-req-manager",
-  "version": "2.0.0",
+  "version": "2.1.2",
   "description": "microservice to validate pre-reqs for using firewall manager service",
   "main": "index.js",
   "scripts": {

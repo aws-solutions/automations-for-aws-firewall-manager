@@ -190,6 +190,10 @@ main() {
     exit 1
   fi
 
+  # clean-up temp build files
+  cd $template_dir/cdk-solution-helper
+  rm -rf ./build
+
   DIST_TEMPLATE_OUTPUT_BUCKET="$DIST_OUTPUT_BUCKET-reference"
 
   # Find and replace bucket_name, solution_name, and version

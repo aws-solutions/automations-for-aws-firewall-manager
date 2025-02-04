@@ -43,8 +43,9 @@ import { Construct } from "constructs";
 import * as path from "path";
 import manifest from ".././solution_manifest.json";
 import { LAMBDA_RUNTIME_NODE, LOG_LEVEL } from "../common/exports";
-import { Queue, QueueEncryption, QueuePolicy } from "aws-cdk-lib/aws-sqs";
+import { Queue } from "aws-cdk-lib/aws-sqs";
 import { Layer } from "../common/lambda-layer.construct";
+import { DeadLetterQueueConstruct } from "../common/dead-letter-queue.construct";
 
 export class ComplianceGeneratorStack extends NestedStack {
   /**
@@ -200,34 +201,12 @@ export class ComplianceGeneratorStack extends NestedStack {
 
     /**
      * @description dead letter queue for lambda
-     * @type {Queue}
      */
-    const dlq: Queue = new Queue(this, `DLQ`, {
-      encryption: QueueEncryption.KMS_MANAGED,
-    });
-
-    /**
-     * @description SQS queue policy to enforce only encrypted connections over HTTPS,
-     * adding aws:SecureTransport in conditions
-     * @type {QueuePolicy}
-     */
-    const queuePolicy: QueuePolicy = new QueuePolicy(this, "QueuePolicy", {
-      queues: [dlq],
-    });
-    queuePolicy.document.addStatements(
-      new PolicyStatement({
-        sid: "AllowPublishThroughSSLOnly",
-        actions: ["sqs:*"],
-        effect: Effect.DENY,
-        resources: [],
-        conditions: {
-          ["Bool"]: {
-            "aws:SecureTransport": "false",
-          },
-        },
-        principals: [new AnyPrincipal()],
-      })
+    const deadLetterQueueConstruct = new DeadLetterQueueConstruct(
+      this,
+      "DLQConstruct"
     );
+    const deadLetterQueue: Queue = deadLetterQueueConstruct.getQueue();
 
     /**
      * @description lambda function to generate compliance reports
@@ -240,7 +219,7 @@ export class ComplianceGeneratorStack extends NestedStack {
         description: `${manifest.solution.primarySolutionId} - Function to generate compliance reports for FMS policies`,
         runtime: LAMBDA_RUNTIME_NODE,
         layers: [utilsLayer.layer],
-        deadLetterQueue: dlq,
+        deadLetterQueue: deadLetterQueue,
         code: Code.fromAsset(
           `${path.dirname(
             __dirname

@@ -1,6 +1,6 @@
 {
   "name": "compliance-generator",
-  "version": "2.0.0",
+  "version": "2.1.2",
   "description": "microservice to generate compliance reports for Firewall Manager policies",
   "main": "index.js",
   "scripts": {

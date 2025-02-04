@@ -1,6 +1,6 @@
 {
   "name": "aws-fms-automations",
-  "version": "2.0.0",
+  "version": "2.1.2",
   "description": "Automations for AWS Firewall Manager",
   "scripts": {
     "docs": "./node_modules/typedoc/bin/typedoc --out docs --name \"Automations for AWS Firewall Manager\"",
