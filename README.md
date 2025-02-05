@@ -1,6 +1,5 @@
 # Automations for AWS Firewall Manager
 
-:grey_exclamation: Notice: This solution supersedes AWS Centralized WAF & VPC SG Management solution.
 |-----------------------------------------|
 
 **[🚀Solution Landing Page](https://aws.amazon.com/solutions/implementations/aws-firewall-mgr-automations-for-aws-orgs)** | **[🚧Feature request](https://github.com/aws-solutions/automations-for-aws-firewall-manager/issues/new?assignees=&labels=feature-request%2C+enhancement&template=feature_request.md&title=)** | **[🐛Bug Report](https://github.com/aws-solutions/automations-for-aws-firewall-manager/issues/new?assignees=&labels=bug%2C+triage&template=bug_report.md&title=)** | **[📜Documentation Improvement](https://github.com/aws-solutions/automations-for-aws-firewall-manager/issues/new?assignees=&labels=document-update&template=documentation_improvements.md&title=)**

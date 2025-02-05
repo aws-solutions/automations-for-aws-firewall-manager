@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager. Version v2.1.1",
+  "Description": "(SO0134) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager. Version v2.1.2",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -58,7 +58,7 @@
       "Solution": {
         "SolutionId": "SO0134",
         "SolutionName": "automations-for-aws-firewall-manager",
-        "SolutionVersion": "v2.1.1",
+        "SolutionVersion": "v2.1.2",
         "UserAgentPrefix": "AwsSolution"
       }
     }
@@ -84,13 +84,13 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/assetc965a81477226dc8ad191791e3f5719ab4fea400b7f1197de8016f0765c68b4f.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.2/asset39e0fe65b28834a78b2a04686eb425d8da953f46e15d3c72e6183b0239da32b3.zip"
         },
         "LayerName": "AFM-UtilsLayer"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
-        "aws:asset:path": "asset.c965a81477226dc8ad191791e3f5719ab4fea400b7f1197de8016f0765c68b4f.zip",
+        "aws:asset:path": "asset.39e0fe65b28834a78b2a04686eb425d8da953f46e15d3c72e6183b0239da32b3.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -136,7 +136,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/assete7cb5e2dea0686ba3f722f727f4b423ddd2bfac37dabf17c6c04f94a970a9553.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.2/asset03f60342f65167cb6c1835c2700931f0b56e37fce2cd4a3c1c144c19c21c3123.zip"
         },
         "Description": {
           "Fn::Join": [
@@ -330,7 +330,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/asset3542be390685e0c8353d92ccb5796d343cd93ca946b6b0de798004206a199adc.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.2/asset3542be390685e0c8353d92ccb5796d343cd93ca946b6b0de798004206a199adc.zip"
         },
         "Description": "AWS CDK resource provider framework - onEvent (CommonResourceStack/HelperProvider)",
         "Environment": {
@@ -500,7 +500,7 @@
             ]
           }
         },
-        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/automations-for-aws-firewall-manager/v2.1.1/aws-fms-compliance.template"
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/automations-for-aws-firewall-manager/v2.1.2/aws-fms-compliance.template"
       },
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete",
@@ -529,7 +529,7 @@
             "Ref": "EmailAddress"
           }
         },
-        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/automations-for-aws-firewall-manager/v2.1.1/aws-fms-policy.template"
+        "TemplateURL": "https://solutions-reference.s3.amazonaws.com/automations-for-aws-firewall-manager/v2.1.2/aws-fms-policy.template"
       },
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete",

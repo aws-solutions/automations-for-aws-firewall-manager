@@ -23,7 +23,7 @@ import {
 } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { StringListParameter, StringParameter } from "aws-cdk-lib/aws-ssm";
-import { Queue, QueueEncryption, QueuePolicy } from "aws-cdk-lib/aws-sqs";
+import { Queue } from "aws-cdk-lib/aws-sqs";
 import { Code, Function, CfnFunction, Tracing } from "aws-cdk-lib/aws-lambda";
 import {
   LogGroup,
@@ -44,7 +44,6 @@ import {
   PhysicalResourceId,
 } from "aws-cdk-lib/custom-resources";
 import {
-  AnyPrincipal,
   CfnPolicy,
   Effect,
   Policy,
@@ -58,6 +57,7 @@ import { Layer } from "../common/lambda-layer.construct";
 import { CfnSubscription, Topic, TracingConfig } from "aws-cdk-lib/aws-sns";
 import { Alias } from "aws-cdk-lib/aws-kms";
 import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
+import { DeadLetterQueueConstruct } from "../common/dead-letter-queue.construct";
 
 export class PolicyStack extends NestedStack {
   /**
@@ -301,35 +301,12 @@ export class PolicyStack extends NestedStack {
 
     /**
      * @description dead letter queue for lambda
-     * @type {Queue}
      */
-    const dlq: Queue = new Queue(this, `DLQ`, {
-      encryption: QueueEncryption.KMS_MANAGED,
-    });
-
-    /**
-     * @description SQS queue policy to enforce only encrypted connections over HTTPS,
-     * adding aws:SecureTransport in conditions
-     * @type {QueuePolicy}
-     */
-    const queuePolicy: QueuePolicy = new QueuePolicy(this, "QueuePolicy", {
-      queues: [dlq],
-    });
-    queuePolicy.document.addStatements(
-      new PolicyStatement({
-        sid: "AllowPublishThroughSSLOnly",
-        actions: ["sqs:*"],
-        effect: Effect.DENY,
-        resources: [],
-        conditions: {
-          ["Bool"]: {
-            "aws:SecureTransport": "false",
-          },
-        },
-
-        principals: [new AnyPrincipal()],
-      })
+    const deadLetterQueueConstruct = new DeadLetterQueueConstruct(
+      this,
+      "DLQConstruct"
     );
+    const deadLetterQueue: Queue = deadLetterQueueConstruct.getQueue();
 
     /**
      * @description SNS topic for communicating errors during Policy deployment
@@ -368,7 +345,7 @@ export class PolicyStack extends NestedStack {
         )}/../../services/policyManager/dist/policyManager.zip`
       ),
       handler: "index.handler",
-      deadLetterQueue: dlq,
+      deadLetterQueue: deadLetterQueue,
       retryAttempts: 0,
       maxEventAge: Duration.minutes(15),
       deadLetterQueueEnabled: true,
@@ -453,7 +430,7 @@ export class PolicyStack extends NestedStack {
      */
     new IAMConstruct(this, "LambdaIAM", {
       policyTable: table.valueAsString,
-      sqs: dlq.queueArn,
+      sqs: deadLetterQueue.queueArn,
       logGroup: lg.logGroupArn,
       role: policyManager.role!,
       accountId: this.account,

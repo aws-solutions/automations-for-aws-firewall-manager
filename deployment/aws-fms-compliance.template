@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager compliance reporter resources. Version v2.1.1",
+  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager compliance reporter resources. Version v2.1.2",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -34,7 +34,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.1.1",
+        "SolutionVersion": "v2.1.2",
         "UserAgentPrefix": "AwsSolution"
       },
       "Compliance": {
@@ -53,13 +53,13 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/assetc965a81477226dc8ad191791e3f5719ab4fea400b7f1197de8016f0765c68b4f.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.2/asset39e0fe65b28834a78b2a04686eb425d8da953f46e15d3c72e6183b0239da32b3.zip"
         },
         "LayerName": "AFM-UtilsLayer"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
-        "aws:asset:path": "asset.c965a81477226dc8ad191791e3f5719ab4fea400b7f1197de8016f0765c68b4f.zip",
+        "aws:asset:path": "asset.39e0fe65b28834a78b2a04686eb425d8da953f46e15d3c72e6183b0239da32b3.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -375,10 +375,10 @@
       "UpdateReplacePolicy": "Delete",
       "DeletionPolicy": "Delete",
       "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/DLQ/Resource"
+        "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/DLQConstruct/DLQ/Resource"
       }
     },
-    "QueuePolicyBEFD7452": {
+    "DLQConstructQueuePolicyD24D92D7": {
       "Type": "AWS::SQS::QueuePolicy",
       "Properties": {
         "PolicyDocument": {
@@ -394,6 +394,12 @@
               "Principal": {
                 "AWS": "*"
               },
+              "Resource": {
+                "Fn::GetAtt": [
+                  "DLQ581697C4",
+                  "Arn"
+                ]
+              },
               "Sid": "AllowPublishThroughSSLOnly"
             }
           ],
@@ -406,7 +412,7 @@
         ]
       },
       "Metadata": {
-        "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/QueuePolicy/Resource"
+        "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/DLQConstruct/QueuePolicy/Resource"
       }
     },
     "ComplianceGeneratorServiceRoleA6DF4428": {
@@ -494,7 +500,7 @@
           "S3Bucket": {
             "Fn::Sub": "solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.1/asset7e132bb3e75b685b9582edb61790c7e0e5f6c82d1e1c6d7d57fad08d0f0f7843.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.2/asset7416b022d5d3f823c18e63506d7823b6534e42aabd68aadc084c2ad916d7bf59.zip"
         },
         "DeadLetterConfig": {
           "TargetArn": {
@@ -778,7 +784,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VQTW/CMAz9LdyDB3SHXQfSTvvoyrQrclMPhbZJFycgFPW/T0lA7S5+7/k9R3Y2sH5cwWqBF17Kpl12qobwTuyo2TuUrdj96BIt9uTIRvGGw6D0UeCFD6HDvm4QwiteyX6TZWV0DP3TL15LdzPmvCTbK46RUXBxQGZyDM8RBBcQtl625LbIJDKNQzeWoTSdktepnfUoWDOELzMoGb1MUp0G5nLva5ZWDffF5noU/MsQPj15il4mqU6PzeQoFPYQKtOleMIpeM/QmbRjCJW/xXxH4yjS7XuHx/jBFbHxVib/w7vBp/vn3Z3RjcpLatMQnPjhvH6CzQqKxYmVWlqvneoJqox/MBCYFuwBAAA="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VQy27CMBD8Fu5my6Oqei1IPfWRhqpXtHEWZJLYqdcGISv/XtkGJb3szOzMWrtewfJxAYsZXngu62beqgrCB7GjeudQNmJ70AVa7MiRjeId+17po8AL70OLXVUjhDe8kv0hy8roGPqnX72W7mZMeUG2Uxwjg+D1HpnJMbxEELyGsPGyIbdBJpFpHLqxDIVplbyO7awHwZohfJteyehlkuo4MJU7X7G0qr8vNtWD4F+G8OXJU/QySXV8bCIHobCDUJo2xROOwXuGzqQdQyj9LeZbGgaRbt85PMYPLomNtzL5n971Pt0/7W6NrlVeUpua4MQP5+UzrBbwNDuxUnPrtVMdQZnxD/DnEV3sAQAA"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/CDKMetadata/Default"
