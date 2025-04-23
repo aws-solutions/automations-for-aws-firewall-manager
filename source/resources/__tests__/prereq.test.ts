@@ -26,9 +26,9 @@ describe("==Pre-requisite Stack Tests==", () => {
       expect(stack).toCountResources("AWS::Lambda::Function", 4);
     });
 
-    test("lambda function has nodejs18 runtime", () => {
+    test("lambda function has nodejs22 runtime", () => {
       expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-        Runtime: "nodejs18.x",
+        Runtime: "nodejs22.x",
       });
     });
 

@@ -18,4 +18,4 @@ export const PolicyIdentifiers = [
    */
 ];
 
-export const LAMBDA_RUNTIME_NODE = Runtime.NODEJS_18_X;
+export const LAMBDA_RUNTIME_NODE = Runtime.NODEJS_22_X;

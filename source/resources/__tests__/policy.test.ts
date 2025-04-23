@@ -54,7 +54,7 @@ describe("==Policy Stack Tests==", () => {
 
     test("has policy manager lambda function", () => {
       expect(policyStack).toHaveResource("AWS::Lambda::Function", {
-        Runtime: "nodejs18.x",
+        Runtime: "nodejs22.x",
       });
     });
 
