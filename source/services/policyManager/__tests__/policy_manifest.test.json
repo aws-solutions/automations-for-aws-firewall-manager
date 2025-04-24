@@ -129,7 +129,7 @@
         "type": "SECURITY_GROUPS_USAGE_AUDIT",
         "deleteUnusedSecurityGroups": true,
         "coalesceRedundantSecurityGroups": true,
-        "optionalDelayForUnusedInMinutes": 0
+        "optionalDelayForUnusedInMinutes": null
       },
       "remediationEnabled": false,
       "resourceType": "AWS::EC2::SecurityGroup",

@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.3] - 2025-04-24
+
+### Changed
+
+- Updated `aws-cdk-lib` to mitigate vulnerability within Cognito.UserPoolClient. [GHSA ID: qq4x-c6h6-rfxh](https://github.com/advisories/GHSA-qq4x-c6h6-rfxh)
+- Updated NodeJS Lambda runtimes from 18.x to 22.x
+- Updated `jest`, `ts-jest`, and added overrides for `@babel/helpers` to mitigate CVE-2025-27789
+
 ## [2.1.2] - 2025-02-05
 
 ### Changed
