@@ -228,6 +228,16 @@ export class PreReqStack extends Stack {
     });
     preReqManagerPolicy.addStatements(cfnGetOrgAdminRole);
 
+    const getCfnStackSetsServiceRolePolicy = new PolicyStatement({
+      effect: Effect.ALLOW,
+      sid: "GetCfnStackSetsServiceRolePolicy",
+      actions: ["iam:GetRole"],
+      resources: [
+        `arn:${stack.partition}:iam::${this.account}:role/AWSServiceRoleForCloudFormationStackSetsOrgAdmin*`,
+      ],
+    });
+    preReqManagerPolicy.addStatements(getCfnStackSetsServiceRolePolicy);
+
     const fmsStatement: PolicyStatement = new PolicyStatement({
       effect: Effect.ALLOW,
       sid: "FMSAdmin",

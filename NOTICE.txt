@@ -620,6 +620,11 @@ aws-cdk-lib under the Apache-2.0 license.
 @aws-solutions-constructs/aws-eventbridge-lambda under the Apache-2.0 license.
 aws-cdk under the Apache-2.0 license.
 fs under the ISC license.
+fast-uri under the BSD-3-Clause license
+@aws-cdk/cloud-assembly-schema under the Apache-2.0 license.
+@babel/plugin-syntax-class-static-block under the MIT license.
+@babel/plugin-syntax-import-attributes under the MIT license.
+@babel/plugin-syntax-private-property-in-object under the MIT license.
 
 ********************
 OPEN SOURCE LICENSES

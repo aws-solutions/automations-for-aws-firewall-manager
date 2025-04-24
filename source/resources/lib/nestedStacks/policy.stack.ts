@@ -24,7 +24,7 @@ import {
 import { Construct } from "constructs";
 import { StringListParameter, StringParameter } from "aws-cdk-lib/aws-ssm";
 import { Queue } from "aws-cdk-lib/aws-sqs";
-import { Code, Function, CfnFunction, Tracing } from "aws-cdk-lib/aws-lambda";
+import { Code, Function, CfnFunction, Tracing} from "aws-cdk-lib/aws-lambda";
 import {
   LogGroup,
   RetentionDays,
@@ -58,6 +58,8 @@ import { CfnSubscription, Topic, TracingConfig } from "aws-cdk-lib/aws-sns";
 import { Alias } from "aws-cdk-lib/aws-kms";
 import { EmailSubscription } from "aws-cdk-lib/aws-sns-subscriptions";
 import { DeadLetterQueueConstruct } from "../common/dead-letter-queue.construct";
+import { addCfnGuardSuppression } from '../../cdk-helper/add-cfn-guard-supression-helper';
+
 
 export class PolicyStack extends NestedStack {
   /**
@@ -616,6 +618,32 @@ export class PolicyStack extends NestedStack {
         ],
       },
     };
+
+    //Suppress cfn-guard for bucket notification handler
+    const bucketNotificationsHandlers = this.node.findAll()
+      .filter((node) => node.node.id.includes('BucketNotificationsHandler')) as Function[];
+
+    if (bucketNotificationsHandlers.length !== 1) {
+      throw new Error(
+        `Expected exactly one BucketNotificationsHandler function, got ${bucketNotificationsHandlers.length}`,
+      );
+    }
+
+    const bucketNotificationsHandler = bucketNotificationsHandlers[0];
+    addCfnGuardSuppression(bucketNotificationsHandler, "LAMBDA_INSIDE_VPC")
+    addCfnGuardSuppression(bucketNotificationsHandler, "LAMBDA_CONCURRENCY_CHECK")
+
+    //Suppress cfn-guard for custom resource lambda function
+    const customResource = this.node.findAll()
+      .filter((resource) => resource instanceof Function && resource.node.id.startsWith('AWS'));
+
+    if (customResource.length !== 1) {
+      throw new Error(
+        `Expected exactly one custom resource function, got ${customResource.length}`,
+      );
+    }
+    addCfnGuardSuppression(customResource[0], "LAMBDA_INSIDE_VPC")
+    addCfnGuardSuppression(customResource[0], "LAMBDA_CONCURRENCY_CHECK")
 
     //=============================================================================================
     // Output

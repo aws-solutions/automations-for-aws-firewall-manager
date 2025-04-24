@@ -32,9 +32,9 @@ describe("==Proactive Event Response Stack Tests==", () => {
       expect(stack).toCountResources("AWS::Lambda::Function", 2);
     });
 
-    test("lambda function has nodejs18 runtime", () => {
+    test("lambda function has nodejs22 runtime", () => {
       expect(stack).toHaveResourceLike("AWS::Lambda::Function", {
-        Runtime: "nodejs18.x",
+        Runtime: "nodejs22.x",
       });
     });
 
