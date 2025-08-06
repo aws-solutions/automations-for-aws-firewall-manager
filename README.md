@@ -1,3 +1,6 @@
+⚠️🚨⚠️ __Important: The Automations for [AWS Firewall Manager solution](https://aws.amazon.com/solutions/implementations/automations-for-aws-firewall-manager/) will retire in November 2025. Deployments (via CloudFormation or GitHub) will remain operational, but customers will assume responsibility for maintenance and API-related updates post retirement. Customers can explore using the latest deployment, multi-account management, and compliance features in [AWS Firewall Manager](https://aws.amazon.com/firewall-manager/) for management and enforcement of firewall rules.__ ⚠️🚨⚠️
+
+
 # Automations for AWS Firewall Manager
 
 |-----------------------------------------|
