@@ -1,6 +1,6 @@
 {
   "name": "aws-fms-automations",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Automations for AWS Firewall Manager",
   "scripts": {
     "docs": "./node_modules/typedoc/bin/typedoc --out docs --name \"Automations for AWS Firewall Manager\"",
@@ -14,8 +14,8 @@
     "build:configEvalManager": "cd source/services/shieldAutomations/configEvalManager && npm run build:all",
     "build:configRemediateManager": "cd source/services/shieldAutomations/configRemediateManager && npm run build:all",
     "build:shieldLayer": "cd source/services/shieldAutomations/shieldLayer && npm run build:all",
-    "build:shield": "npm run build:configEvalManager && npm run build:configRemediateManager && npm run build:shieldLayer",
-    "build": "npm run build:utilsLayer && npm run build:helper && npm run build:policyManager && npm run build:prereqManager && npm run && npm run build:complianceGenerator && npm run build:shield",
+    "build:shield": "npm run build:shieldLayer && npm run build:configEvalManager && npm run build:configRemediateManager",
+    "build": "npm run build:utilsLayer && npm run build:helper && npm run build:policyManager && npm run build:prereqManager && npm run build:complianceGenerator && npm run build:shield",
     "test": "cd ./deployment && chmod +x run-unit-tests.sh && ./run-unit-tests.sh"
   },
   "author": {
@@ -39,10 +39,12 @@
   },
   "overrides": {
     "word-wrap": "1.2.4",
-    "fast-xml-parser": ">=4.4.1"
+    "fast-xml-parser": ">=4.4.1",
+    "brace-expansion": ">=1.1.12"
   },
   "resolutions": {
-    "word-wrap": "1.2.4"
+    "word-wrap": "1.2.4",
+    "brace-expansion": ">=1.1.12"
   },
   "dependencies": {
     "aws-cdk-lib": "^2.189.1"

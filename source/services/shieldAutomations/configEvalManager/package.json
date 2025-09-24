@@ -1,6 +1,6 @@
 {
   "name": "shield-automations-config-rule-eval-manager",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "microservice to handle evaluation for the Shield Automations Organization Config Rule",
   "main": "index.js",
   "scripts": {

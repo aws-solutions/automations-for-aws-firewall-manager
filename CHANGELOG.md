@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.4] - 2025-09-24
+
+### Security
+
+- Removed deprecated NPM package "fs" has been identified as potentially vulnerable to package takeover
+- Updated brace-expansion to >=1.1.12 to mitigate [CVE-2025-5889](https://nvd.nist.gov/vuln/detail/CVE-2025-5889)
+
 ## [2.1.3] - 2025-04-24
 
 ### Changed

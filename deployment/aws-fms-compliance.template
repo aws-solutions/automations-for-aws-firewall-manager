@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager compliance reporter resources. Version v2.1.3",
+  "Description": "(SO0134-cr) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager compliance reporter resources. Version v2.1.4",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -34,7 +34,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.1.3",
+        "SolutionVersion": "v2.1.4",
         "UserAgentPrefix": "AwsSolution"
       },
       "Compliance": {
@@ -51,15 +51,15 @@
         ],
         "Content": {
           "S3Bucket": {
-            "Fn::Sub": "solutions-${AWS::Region}"
+            "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.3/asset37ddc85bd79d0dc79c7021b40a147ee8701cfc96d02aa9f73cbe50921d780e1f.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetda11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip"
         },
         "LayerName": "AFM-UtilsLayer"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
-        "aws:asset:path": "asset.37ddc85bd79d0dc79c7021b40a147ee8701cfc96d02aa9f73cbe50921d780e1f.zip",
+        "aws:asset:path": "asset.da11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -498,9 +498,9 @@
       "Properties": {
         "Code": {
           "S3Bucket": {
-            "Fn::Sub": "solutions-${AWS::Region}"
+            "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.3/assetd3199e8ab55dde6fb3368f14bab0b2b4fcdeaef6e62d9a8e71dbc87911e7d9c5.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetcea9cdcfde37f1fb51af817a9fc3540c16e5174a4f5eace32e667ab033c8c2b7.zip"
         },
         "DeadLetterConfig": {
           "TargetArn": {
@@ -784,7 +784,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WQzW7DIBCEnyV3sq0TqUqPTaWe+uPaVa/RGm8jYhu7LCSKEO9egR3ZvTDzMbMI2EC2e4RshRdey7pZt6oC/05sqS4tykY8/+gcDXZkyUR4w2FQ+ijwwgffYlfVCP4Vr2S+ybDqdSz94xenpZ2Cpc/JdIpjJQjeHpCZLMNTFMFb8HsnG7J7ZBKjjUOTGyXvWyWv8/bIQbBm8F/9oGTMRpPWeWCJpatYGjXcLrbkIPiXwX86chSz0aR1PmyBQSjswBd9m+pJ5+KtQ2fSlsEXbqq5lkIQ6e2lxWP84IK4d0am/MPZwdkgdF8TnPjunO1gcw8PqxMrtTZOW9URFKP+AfmC05TTAQAA"
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WQzW6DMBCEnyV3sy3JhR6bSj31h0LVa7SYTeQAhnrtRJHld68MRNCLZz7PrGV7C2n2BOkGr5zIuklaVYH/ILZUlxZlI16OOkeDHVkyEd5xGJQ+CbzywbfYVTWCf8MbmR8yrHodS//41Wlp52DtczKd4lgJgncHZCbL8BxF8A783smG7B6ZxGTj0OwmyftWyduyPXEQrBn8dz8oGbPJjOsysMbSVSyNGu4XW3MQ/Mvgvxw5itlkxnU5bIVBKOzAF3071kddivcOXUhbBl+4ueZaCkGMby8tnuIHF8S9M3LMP50dnA1C9zXBmR8uaQbbR8g2Z1YqMU5b1REUk/4Bef5hX9MBAAA="
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/CDKMetadata/Default"

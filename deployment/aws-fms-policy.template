@@ -1,5 +1,5 @@
 {
-  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager. Version v2.1.3",
+  "Description": "(SO0134-po) - The AWS CloudFormation template for deployment of the automations-for-aws-firewall-manager. Version v2.1.4",
   "AWSTemplateFormatVersion": "2010-09-09",
   "Metadata": {
     "AWS::CloudFormation::Interface": {
@@ -65,7 +65,7 @@
       },
       "Solution": {
         "SolutionId": "SO0134",
-        "SolutionVersion": "v2.1.3",
+        "SolutionVersion": "v2.1.4",
         "UserAgentPrefix": "AwsSolution"
       },
       "PolicyManager": {
@@ -483,15 +483,15 @@
         ],
         "Content": {
           "S3Bucket": {
-            "Fn::Sub": "solutions-${AWS::Region}"
+            "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.3/asset37ddc85bd79d0dc79c7021b40a147ee8701cfc96d02aa9f73cbe50921d780e1f.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetda11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip"
         },
         "LayerName": "AFM-UtilsLayer"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
-        "aws:asset:path": "asset.37ddc85bd79d0dc79c7021b40a147ee8701cfc96d02aa9f73cbe50921d780e1f.zip",
+        "aws:asset:path": "asset.da11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -941,11 +941,11 @@
               {
                 "Ref": "ManifestBucket46C412A5"
               },
-              "\",\"CopySource\":\"solutions-",
+              "\",\"CopySource\":\"639493421477-solutions-",
               {
                 "Ref": "AWS::Region"
               },
-              "/automations-for-aws-firewall-manager/v2.1.3/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1745502933427\"}}"
+              "/automations-for-aws-firewall-manager/v2.1.4/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1758711599937\"}}"
             ]
           ]
         },
@@ -976,7 +976,7 @@
                     {
                       "Ref": "AWS::Partition"
                     },
-                    ":s3:::solutions-",
+                    ":s3:::639493421477-solutions-",
                     {
                       "Ref": "AWS::Region"
                     },
@@ -1058,9 +1058,9 @@
       "Properties": {
         "Code": {
           "S3Bucket": {
-            "Fn::Sub": "solutions-${AWS::Region}"
+            "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.3/asset9d043014be736e8162bcc7ec5590cc6d2ff24fd0d9c73a5c5d595151c5fdad00.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asset9d043014be736e8162bcc7ec5590cc6d2ff24fd0d9c73a5c5d595151c5fdad00.zip"
         },
         "Handler": "index.handler",
         "Role": {
@@ -1305,9 +1305,9 @@
       "Properties": {
         "Code": {
           "S3Bucket": {
-            "Fn::Sub": "solutions-${AWS::Region}"
+            "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.3/asset51c12b6eca6175ceaba443e13887b7d2c41dc9da9ebf610a926018f780f5ea1e.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetb1982b9a5211b516729fb49e2e28e9bf9b6a039ea06e3c4c51f36c4c0fe7c366.zip"
         },
         "DeadLetterConfig": {
           "TargetArn": {
@@ -2071,7 +2071,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/21SwW7bMAz9ltxltWmAob2t9bKiQNalcbFroMi0wcSWXFFKEAj690GyY6dFL+J7j0+kTPOO+/n9A5/PxIkyWR6yBnfcvwJZKAsr5IHllVoLI1qwYCL5I7oOVR1hrlWJFrVi4kRb34h2VwruV+IM5h8Yipm8Up94gapuwGr12ymZ7o4gryZxeQRlX9RRHyDXqsLU71txDaZFirUDo8VWEIEl/hgDowX3T04ewD4JAtbDeGlAfVjrBuV5knseGFHLfWENqnqFZD9NYSK9YeSBoWi53+gGoi/FqcFY+oO4f3PgkqkH6ZysVzQwUsT9u+5QxlQP0jn5r2nhdiQNdpexXvPAII6RuN+44Y2ugcAaXRP3K10/G+269N8u+M2BOf+CChVeKn6RQmBp4oUV9bAcGyDtjAQ2AunI6nZrBk788UR50kbLV1qpv852zga2eOC3s59xS0k3LvakTGpF1jhp6SYm0nftDJY1ZMMuLifpXa+SFpjSJfA93Rzn9/zulv+Y7QkxM05ZbIFv+vgf+irG6hkDAAA="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/21SwW7bMAz9ltxltUku6W2t1xYF0i2Ni10DRaYNJrbkiVKCQNC/D5IdOy12Ed97fCJlmgvu56sHPp+JM2WyPGYN7rn/BWShLKyQR5ZXaiOMaMGCieRddB2qOsJcqxItasXEmXa+Ee2+FNyvxQXMHzAUM3mlvvACVd2A1erFKZnujiCvJvH5BMq+qZM+Qq5Vhanff8UNmBYp1g6MljtBBJb4YwyMltw/OXkE+yQIWA/jpQH1YaMblJdJ7nlgRC33hTWo6jWS/TKFifSGkQeGouV+qxuIvhSnBmPpv8T9hwOXTD1I52S9oYGRIu4/dYcypnqQzsl/Swu3J2mwu471lgcGcYzE/dYNb3QNBNbomrhf6/rVaNel/3bFHw7M5SdUqPBa8ZsUAksTL6yoh+XYAmlnJLARSEdWtzszcOKPZ8qTNlq+00r9drZzNrDlA7+f/YhbSrpxsSdlUiuyxklLdzGRvmtvsKwhG3bxeZI+9TppgSldAj/Q3Wm+4ot7vpodCDEzTllsgW/7+A96VnQhGQMAAA=="
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CDKMetadata/Default"
