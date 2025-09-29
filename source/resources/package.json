@@ -36,6 +36,10 @@
     "reportPath": "coverage"
   },
   "overrides": {
-    "@babel/helpers": ">=7.26.10"
+    "@babel/helpers": ">=7.26.10",
+    "brace-expansion": ">=1.1.12 <3.0.0",
+    "aws-cdk-lib": {
+      "brace-expansion": ">=1.1.12 <3.0.0"
+    }
   }
 }

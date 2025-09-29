@@ -50,7 +50,8 @@
   },
   "overrides": {
     "fast-xml-parser": ">=4.4.1",
-    "@babel/helpers": ">=7.26.10"
+    "@babel/helpers": ">=7.26.10",
+    "brace-expansion": ">=1.1.12 <3.0.0"
   },
   "jestSonar": {
     "reportPath": "coverage"

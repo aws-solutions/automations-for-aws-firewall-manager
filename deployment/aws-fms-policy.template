@@ -75,124 +75,142 @@
     },
     "LatestNodeRuntimeMap": {
       "af-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
+      },
+      "ap-east-2": {
+        "value": "nodejs22.x"
       },
       "ap-northeast-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-northeast-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-northeast-3": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-south-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-3": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-4": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-5": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
+      },
+      "ap-southeast-6": {
+        "value": "nodejs22.x"
       },
       "ap-southeast-7": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ca-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ca-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "cn-north-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "cn-northwest-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-central-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-isoe-west-1": {
-        "value": "nodejs18.x"
+        "value": "nodejs22.x"
       },
       "eu-north-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-south-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-west-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-west-3": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
+      },
+      "eusc-de-east-1": {
+        "value": "nodejs22.x"
       },
       "il-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "me-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "me-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "mx-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "sa-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-east-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-gov-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-gov-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-iso-east-1": {
-        "value": "nodejs18.x"
+        "value": "nodejs22.x"
       },
       "us-iso-west-1": {
-        "value": "nodejs18.x"
+        "value": "nodejs22.x"
       },
       "us-isob-east-1": {
         "value": "nodejs18.x"
       },
+      "us-isob-west-1": {
+        "value": "nodejs18.x"
+      },
+      "us-isof-east-1": {
+        "value": "nodejs22.x"
+      },
+      "us-isof-south-1": {
+        "value": "nodejs22.x"
+      },
       "us-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-west-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       }
     }
   },
@@ -485,13 +503,13 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetda11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asset73430bf435f80582ef823e1a354a71f75af61d65fd58950fa4e07c7a2345183f.zip"
         },
         "LayerName": "AFM-UtilsLayer"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
-        "aws:asset:path": "asset.da11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip",
+        "aws:asset:path": "asset.73430bf435f80582ef823e1a354a71f75af61d65fd58950fa4e07c7a2345183f.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -877,7 +895,12 @@
             {
               "Action": "s3:PutBucketNotification",
               "Effect": "Allow",
-              "Resource": "*"
+              "Resource": {
+                "Fn::GetAtt": [
+                  "ManifestBucket46C412A5",
+                  "Arn"
+                ]
+              }
             }
           ],
           "Version": "2012-10-17"
@@ -907,7 +930,7 @@
             "Arn"
           ]
         },
-        "Runtime": "python3.11",
+        "Runtime": "python3.13",
         "Timeout": 300
       },
       "DependsOn": [
@@ -945,7 +968,7 @@
               {
                 "Ref": "AWS::Region"
               },
-              "/automations-for-aws-firewall-manager/v2.1.4/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1758711599937\"}}"
+              "/automations-for-aws-firewall-manager/v2.1.4/policy_manifest.json\",\"Key\":\"policy_manifest.json\"},\"physicalResourceId\":{\"id\":\"1759142490799\"}}"
             ]
           ]
         },
@@ -1060,7 +1083,7 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asset9d043014be736e8162bcc7ec5590cc6d2ff24fd0d9c73a5c5d595151c5fdad00.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asset34a66902956b031404ef497526f619b900363fe7fd65ff02b1de4c30fe10c034.zip"
         },
         "Handler": "index.handler",
         "Role": {
@@ -1085,7 +1108,7 @@
       ],
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/AWS679f53fac002430cb0da5b7982bd2287/Resource",
-        "aws:asset:path": "asset.9d043014be736e8162bcc7ec5590cc6d2ff24fd0d9c73a5c5d595151c5fdad00",
+        "aws:asset:path": "asset.34a66902956b031404ef497526f619b900363fe7fd65ff02b1de4c30fe10c034",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Code",
         "guard": {
@@ -1307,7 +1330,7 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetb1982b9a5211b516729fb49e2e28e9bf9b6a039ea06e3c4c51f36c4c0fe7c366.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetf0d07006d22e89286b697ebfbb6e7eb84ba4034056537c5688a04c88c9289177.zip"
         },
         "DeadLetterConfig": {
           "TargetArn": {
@@ -2071,7 +2094,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/21SwW7bMAz9ltxltUku6W2t1xYF0i2Ni10DRaYNJrbkiVKCQNC/D5IdOy12Ed97fCJlmgvu56sHPp+JM2WyPGYN7rn/BWShLKyQR5ZXaiOMaMGCieRddB2qOsJcqxItasXEmXa+Ee2+FNyvxQXMHzAUM3mlvvACVd2A1erFKZnujiCvJvH5BMq+qZM+Qq5Vhanff8UNmBYp1g6MljtBBJb4YwyMltw/OXkE+yQIWA/jpQH1YaMblJdJ7nlgRC33hTWo6jWS/TKFifSGkQeGouV+qxuIvhSnBmPpv8T9hwOXTD1I52S9oYGRIu4/dYcypnqQzsl/Swu3J2mwu471lgcGcYzE/dYNb3QNBNbomrhf6/rVaNel/3bFHw7M5SdUqPBa8ZsUAksTL6yoh+XYAmlnJLARSEdWtzszcOKPZ8qTNlq+00r9drZzNrDlA7+f/YhbSrpxsSdlUiuyxklLdzGRvmtvsKwhG3bxeZI+9TppgSldAj/Q3Wm+4ot7vpodCDEzTllsgW/7+A96VnQhGQMAAA=="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/21SwU7jMBD9lt4dU9oDcAOygJC6UBq018p1JtHQxM567FaV5X9f2UmTgvbiee/N84wzmQX3i+sbPp+JI2Wy3GcN7rh/A7JQFlbIPcsrtRZGtGDBRPJbdB2qOsJcqxItasXEkba+Ee2uFNyvxAnMHzAUM3mlvvECVd2A1erZKZnujiCvJvHpAMq+qoPeQ65Vhanff8U1mBYp1g6MlltBBJb4QwyMltw/OrkH+ygIWA/jpQH1Ya0blKdJ7nlgRC33hTWo6hWS/TaFifSGkQeGouV+oxuIvhSnBmPpv8T9hwOXTD1I52S9oIGRIu4/dYcypnqQzsl/SQu3I2mwO4/1kgcGcYzE/cYNb3QNBNbomrhf6frFaNel/3bGHw7M6RdUqPBc8YcUAksTL6yoh+XYAGlnJLARSEdWt1szcOIPR8qTNlp+0kq9O9s5G9jyjs9n93FLSTcu9qRMakXWOGnpKibSd+0MljVkwy4+TdKnXiUtMKVL4F90dbi+5Ys5v519EWJmnLLYAt/08R9HU7I0GQMAAA=="
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/PolicyStack-DefaultPolicy/CDKMetadata/Default"

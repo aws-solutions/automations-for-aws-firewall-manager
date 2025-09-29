@@ -53,13 +53,13 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetda11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asset73430bf435f80582ef823e1a354a71f75af61d65fd58950fa4e07c7a2345183f.zip"
         },
         "LayerName": "AFM-UtilsLayer"
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
-        "aws:asset:path": "asset.da11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip",
+        "aws:asset:path": "asset.73430bf435f80582ef823e1a354a71f75af61d65fd58950fa4e07c7a2345183f.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -500,7 +500,7 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetcea9cdcfde37f1fb51af817a9fc3540c16e5174a4f5eace32e667ab033c8c2b7.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assete698ead589889678580e62e4d6036c895831f4f6ea82941c9491e69063a1e4c1.zip"
         },
         "DeadLetterConfig": {
           "TargetArn": {
@@ -784,7 +784,7 @@
     "CDKMetadata": {
       "Type": "AWS::CDK::Metadata",
       "Properties": {
-        "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WQzW6DMBCEnyV3sy3JhR6bSj31h0LVa7SYTeQAhnrtRJHld68MRNCLZz7PrGV7C2n2BOkGr5zIuklaVYH/ILZUlxZlI16OOkeDHVkyEd5xGJQ+CbzywbfYVTWCf8MbmR8yrHodS//41Wlp52DtczKd4lgJgncHZCbL8BxF8A783smG7B6ZxGTj0OwmyftWyduyPXEQrBn8dz8oGbPJjOsysMbSVSyNGu4XW3MQ/Mvgvxw5itlkxnU5bIVBKOzAF3071kddivcOXUhbBl+4ueZaCkGMby8tnuIHF8S9M3LMP50dnA1C9zXBmR8uaQbbR8g2Z1YqMU5b1REUk/4Bef5hX9MBAAA="
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WQzW7DIBCEnyV3sk2cQ3NtKvXUH9eueo3WeBsR2+CykChCvHuF7cjuhZmPmUVABtn2ETYrvPJa1s26VRWEd2JHdelQNuL5R+dosSNHNsEb9r3SJ4FXPoYWu6pGCK94I/tNlpXRqfSPX7yWbgqWPifbKU6VKHh3RGZyDE9JBO8gHLxsyB2QSYw2DU1ulNy0St7m7ZGjYM0QvkyvZMpGM6zzwBJLX7G0qr9fbMlR8C9D+PTkKWWjGdb5sAVGobCDUJh2qA86F+8dupB2DKHwU823FKMY3l46PKUPLoiNt3LIP7zrvYtCm5rgzA+X7R6yDexXZ1Zqbb12qiMoRv0D/MgLh9MBAAA="
       },
       "Metadata": {
         "aws:cdk:path": "CommonResourceStack/ComplianceGeneratorStack/CDKMetadata/Default"

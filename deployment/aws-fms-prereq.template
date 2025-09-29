@@ -57,124 +57,142 @@
     },
     "LatestNodeRuntimeMap": {
       "af-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
+      },
+      "ap-east-2": {
+        "value": "nodejs22.x"
       },
       "ap-northeast-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-northeast-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-northeast-3": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-south-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-3": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-4": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-5": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
+      },
+      "ap-southeast-6": {
+        "value": "nodejs22.x"
       },
       "ap-southeast-7": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ca-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ca-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "cn-north-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "cn-northwest-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-central-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-isoe-west-1": {
-        "value": "nodejs18.x"
+        "value": "nodejs22.x"
       },
       "eu-north-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-south-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-west-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-west-3": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
+      },
+      "eusc-de-east-1": {
+        "value": "nodejs22.x"
       },
       "il-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "me-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "me-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "mx-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "sa-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-east-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-gov-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-gov-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-iso-east-1": {
-        "value": "nodejs18.x"
+        "value": "nodejs22.x"
       },
       "us-iso-west-1": {
-        "value": "nodejs18.x"
+        "value": "nodejs22.x"
       },
       "us-isob-east-1": {
         "value": "nodejs18.x"
       },
+      "us-isob-west-1": {
+        "value": "nodejs18.x"
+      },
+      "us-isof-east-1": {
+        "value": "nodejs22.x"
+      },
+      "us-isof-south-1": {
+        "value": "nodejs22.x"
+      },
       "us-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-west-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       }
     }
   },
@@ -189,13 +207,13 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetda11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asset73430bf435f80582ef823e1a354a71f75af61d65fd58950fa4e07c7a2345183f.zip"
         },
         "LayerName": "AFM-UtilsLayer"
       },
       "Metadata": {
         "aws:cdk:path": "PreReqStack/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
-        "aws:asset:path": "asset.da11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip",
+        "aws:asset:path": "asset.73430bf435f80582ef823e1a354a71f75af61d65fd58950fa4e07c7a2345183f.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -241,7 +259,7 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asseteeae4ea0e3e33ae1980684cafedd3abb4c0682ee26a1f92bcab9c9dc8ae16c3c.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetfd6b60252b2925ecc957b656ae6c38aba060a2745573fdbfb0bb98fba83f7375.zip"
         },
         "Description": "DO NOT DELETE - FMS helper function",
         "Environment": {
@@ -446,6 +464,10 @@
           }
         },
         "Handler": "framework.onEvent",
+        "LoggingConfig": {
+          "ApplicationLogLevel": "FATAL",
+          "LogFormat": "JSON"
+        },
         "Role": {
           "Fn::GetAtt": [
             "HelperProviderframeworkonEventServiceRole1962DD43",
@@ -561,7 +583,7 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asset42ee04a8bacf5b761fff384059f5667bb00b9f5f64442e13a69d3dcf2ca3e833.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetbaf8060c602d24f46628726a4990519a61c2358b31762f9a16771bd9a5d50803.zip"
         },
         "Description": "Function to validate and install pre-requisites for the FMS solution",
         "Environment": {
@@ -1023,6 +1045,10 @@
           }
         },
         "Handler": "framework.onEvent",
+        "LoggingConfig": {
+          "ApplicationLogLevel": "FATAL",
+          "LogFormat": "JSON"
+        },
         "Role": {
           "Fn::GetAtt": [
             "PreReqProviderframeworkonEventServiceRoleF7D67BDC",

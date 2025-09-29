@@ -625,6 +625,19 @@ fast-uri under the BSD-3-Clause license
 @babel/plugin-syntax-class-static-block under the MIT license.
 @babel/plugin-syntax-import-attributes under the MIT license.
 @babel/plugin-syntax-private-property-in-object under the MIT license.
+@jridgewell/remapping under the MIT license.
+@aws-sdk/nested-clients under the Apache-2.0 license.
+@babel/helper-globals under the MIT license.
+@ungap/structured-clone under the ISC license.
+@aws/lambda-invoke-store under the ISC license.
+word-wrap under the MIT license.
+baseline-browser-mapping under the MIT license.
+neo-async under the MIT license.
+wordwrap under the MIT license.
+minimist under the MIT license.
+handlebars under the MIT license.
+uglify-js under the BSD-2-Clause license.
+
 
 ********************
 OPEN SOURCE LICENSES

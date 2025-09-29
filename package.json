@@ -40,11 +40,7 @@
   "overrides": {
     "word-wrap": "1.2.4",
     "fast-xml-parser": ">=4.4.1",
-    "brace-expansion": ">=1.1.12"
-  },
-  "resolutions": {
-    "word-wrap": "1.2.4",
-    "brace-expansion": ">=1.1.12"
+    "brace-expansion": ">=1.1.12 <3.0.0"
   },
   "dependencies": {
     "aws-cdk-lib": "^2.189.1"
