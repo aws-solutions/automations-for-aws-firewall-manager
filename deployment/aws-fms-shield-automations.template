@@ -293,124 +293,142 @@
     },
     "LatestNodeRuntimeMap": {
       "af-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
+      },
+      "ap-east-2": {
+        "value": "nodejs22.x"
       },
       "ap-northeast-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-northeast-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-northeast-3": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-south-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-3": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-4": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ap-southeast-5": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
+      },
+      "ap-southeast-6": {
+        "value": "nodejs22.x"
       },
       "ap-southeast-7": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ca-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "ca-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "cn-north-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "cn-northwest-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-central-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-isoe-west-1": {
-        "value": "nodejs18.x"
+        "value": "nodejs22.x"
       },
       "eu-north-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-south-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-west-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "eu-west-3": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
+      },
+      "eusc-de-east-1": {
+        "value": "nodejs22.x"
       },
       "il-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "me-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "me-south-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "mx-central-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "sa-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-east-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-gov-east-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-gov-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-iso-east-1": {
-        "value": "nodejs18.x"
+        "value": "nodejs22.x"
       },
       "us-iso-west-1": {
-        "value": "nodejs18.x"
+        "value": "nodejs22.x"
       },
       "us-isob-east-1": {
         "value": "nodejs18.x"
       },
+      "us-isob-west-1": {
+        "value": "nodejs18.x"
+      },
+      "us-isof-east-1": {
+        "value": "nodejs22.x"
+      },
+      "us-isof-south-1": {
+        "value": "nodejs22.x"
+      },
       "us-west-1": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       },
       "us-west-2": {
-        "value": "nodejs20.x"
+        "value": "nodejs22.x"
       }
     }
   },
@@ -456,13 +474,13 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetda11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asset73430bf435f80582ef823e1a354a71f75af61d65fd58950fa4e07c7a2345183f.zip"
         },
         "LayerName": "AFM-UtilsLayer"
       },
       "Metadata": {
         "aws:cdk:path": "ShieldAutomationsStack/AFM-UtilsLayer/AFM-UtilsLayer-Layer/Resource",
-        "aws:asset:path": "asset.da11002b5ae16c3136a212d806b775a652aeea78edeecfcafe476d53cd47896f.zip",
+        "aws:asset:path": "asset.73430bf435f80582ef823e1a354a71f75af61d65fd58950fa4e07c7a2345183f.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -508,7 +526,7 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asseteeae4ea0e3e33ae1980684cafedd3abb4c0682ee26a1f92bcab9c9dc8ae16c3c.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetfd6b60252b2925ecc957b656ae6c38aba060a2745573fdbfb0bb98fba83f7375.zip"
         },
         "Description": {
           "Fn::Join": [
@@ -764,6 +782,10 @@
           }
         },
         "Handler": "framework.onEvent",
+        "LoggingConfig": {
+          "ApplicationLogLevel": "FATAL",
+          "LogFormat": "JSON"
+        },
         "Role": {
           "Fn::GetAtt": [
             "HelperProviderframeworkonEventServiceRole1962DD43",
@@ -1064,13 +1086,13 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetcf63d25d433bfcf2857e09e78ada6c7da4111a289b9055baeeed7b5d34de3136.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetba78f329c6cd2e222077da5e892724b264d104a937853dd52dc8a8c9c4442236.zip"
         },
         "LayerName": "FMS-ShieldAutomations-Layer"
       },
       "Metadata": {
         "aws:cdk:path": "ShieldAutomationsStack/FMS-ShieldAutomations-Layer/FMS-ShieldAutomations-Layer-Layer/Resource",
-        "aws:asset:path": "asset.cf63d25d433bfcf2857e09e78ada6c7da4111a289b9055baeeed7b5d34de3136.zip",
+        "aws:asset:path": "asset.ba78f329c6cd2e222077da5e892724b264d104a937853dd52dc8a8c9c4442236.zip",
         "aws:asset:is-bundled": false,
         "aws:asset:property": "Content"
       }
@@ -1162,7 +1184,7 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asset24225389f533449d129cdf45815f422e5e94eefa026f570adc35136142de32ee.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/assetb6d903e5e22116569fb0c25f090d17ce1ff01467109f0c542c96a727b0930316.zip"
         },
         "Description": {
           "Fn::Join": [
@@ -1618,7 +1640,7 @@
           "S3Bucket": {
             "Fn::Sub": "639493421477-solutions-${AWS::Region}"
           },
-          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asset94156b99093838a2841a675706253f79a1f32c5df810e9880df1080bbd3a6f96.zip"
+          "S3Key": "automations-for-aws-firewall-manager/v2.1.4/asset3e75c5cafc6bc127f0f7fe12cbba607b74c1b2cebc6045f176a99142e1a671d0.zip"
         },
         "Description": {
           "Fn::Join": [
