@@ -55,14 +55,9 @@ cd $resource_dir
     npm run test -- -u
 } || {
     npm run test
-    rc=$?
-    if [ "$rc" -ne "0" ]; then
-        echo "** UNIT TESTS FAILED **"
-    else
-        echo "Unit Tests Successful"
-    fi
-    if [ "$rc" -gt "$maxrc" ]; then
-        maxrc=$rc
+    if [ "$?" = "1" ]; then
+        echo "(run-unit-tests.sh) ERROR: Resources tests failed." 1>&2
+        exit 1
     fi
 }
 
@@ -100,9 +95,10 @@ echo "--------------------------------------------------------------------------
 echo "[Test] complianceGenerator"
 echo "------------------------------------------------------------------------------"
 cd $source_dir/complianceGenerator
-if [[ $(npm run test) = "1" ]]; then
-	echo "(source/run-all-tests.sh) ERROR: compliance generator there is likely output above." 1>&2
-	exit 1
+npm run test
+if [ "$?" = "1" ]; then
+    echo "(run-unit-tests.sh) ERROR: compliance generator there is likely output above." 1>&2
+    exit 1
 fi
 
 echo "------------------------------------------------------------------------------"
@@ -144,3 +140,6 @@ if [ "$?" = "1" ]; then
 	echo "(source/run-all-tests.sh) ERROR: there is likely output above." 1>&2
 	exit 1
 fi
+
+cd $template_dir
+echo "All unit tests completed successfully"
